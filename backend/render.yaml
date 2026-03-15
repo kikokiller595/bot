@@ -1,7 +1,9 @@
 services:
   - type: web
     name: tby-loteria-backend
-    env: node
+    runtime: node
+    plan: free
+    healthCheckPath: /api/init/status
     buildCommand: npm install
     startCommand: npm start
     envVars:
