@@ -1,0 +1,112 @@
+.gestion-puntos-container {
+  height: 100%;
+}
+
+.gestion-puntos-card {
+  height: 100%;
+}
+
+.btn-agregar-punto,
+.punto-form-actions button,
+.tabla-acciones button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #667eea;
+  color: #fff;
+}
+
+.punto-formulario {
+  background: #f8faff;
+  border: 1px solid #dce5ff;
+  border-radius: 14px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.punto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.punto-grid input {
+  width: 100%;
+  border: 1px solid #d4d9e8;
+  border-radius: 10px;
+  padding: 0.85rem 0.95rem;
+}
+
+.punto-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #4f5d78;
+}
+
+.punto-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.punto-form-actions .secondary,
+.tabla-acciones .danger {
+  background: #eef2ff;
+  color: #445;
+}
+
+.tabla-puntos-wrapper {
+  overflow-x: auto;
+}
+
+.tabla-puntos {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-puntos th,
+.tabla-puntos td {
+  padding: 0.9rem 0.75rem;
+  border-bottom: 1px solid #e7ebf5;
+  text-align: left;
+}
+
+.tabla-puntos th {
+  color: #5b6480;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.estado-badge {
+  display: inline-flex;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.estado-badge.activo {
+  background: #e7f7ec;
+  color: #177245;
+}
+
+.estado-badge.inactivo {
+  background: #fde8e8;
+  color: #b42318;
+}
+
+.tabla-acciones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.punto-empty {
+  padding: 1rem 0;
+  color: #606b85;
+}

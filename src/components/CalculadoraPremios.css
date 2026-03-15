@@ -1,0 +1,1009 @@
+.form-fecha-filtro,
+.filtro-fecha-general {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filtro-fecha-acciones {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filtro-fecha-acciones input[type="date"] {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #d0d5dd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.btn-limpiar-fecha {
+  padding: 0.35rem 0.8rem;
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-limpiar-fecha:hover {
+  background: #5a6268;
+}
+
+.calculadora-premios-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.calculadora-premios-card {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.card-title {
+  font-size: 1.8rem;
+  color: #667eea;
+  margin: 0 0 1.5rem 0;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: -2px;
+}
+
+.tab-button:hover {
+  color: #667eea;
+  background: #f8f9fa;
+}
+
+.tab-button.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  background: #f8f9fa;
+}
+
+.tickets-ganadores-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.sin-loterias,
+.sin-numeros,
+.sin-premios {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}
+
+.texto-secundario {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 0.5rem;
+}
+
+.filtros-premios {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.select-loteria-premios,
+.select-numero-ganador {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  background: white;
+  cursor: pointer;
+}
+
+.select-loteria-premios:focus,
+.select-numero-ganador:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.resultados-premios {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.resumen-premios {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: white;
+}
+
+.resumen-item-premio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resumen-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.resumen-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.resumen-total {
+  font-size: 2rem;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.lista-premios {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.lista-premios h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.premios-table {
+  background: #f8f9fa;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.premios-table-header {
+  background: #667eea;
+  color: white;
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.premios-table-calcular .premios-table-header {
+  grid-template-columns: 1fr 1fr 0.8fr 0.9fr 1.2fr 1.2fr;
+}
+
+.tickets-ganadores-tab .premios-table-header {
+  grid-template-columns: 1.2fr 1fr 1fr 0.8fr 0.9fr 1.2fr 1.2fr 1.2fr;
+}
+
+.premios-table-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.premio-row {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.premios-table-calcular .premios-table-header,
+.premios-table-calcular .premio-row {
+  grid-template-columns: 1fr 1fr 1.5fr 0.8fr 0.9fr 1.1fr 0.8fr 1.1fr;
+}
+
+.tickets-ganadores-tab .premios-table-header,
+.tickets-ganadores-tab .premio-row {
+  grid-template-columns: 1.2fr 1fr 1fr 1.5fr 0.8fr 0.9fr 1.1fr 0.8fr 1.1fr 1.2fr;
+}
+
+.ganador-row {
+  background: #fff9e6;
+}
+
+.ganador-row:hover {
+  background: #fff3cd;
+}
+
+.col-loteria {
+  font-weight: 600;
+  color: #667eea;
+  font-size: 0.9rem;
+}
+
+.col-fecha-sorteo {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.premio-row:hover {
+  background-color: #f0f0f0;
+}
+
+.premio-row:last-child {
+  border-bottom: none;
+}
+
+.col-ticket-id {
+  font-weight: 600;
+  color: #667eea;
+  font-size: 0.85rem;
+}
+
+.ticket-meta-origen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.3rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ticket-meta-pago {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.35rem;
+  color: #0f766e;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.col-numero-premio {
+  font-weight: 600;
+  color: #28a745;
+  font-size: 1.1rem;
+  letter-spacing: 0.1rem;
+}
+
+.col-ticket-completo {
+  font-size: 0.95rem;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.badge-multiple {
+  background: #ede9fe;
+  color: #5b21b6;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ticket-completo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.ticket-completo-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  justify-content: flex-start;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.ticket-numero-valor {
+  background: #f1f5f9;
+  border: 1px solid #d5e0eb;
+  color: #1f2937;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.05rem;
+}
+
+.col-pagado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox-pagado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.checkbox-pagado input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkbox-pagado input:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.checkbox-pagado span {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .col-ticket-completo {
+    justify-content: flex-start;
+  }
+}
+
+.col-tipo-premio {
+  display: flex;
+  align-items: center;
+}
+
+.col-posicion-premio {
+  font-weight: 600;
+  color: #3f51b5;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+.badge-straight {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-box {
+  background: #fff3e0;
+  color: #e65100;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-bolita1,
+.badge-bolita2 {
+  background: #e8f5e9;
+  color: #1b5e20;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-singulation {
+  background: #fff8e1;
+  color: #8a6d1a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.col-monto-premio {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.col-premio {
+  font-weight: bold;
+  color: #ff9800;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .premios-table-header,
+  .premio-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .premios-table-header {
+    display: none;
+  }
+  
+  .premio-row {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .premio-row > div {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .premio-row > div::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #666;
+  }
+}
+
+/* Historial completo de números jugados - Cuadro separado */
+.historial-completo-wrapper {
+  margin-top: 3rem;
+  width: 100%;
+}
+
+.historial-completo-container {
+  background: white;
+  border: 3px solid #667eea;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 0;
+}
+
+.historial-completo-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  border-bottom: 3px solid #5568d3;
+}
+
+.historial-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.historial-header-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.select-loteria-historial {
+  padding: 0.6rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 200px;
+}
+
+.select-loteria-historial:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.select-loteria-historial option {
+  background: #667eea;
+  color: white;
+  padding: 0.5rem;
+}
+
+.select-tipo-historial,
+.select-apuesta-historial,
+.select-orden-historial,
+.input-fecha-historial {
+  padding: 0.6rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 200px;
+}
+
+.input-fecha-historial {
+  cursor: text;
+}
+
+.input-fecha-historial::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.input-fecha-historial::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1);
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.input-fecha-historial::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.input-fecha-historial::-webkit-datetime-edit-text {
+  color: white;
+}
+
+.input-fecha-historial::-webkit-datetime-edit-month-field,
+.input-fecha-historial::-webkit-datetime-edit-day-field,
+.input-fecha-historial::-webkit-datetime-edit-year-field {
+  color: white;
+}
+
+.select-tipo-historial:hover,
+.select-apuesta-historial:hover,
+.select-orden-historial:hover,
+.input-fecha-historial:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.input-fecha-historial:focus {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.8);
+  outline: none;
+}
+
+.select-tipo-historial option,
+.select-apuesta-historial option,
+.select-orden-historial option {
+  background: #667eea;
+  color: white;
+  padding: 0.5rem;
+}
+
+.btn-toggle-historial {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-toggle-historial:hover {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.historial-completo-content {
+  padding: 2rem;
+  max-height: 800px;
+  overflow-y: auto;
+  background: #fafbfc;
+}
+
+.sin-historial {
+  text-align: center;
+  color: #999;
+  padding: 4rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.historial-resumen-filtros {
+  padding: 1rem 1.5rem;
+  background: #f0f4ff;
+  border-bottom: 2px solid #667eea;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 0.5rem;
+}
+
+.contador-resultados {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #667eea;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filtro-activo-badge {
+  background: #667eea;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.tabla-historial {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-historial-header {
+  display: grid;
+  grid-template-columns: 150px repeat(5, 1fr) 180px;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-historial-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fila-historial {
+  display: grid;
+  grid-template-columns: 150px repeat(5, 1fr) 180px;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  align-items: center;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.fila-historial:hover {
+  background: #f8faff;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
+}
+
+.col-numero-hist,
+.col-straight-hist,
+.col-box-hist,
+.col-bolita1-hist,
+.col-bolita2-hist,
+.col-singulation-hist,
+.col-total-hist {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.col-destacada {
+  background: rgba(102, 126, 234, 0.15) !important;
+  font-weight: 700 !important;
+  border-left: 3px solid #667eea;
+  border-right: 3px solid #667eea;
+}
+
+.col-filtrada {
+  opacity: 0.4;
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.col-numero-hist {
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.col-total-hist {
+  font-weight: 700;
+}
+
+.numero-historial {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.3rem;
+  letter-spacing: 0.1rem;
+  padding: 0.5rem 1rem;
+  background: #f0f4ff;
+  border-radius: 8px;
+  border: 2px solid #667eea;
+  display: inline-block;
+}
+
+.numero-tipo-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #667eea;
+  background: #e8f0ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #667eea;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #f8faff;
+  border-radius: 8px;
+  min-width: 80px;
+}
+
+.stat-item.total {
+  font-weight: 700;
+  background: #e8f0ff;
+  padding: 0.75rem;
+  border: 2px solid #667eea;
+}
+
+.stat-count {
+  font-size: 1.1rem;
+  color: #667eea;
+  font-weight: 700;
+}
+
+.stat-amount {
+  font-size: 1rem;
+  color: #28a745;
+  font-weight: 700;
+}
+
+.stat-item.total .stat-count {
+  color: #4c51bf;
+  font-size: 1.3rem;
+}
+
+.stat-item.total .stat-amount {
+  color: #047857;
+  font-size: 1.2rem;
+}
+
+.stat-empty {
+  color: #ccc;
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.tabla-historial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-top: 3px solid #667eea;
+  margin-top: 1rem;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.footer-label {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-value {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1200px) {
+  .historial-title {
+    font-size: 1.5rem;
+  }
+
+  .tabla-historial-header,
+  .fila-historial {
+    grid-template-columns: 120px repeat(5, 1fr) 150px;
+    font-size: 0.9rem;
+    gap: 0.75rem;
+    padding: 1rem 0.75rem;
+  }
+
+  .numero-historial {
+    font-size: 1.1rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .numero-tipo-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .stat-count {
+    font-size: 1rem;
+  }
+
+  .stat-amount {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .historial-completo-wrapper {
+    margin-top: 2rem;
+  }
+
+  .historial-completo-header {
+    padding: 1.25rem 1.5rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .historial-title {
+    font-size: 1.4rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .historial-header-controls {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .select-loteria-historial,
+  .select-tipo-historial,
+  .select-apuesta-historial,
+  .select-orden-historial,
+  .input-fecha-historial {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    min-width: auto;
+  }
+
+  .btn-toggle-historial {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .historial-completo-content {
+    padding: 1.5rem;
+    max-height: 600px;
+  }
+
+  .historial-resumen-filtros {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .contador-resultados {
+    font-size: 0.9rem;
+  }
+
+  .tabla-historial-header,
+  .fila-historial {
+    grid-template-columns: 100px repeat(3, 1fr) 120px;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .col-bolita1-hist,
+  .col-bolita2-hist,
+  .col-singulation-hist {
+    display: none;
+  }
+
+  .tabla-historial-header .col-bolita1-hist,
+  .tabla-historial-header .col-bolita2-hist,
+  .tabla-historial-header .col-singulation-hist {
+    display: none;
+  }
+
+  .numero-historial {
+    font-size: 1rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .numero-tipo-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .col-numero-hist {
+    gap: 0.3rem;
+  }
+
+  .stat-item {
+    min-width: 60px;
+    padding: 0.4rem;
+  }
+
+  .stat-count {
+    font-size: 0.9rem;
+  }
+
+  .stat-amount {
+    font-size: 0.85rem;
+  }
+
+  .stat-item.total .stat-count {
+    font-size: 1.1rem;
+  }
+
+  .stat-item.total .stat-amount {
+    font-size: 1rem;
+  }
+
+  .tabla-historial-footer {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .footer-label {
+    font-size: 1.1rem;
+  }
+
+  .footer-value {
+    font-size: 1.3rem;
+  }
+}

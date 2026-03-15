@@ -1,0 +1,826 @@
+.generador-container {
+  margin-bottom: 2rem;
+}
+
+.generador-card {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+  font-size: 1.8rem;
+  color: #667eea;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.ticket-form-simple {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.impresion-config {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: #f8fafc;
+  border: 1px solid #dbe4ff;
+  border-radius: 10px;
+}
+
+.impresion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-weight: 600;
+  color: #2d3748;
+  cursor: pointer;
+}
+
+.impresion-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: #667eea;
+}
+
+.impresion-estado {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #667eea;
+  background: #eef2ff;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+}
+
+.loteria-cerrada-aviso {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.loteria-parcial-aviso {
+  background: #e8f4ff;
+  color: #0b4f71;
+  border: 1px solid #b3e0ff;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.loteria-info-aviso {
+  background: #f3f4ff;
+  color: #3c4161;
+  border: 1px solid #d8dcff;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.area-entrada {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.campo-loteria {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.campo-loteria label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.lista-loterias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.loteria-opcion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.loteria-opcion:hover {
+  border-color: #667eea;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
+}
+
+.loteria-opcion input {
+  accent-color: #667eea;
+  width: 16px;
+  height: 16px;
+}
+
+.loteria-opcion.cerrada {
+  opacity: 0.6;
+}
+
+.etiqueta-cerrada {
+  background: #ffe2e5;
+  color: #b71c1c;
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.campo-numero,
+.campo-monto,
+.campo-fecha {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.campo-numero label,
+.campo-monto label,
+.campo-fecha label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.campo-fecha {
+  grid-column: 1 / -1;
+}
+
+.input-numero-grande,
+.input-monto-grande {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+
+.input-numero-grande {
+  font-size: 2rem;
+  letter-spacing: 0.2rem;
+}
+
+.input-monto-grande {
+  font-size: 1.3rem;
+}
+
+.input-fecha-ticket {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+
+.input-fecha-ticket:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.input-numero-grande:focus,
+.input-monto-grande:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.campo-numero small,
+.campo-monto small {
+  color: #666;
+  font-size: 0.85rem;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.tipo-indicador {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.tipo-indicador.straight {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.tipo-indicador.box {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.tipo-indicador.combinaciones {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.tipo-indicador.bolita {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.tipo-indicador.singulation {
+  background: #fffce0;
+  color: #8a6d1a;
+}
+
+.ticket-anterior {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.ticket-anterior-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ticket-id {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.ticket-monto {
+  font-weight: bold;
+  color: #28a745;
+  font-size: 1.1rem;
+}
+
+.ticket-loterias {
+  font-size: 0.85rem;
+  color: #555;
+  background: #eef2ff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  flex: 1 1 100%;
+}
+
+.btn-icon {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+.btn-icon:hover {
+  background: #c82333;
+}
+
+.btn-ticket-print {
+  background: #198754;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.btn-ticket-print:hover {
+  background: #157347;
+  transform: translateY(-1px);
+}
+
+.mini-historial {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mini-historial-header {
+  background: #667eea;
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mini-historial-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn-limpiar-mini {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.3s;
+}
+
+.btn-limpiar-mini:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.mini-historial-content {
+  padding: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.sin-numeros {
+  text-align: center;
+  color: #999;
+  padding: 2rem;
+  font-size: 0.9rem;
+}
+
+.lista-numeros {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-numero {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s;
+}
+
+.item-numero:hover {
+  background: #f8f9fa;
+  border-color: #667eea;
+  transform: translateX(5px);
+}
+
+.numero-item {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #333;
+  letter-spacing: 0.1rem;
+}
+
+.tipo-item {
+  font-size: 0.9rem;
+  color: #667eea;
+  font-weight: 500;
+  text-align: center;
+  background: #e3f2fd;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.monto-item {
+  font-weight: 600;
+  color: #28a745;
+  text-align: right;
+}
+
+.btn-eliminar-item {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-eliminar-item:hover {
+  background: #c82333;
+  transform: scale(1.1);
+}
+
+.resumen-area {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.resumen-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resumen-item label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.input-resumen {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  background: #f8f9fa;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-large {
+  padding: 1rem 3rem;
+  font-size: 1.1rem;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #5a6268;
+  transform: translateY(-2px);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.numero-stats {
+  margin-top: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.numero-stats-title {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.numero-stats-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.numero-stats-chip {
+  background: #eef2ff;
+  color: #3730a3;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.numero-stats-chip .chip-monto {
+  color: #047857;
+  font-weight: 600;
+}
+
+.numero-stats-total {
+  font-size: 0.85rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Historial completo de números jugados */
+.historial-completo-container {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.historial-completo-header {
+  background: #4c51bf;
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.historial-completo-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn-toggle-historial {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.btn-toggle-historial:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.historial-completo-content {
+  padding: 1rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.sin-historial {
+  text-align: center;
+  color: #999;
+  padding: 2rem;
+  font-size: 0.9rem;
+}
+
+.tabla-historial {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-historial-header {
+  display: grid;
+  grid-template-columns: 120px repeat(5, 1fr) 140px;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #667eea;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: 0.5rem;
+}
+
+.tabla-historial-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fila-historial {
+  display: grid;
+  grid-template-columns: 120px repeat(5, 1fr) 140px;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.fila-historial:hover {
+  background: #f8f9fa;
+  border-color: #667eea;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+}
+
+.col-numero-hist,
+.col-straight-hist,
+.col-box-hist,
+.col-bolita1-hist,
+.col-bolita2-hist,
+.col-singulation-hist,
+.col-total-hist {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.col-numero-hist {
+  justify-content: flex-start;
+}
+
+.col-total-hist {
+  font-weight: 600;
+}
+
+.numero-historial {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  letter-spacing: 0.05rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-item.total {
+  font-weight: 600;
+}
+
+.stat-count {
+  font-size: 0.9rem;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.stat-amount {
+  font-size: 0.85rem;
+  color: #28a745;
+  font-weight: 600;
+}
+
+.stat-item.total .stat-count {
+  color: #4c51bf;
+  font-size: 1rem;
+}
+
+.stat-item.total .stat-amount {
+  color: #047857;
+  font-size: 0.9rem;
+}
+
+.stat-empty {
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.tabla-historial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-top: 2px solid #e0e0e0;
+  margin-top: 0.5rem;
+  border-radius: 0 0 6px 6px;
+}
+
+.footer-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.footer-value {
+  font-weight: 600;
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .impresion-config {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 1200px) {
+  .tabla-historial-header,
+  .fila-historial {
+    grid-template-columns: 100px repeat(5, 1fr) 120px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .area-entrada {
+    grid-template-columns: 1fr;
+  }
+
+  .lista-loterias {
+    flex-direction: column;
+  }
+  
+  .resumen-area {
+    grid-template-columns: 1fr;
+  }
+  
+  .item-numero {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .tipo-item,
+  .monto-item {
+    text-align: left;
+  }
+
+  .tabla-historial-header,
+  .fila-historial {
+    grid-template-columns: 80px repeat(3, 1fr) 100px;
+    font-size: 0.75rem;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .col-bolita1-hist,
+  .col-bolita2-hist,
+  .col-singulation-hist {
+    display: none;
+  }
+
+  .tabla-historial-header .col-bolita1-hist,
+  .tabla-historial-header .col-bolita2-hist,
+  .tabla-historial-header .col-singulation-hist {
+    display: none;
+  }
+
+  .historial-completo-content {
+    max-height: 400px;
+  }
+
+  .stat-count,
+  .stat-amount {
+    font-size: 0.75rem;
+  }
+
+  .tabla-historial-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}

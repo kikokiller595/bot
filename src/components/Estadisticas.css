@@ -1,0 +1,133 @@
+.estadisticas-container {
+  height: 100%;
+}
+
+.estadisticas-card {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 1.8rem;
+  color: #667eea;
+  margin-bottom: 1.5rem;
+}
+
+.sin-estadisticas {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+}
+
+.texto-secundario {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 0.5rem;
+}
+
+.stats-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.stat-item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: white;
+}
+
+.stat-value {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value-small {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.numeros-frecuentes {
+  margin-top: 2rem;
+}
+
+.numeros-frecuentes h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.frecuencia-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.frecuencia-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.frecuencia-numero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.frecuencia-veces {
+  min-width: 80px;
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.frecuencia-bar {
+  flex: 1;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.frecuencia-bar-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .estadisticas-card {
+    padding: 1.5rem;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+  }
+}
+

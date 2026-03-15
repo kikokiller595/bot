@@ -1,0 +1,592 @@
+.reporte-venta-container {
+  height: 100%;
+}
+
+.reporte-venta-card {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.reporte-header {
+  margin-bottom: 2rem;
+}
+
+.card-title {
+  font-size: 1.8rem;
+  color: #667eea;
+  margin: 0 0 0.5rem 0;
+}
+
+.ultima-actualizacion {
+  color: #999;
+  font-size: 0.85rem;
+  display: block;
+}
+
+.filtros-fecha {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filtro-rango {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filtro-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filtro-item label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.input-fecha {
+  padding: 0.5rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+}
+
+.input-fecha:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.botones-rapidos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-rapido {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+.btn-rapido:hover {
+  background: #5568d3;
+}
+
+.resumen-ventas {
+  margin-bottom: 2rem;
+}
+
+.puntos-venta-resumen {
+  margin: 1.5rem 0;
+}
+
+.puntos-venta-resumen h3 {
+  margin: 0 0 0.85rem;
+  color: #333;
+}
+
+.puntos-venta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+
+.punto-venta-card {
+  background: #f8fafc;
+  border: 1px solid #dbe4ff;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.punto-venta-nombre {
+  color: #334155;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.punto-venta-total {
+  color: #667eea;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.punto-venta-tickets {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.stat-principal {
+  background: #424242;
+  color: white !important;
+  margin-bottom: 1.5rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 2px solid #333;
+}
+
+.stat-principal * {
+  color: white !important;
+}
+
+.stat-principal .stat-label,
+.stat-principal .stat-value-grande,
+.stat-principal .stat-sublabel,
+.stat-principal .stat-sublabel-principal,
+.stat-principal .stat-badge,
+.stat-principal .info-label,
+.stat-principal .info-value {
+  color: white !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.stat-header-principal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+.stat-sublabel-principal {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.stat-badge {
+  background: #667eea;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: inline-block;
+  color: white !important;
+  border: 2px solid #5568d3;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+.stat-info-extra {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.stat-premios-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.premios-item,
+.ganancia-neta-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.premios-label,
+.ganancia-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white !important;
+}
+
+.premios-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ff9800 !important;
+}
+
+.ganancia-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.ganancia-value.positiva {
+  color: #28a745 !important;
+}
+
+.ganancia-value.negativa {
+  color: #dc3545 !important;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 80px;
+}
+
+.info-label {
+  font-size: 0.9rem;
+  opacity: 1 !important;
+  font-weight: 600;
+  color: white !important;
+}
+
+.info-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white !important;
+}
+
+.stat-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 2px solid #e0e0e0;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stat-principal .stat-label {
+  color: white !important;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.stat-principal .stat-value-grande {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #667eea !important;
+  margin-bottom: 0.5rem;
+}
+
+.stat-tickets-grande {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white !important;
+  margin-bottom: 1rem;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.stat-sublabel {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.stat-principal .stat-sublabel {
+  color: white !important;
+}
+
+.stat-principal .stat-sublabel-principal {
+  color: white !important;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.stat-premios {
+  background: #fff3e0;
+  border: 2px solid #ff9800;
+}
+
+.stat-premio-value {
+  color: #ff9800;
+  font-size: 2rem;
+}
+
+.stat-ganancia-positiva {
+  background: #e8f5e9;
+  border: 2px solid #28a745;
+}
+
+.stat-ganancia-positiva .stat-value {
+  color: #28a745;
+}
+
+.stat-ganancia-negativa {
+  background: #ffebee;
+  border: 2px solid #dc3545;
+}
+
+.stat-ganancia-negativa .stat-value {
+  color: #dc3545;
+}
+
+.stats-extras {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  padding: 1rem;
+  background: #e9ecef;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.stat-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.extra-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.extra-value {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.tickets-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.tickets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.tickets-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.btn-toggle {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+.btn-toggle:hover {
+  background: #5a6268;
+}
+
+.sin-tickets {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}
+
+.tickets-list {
+  flex: 1;
+  overflow-y: auto;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.tickets-table-header {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr 2fr;
+  background: #424242;
+  color: white;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tickets-table-body {
+  background: white;
+}
+
+.ticket-row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr 2fr;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.ticket-row:hover {
+  background: #f8f9fa;
+}
+
+.ticket-row:last-child {
+  border-bottom: none;
+}
+
+.col-id,
+.col-numero,
+.col-tipo,
+.col-monto,
+.col-fecha {
+  font-size: 0.9rem;
+}
+
+.col-id {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.ticket-meta-origen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.25rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.col-numero {
+  font-weight: 600;
+  letter-spacing: 0.1rem;
+}
+
+.col-monto {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.col-fecha {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.badge-straight {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-box {
+  background: #fff3e0;
+  color: #e65100;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-bolita1,
+.badge-bolita2 {
+  background: #e8f5e9;
+  color: #1b5e20;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-singulation {
+  background: #fff8e1;
+  color: #8a6d1a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tickets-table-header,
+  .ticket-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .col-fecha {
+    grid-column: 1 / -1;
+  }
+  
+  .filtros-fecha {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .filtro-rango {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .botones-rapidos {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .btn-rapido {
+    flex: 1;
+  }
+  
+  .tickets-table-header,
+  .ticket-row {
+    font-size: 0.85rem;
+  }
+}

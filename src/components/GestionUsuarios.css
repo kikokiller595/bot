@@ -1,0 +1,89 @@
+.gestion-usuarios-container {
+  height: 100%;
+}
+
+.gestion-usuarios-card {
+  height: 100%;
+}
+
+.btn-agregar-usuario,
+.usuario-form-actions button,
+.tabla-acciones button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #667eea;
+  color: #fff;
+}
+
+.usuario-formulario {
+  background: #f8faff;
+  border: 1px solid #dce5ff;
+  border-radius: 14px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.usuario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.usuario-grid input,
+.usuario-grid select {
+  width: 100%;
+  border: 1px solid #d4d9e8;
+  border-radius: 10px;
+  padding: 0.85rem 0.95rem;
+}
+
+.usuario-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #4f5d78;
+}
+
+.usuario-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.usuario-form-actions .secondary,
+.tabla-acciones .danger {
+  background: #eef2ff;
+  color: #445;
+}
+
+.tabla-usuarios-wrapper {
+  overflow-x: auto;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+  padding: 0.9rem 0.75rem;
+  border-bottom: 1px solid #e7ebf5;
+  text-align: left;
+}
+
+.tabla-usuarios th {
+  color: #5b6480;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.usuario-empty {
+  padding: 1rem 0;
+  color: #606b85;
+}
