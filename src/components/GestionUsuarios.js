@@ -61,8 +61,18 @@ function GestionUsuarios() {
       return;
     }
 
+    if (formulario.username.trim().length < 3) {
+      alert('El usuario debe tener al menos 3 caracteres');
+      return;
+    }
+
     if (!editandoId && !formulario.password.trim()) {
       alert('Debes definir una contrasena');
+      return;
+    }
+
+    if (formulario.password.trim() && formulario.password.trim().length < 6) {
+      alert('La contrasena debe tener al menos 6 caracteres');
       return;
     }
 

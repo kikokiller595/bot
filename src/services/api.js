@@ -82,6 +82,12 @@ api.interceptors.response.use(
     }
 
     if (error.response) {
+      const validationErrors = Array.isArray(error.response.data?.errors)
+        ? error.response.data.errors
+            .map(item => item?.msg)
+            .filter(Boolean)
+        : [];
+
       if (error.response.status === 401) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -91,7 +97,9 @@ api.interceptors.response.use(
       }
 
       const message =
-        error.response.data?.message || 'Error en la peticion';
+        validationErrors[0] ||
+        error.response.data?.message ||
+        'Error en la peticion';
       return Promise.reject(new Error(message));
     }
 
