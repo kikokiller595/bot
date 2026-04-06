@@ -5,21 +5,32 @@ const normalizeBaseUrl = (value, fallback) => {
   return base;
 };
 
+const defaultApiUrl =
+  process.env.NODE_ENV === 'production'
+    ? '/api'
+    : 'http://localhost:5000/api';
+
 const rawApiUrl = normalizeBaseUrl(
   process.env.REACT_APP_API_URL,
-  'http://localhost:5000/api'
+  defaultApiUrl
 );
 
 const API_URL = rawApiUrl.endsWith('/api')
   ? rawApiUrl
   : `${rawApiUrl}/api`;
 
+const defaultBackendUrl = rawApiUrl.startsWith('http')
+  ? rawApiUrl.replace(/\/api$/, '')
+  : '';
+
 const BACKEND_URL = normalizeBaseUrl(
   process.env.REACT_APP_BACKEND_URL,
-  API_URL.replace(/\/api$/, '')
+  defaultBackendUrl
 );
 
-const PING_URL = `${BACKEND_URL}/api/init/status`;
+const PING_URL = BACKEND_URL
+  ? `${BACKEND_URL}/api/init/status`
+  : '/api/init/status';
 
 const wakeUpBackend = async () => {
   try {
@@ -104,10 +115,13 @@ api.interceptors.response.use(
     }
 
     if (error.request) {
+      const message =
+        process.env.NODE_ENV === 'production'
+          ? 'No se pudo conectar con el servidor. Intenta de nuevo en unos segundos.'
+          : 'No se pudo conectar con el servidor. Verifica que el backend local este encendido en el puerto 5000.';
+
       return Promise.reject(
-        new Error(
-          'No se pudo conectar con el servidor. Verifica que el backend local este encendido en el puerto 5000.'
-        )
+        new Error(message)
       );
     }
 
