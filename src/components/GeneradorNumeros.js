@@ -194,6 +194,8 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
     if (valor === 'bolita1') return 'Bolita 1';
     if (valor === 'bolita2') return 'Bolita 2';
     if (valor === 'singulation') return 'Singulation';
+    if (valor === 'pick4head3') return 'Primeros 3 Pick 4';
+    if (valor === 'pick4head3box') return 'Primeros 3 Pick 4 Box';
     if (valor === 'pick4tail3') return 'Ultimos 3 Pick 4';
     if (valor === 'pick4tail3box') return 'Ultimos 3 Pick 4 Box';
     if (valor === 'box') return 'Box';
@@ -493,6 +495,8 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
 
     const numeroInput = numero.trim().toLowerCase();
     const bolitaMatch = numeroInput.match(/^(\d{2})\+(1|2)$/);
+    const pick4Head3BoxMatch = numeroInput.match(/^(\d{3})f\+$/);
+    const pick4Head3Match = numeroInput.match(/^(\d{3})f$/);
     const pick4Tail3BoxMatch = numeroInput.match(/^(\d{3})b\+$/);
     const pick4Tail3Match = numeroInput.match(/^(\d{3})b$/);
     const esBox = numeroInput.endsWith('+');
@@ -537,6 +541,28 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
       ]);
 
       setTotalMonto(prev => prev + montoPick4Tail3);
+      setTotalJugadas(prev => prev + 1);
+
+      setNumero('');
+      volverAlNumero();
+      return;
+    }
+
+    if (pick4Head3BoxMatch || pick4Head3Match) {
+      const numeroPick4Head3 = (pick4Head3BoxMatch || pick4Head3Match)[1];
+      const montoPick4Head3 = monto.trim() ? parseFloat(monto) || 1 : 1;
+
+      setHistorialTemporal(prev => [
+        ...prev,
+        {
+          id: Date.now(),
+          numero: numeroPick4Head3,
+          monto: montoPick4Head3,
+          tipo: pick4Head3BoxMatch ? 'Pick4Head3Box' : 'Pick4Head3'
+        }
+      ]);
+
+      setTotalMonto(prev => prev + montoPick4Head3);
       setTotalJugadas(prev => prev + 1);
 
       setNumero('');
@@ -825,12 +851,14 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
   const handleNumeroChange = (e) => {
     let valor = e.target.value.toLowerCase();
     // Permitir números, + y q
-    valor = valor.replace(/[^0-9+qb]/gi, '');
+    valor = valor.replace(/[^0-9+qbf]/gi, '');
     
     const tieneMas = valor.includes('+');
     const tieneQ = valor.includes('q');
     const tieneB = valor.includes('b');
+    const tieneF = valor.includes('f');
     const esBolitaParcial = /^\d{0,2}(\+([12]?))?$/.test(valor);
+    const esPick4Head3Parcial = /^\d{0,3}(f\+?|f?)?$/.test(valor);
     const esPick4Tail3Parcial = /^\d{0,3}(b\+?|b?)?$/.test(valor);
     
     // Si tiene q y +, q tiene prioridad solo si está al final
@@ -843,7 +871,7 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
     }
     
     // Si tiene + y no está al final, moverlo al final (para Box)
-    if (tieneMas && !valor.endsWith('+') && !esBolitaParcial && !tieneB) {
+    if (tieneMas && !valor.endsWith('+') && !esBolitaParcial && !tieneB && !tieneF) {
       valor = valor.replace(/\+/g, '') + '+';
     }
     
@@ -860,6 +888,22 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
       }
     }
 
+    if (tieneF && tieneQ) {
+      if (valor.endsWith('q')) {
+        valor = valor.replace(/f/g, '');
+      } else {
+        valor = valor.replace(/q/g, '');
+      }
+    }
+
+    if (tieneB && tieneF) {
+      if (valor.lastIndexOf('b') > valor.lastIndexOf('f')) {
+        valor = valor.replace(/f/g, '');
+      } else {
+        valor = valor.replace(/b/g, '');
+      }
+    }
+
     if (tieneB && !esBolitaParcial && !esPick4Tail3Parcial) {
       const soloDigitos = valor.replace(/[^0-9]/g, '').slice(0, 3);
       valor = soloDigitos + (tieneMas ? 'b+' : 'b');
@@ -867,6 +911,15 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
 
     if (tieneB && valor.endsWith('+') && !valor.endsWith('b+')) {
       valor = `${valor.replace(/[^0-9]/g, '').slice(0, 3)}b+`;
+    }
+
+    if (tieneF && !esBolitaParcial && !esPick4Head3Parcial) {
+      const soloDigitos = valor.replace(/[^0-9]/g, '').slice(0, 3);
+      valor = soloDigitos + (tieneMas ? 'f+' : 'f');
+    }
+
+    if (tieneF && valor.endsWith('+') && !valor.endsWith('f+')) {
+      valor = `${valor.replace(/[^0-9]/g, '').slice(0, 3)}f+`;
     }
 
     // Normalizar entrada parcial de bolita (NN+1 / NN+2)
@@ -880,6 +933,15 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
       }
       sufijo = sufijo.replace(/[^12]/g, '');
       valor = partes.length > 1 ? `${base}+${sufijo}` : base;
+    } else if (esPick4Head3Parcial && tieneF) {
+      const base = valor.replace(/[^0-9]/g, '').slice(0, 3);
+      if (valor.endsWith('f+')) {
+        valor = `${base}f+`;
+      } else if (valor.endsWith('f')) {
+        valor = `${base}f`;
+      } else {
+        valor = base;
+      }
     } else if (esPick4Tail3Parcial && tieneB) {
       const base = valor.replace(/[^0-9]/g, '').slice(0, 3);
       if (valor.endsWith('b+')) {
@@ -934,6 +996,8 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
   const numeroActual = numero.toLowerCase();
   const bolitaIndicadorParcial = /^\d{1,2}\+([12]?)$/.test(numeroActual);
   const bolitaIndicadorCompleto = numeroActual.match(/^(\d{2})\+(1|2)$/);
+  const pick4Head3Indicador = /^\d{3}f$/.test(numeroActual);
+  const pick4Head3BoxIndicador = /^\d{3}f\+$/.test(numeroActual);
   const pick4Tail3Indicador = /^\d{3}b$/.test(numeroActual);
   const pick4Tail3BoxIndicador = /^\d{3}b\+$/.test(numeroActual);
   const singulationIndicador = /^\d$/.test(numeroActual);
@@ -1039,7 +1103,7 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
                 value={numero}
                 onChange={handleNumeroChange}
                 onKeyPress={handleKeyPressNumero}
-                placeholder="Ej: 1234, 1234+, 1234q, 123b, 123b+, 22+1, 7"
+                placeholder="Ej: 1234, 1234+, 1234q, 123f, 123f+, 123b, 123b+, 22+1, 7"
                 className="input-numero-grande"
                 maxLength="6"
                 autoFocus
@@ -1048,6 +1112,10 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
               <small>
                 {esSingulationIndicador ? (
                   <span className="tipo-indicador singulation">Singulation (1 dígito)</span>
+                ) : pick4Head3BoxIndicador ? (
+                  <span className="tipo-indicador pick4head3">Primeros 3 del Pick 4 Box</span>
+                ) : pick4Head3Indicador ? (
+                  <span className="tipo-indicador pick4head3">Primeros 3 del Pick 4 Straight</span>
                 ) : pick4Tail3BoxIndicador ? (
                   <span className="tipo-indicador pick4tail3">Ultimos 3 del Pick 4 Box</span>
                 ) : pick4Tail3Indicador ? (
@@ -1072,7 +1140,7 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
                     Historial en las loterías seleccionadas
                   </div>
                   <div className="numero-stats-body">
-                    {['straight', 'box', 'bolita1', 'bolita2', 'singulation', 'pick4tail3', 'pick4tail3box'].map(tipo => {
+                    {['straight', 'box', 'bolita1', 'bolita2', 'singulation', 'pick4head3', 'pick4head3box', 'pick4tail3', 'pick4tail3box'].map(tipo => {
                       const datos = estadisticasNumero.detalle[tipo];
                       if (!datos) return null;
                       return (

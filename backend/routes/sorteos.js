@@ -16,7 +16,9 @@ const TIPOS_APUESTA_VALIDOS = new Set([
   'bolita2',
   'singulation',
   'pick4tail3',
-  'pick4tail3box'
+  'pick4tail3box',
+  'pick4head3',
+  'pick4head3box'
 ]);
 
 const esPuntoVenta = (rol) => {
@@ -293,10 +295,10 @@ const calcularPremio = (tipoApuesta, numero, monto, configuracionPremios, opcion
     if (tipoBox === 'triple') {
       return montoNum * premios.pick3.triple;
     }
-    if (tipoApuesta === 'straight' || tipoApuesta === 'pick4tail3') {
+    if (tipoApuesta === 'straight' || tipoApuesta === 'pick4tail3' || tipoApuesta === 'pick4head3') {
       return montoNum * premios.pick3.straight;
     }
-    if (tipoApuesta === 'box' || tipoApuesta === 'pick4tail3box') {
+    if (tipoApuesta === 'box' || tipoApuesta === 'pick4tail3box' || tipoApuesta === 'pick4head3box') {
       if (tipoBox === 'par') return montoNum * premios.pick3.boxPar;
       if (tipoBox === 'todos-diferentes') {
         return montoNum * premios.pick3.boxTodosDiferentes;

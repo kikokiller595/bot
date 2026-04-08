@@ -273,6 +273,11 @@
   color: #0f766e;
 }
 
+.tipo-indicador.pick4head3 {
+  background: #e6f0ff;
+  color: #1d4ed8;
+}
+
 .ticket-anterior {
   background: #f8f9fa;
   border: 2px solid #e0e0e0;

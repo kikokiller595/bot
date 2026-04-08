@@ -144,12 +144,12 @@ export const calcularPremio = (
     }
     
     // Straight (derecho) - solo para no triples
-    if (tipoApuesta === 'straight' || tipoApuesta === 'pick4tail3') {
+    if (tipoApuesta === 'straight' || tipoApuesta === 'pick4tail3' || tipoApuesta === 'pick4head3') {
       return montoNum * premios.pick3.straight;
     }
     
     // Box - solo para no triples
-    if (tipoApuesta === 'box' || tipoApuesta === 'pick4tail3box') {
+    if (tipoApuesta === 'box' || tipoApuesta === 'pick4tail3box' || tipoApuesta === 'pick4head3box') {
       switch (tipoBox) {
         case 'par':
           // Un par (112, 232)
@@ -216,6 +216,19 @@ export const numeroCoincide = (numeroTicket, numeroGanador, tipoApuesta, opcione
         return ticketStr === ganadorStr;
       }
       if (tipo === 'pick4tail3box') {
+        const ticketSorted = ticketStr.split('').sort().join('');
+        const ganadorSorted = ganadorStr.split('').sort().join('');
+        return ticketSorted === ganadorSorted;
+      }
+      return false;
+    }
+
+    if (opciones.fuenteDerivada === 'pick4-head3') {
+      if (ticketStr.length !== 3 || ganadorStr.length !== 3) return false;
+      if (tipo === 'pick4head3') {
+        return ticketStr === ganadorStr;
+      }
+      if (tipo === 'pick4head3box') {
         const ticketSorted = ticketStr.split('').sort().join('');
         const ganadorSorted = ganadorStr.split('').sort().join('');
         return ticketSorted === ganadorSorted;
