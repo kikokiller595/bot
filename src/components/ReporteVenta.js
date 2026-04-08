@@ -159,10 +159,19 @@ const obtenerFechaLocal = () => {
   return `${año}-${mes}-${dia}`;
 };
 
+const obtenerClavePuntoVenta = (ticket = {}) => {
+  const id = String(ticket.puntoVentaId || '').trim();
+  if (id) return `id:${id}`;
+  const nombre = String(ticket.puntoVentaNombre || '').trim();
+  if (nombre) return `nombre:${nombre.toLowerCase()}`;
+  return 'sin-punto';
+};
+
 const ReporteVenta = ({ sorteos, loterias = [] }) => {
   const { isAdmin } = useAuth();
   const [fechaInicio, setFechaInicio] = useState(obtenerFechaLocal());
   const [fechaFin, setFechaFin] = useState(obtenerFechaLocal());
+  const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
   const [mostrarDetalle, setMostrarDetalle] = useState(true);
   const [ultimaActualizacion, setUltimaActualizacion] = useState(new Date());
   const reporteRef = React.useRef(null);
@@ -251,6 +260,27 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
     return `${año}-${mes}-${dia}`;
   };
 
+  const opcionesPuntoVenta = useMemo(() => {
+    const mapa = new Map();
+
+    sorteos.forEach((ticket) => {
+      const clave = obtenerClavePuntoVenta(ticket);
+      if (!clave || mapa.has(clave)) return;
+
+      mapa.set(clave, {
+        value: clave,
+        label: String(ticket.puntoVentaNombre || '').trim() || 'Sin punto de venta'
+      });
+    });
+
+    return Array.from(mapa.values()).sort((a, b) => a.label.localeCompare(b.label, 'es', { sensitivity: 'base' }));
+  }, [sorteos]);
+
+  const etiquetaPuntoVentaSeleccionado = useMemo(() => {
+    if (!puntoVentaFiltro) return 'Todos los puntos';
+    return opcionesPuntoVenta.find((item) => item.value === puntoVentaFiltro)?.label || 'Punto filtrado';
+  }, [opcionesPuntoVenta, puntoVentaFiltro]);
+
   // Filtrar tickets por rango de fechas
   const ticketsEnRango = useMemo(() => {
     if (!sorteos || sorteos.length === 0) {
@@ -267,6 +297,10 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
     const filtrados = sorteos.filter(ticket => {
       if (!ticket.fecha) {
         console.log('ReporteVenta: Ticket sin fecha:', ticket.id);
+        return false;
+      }
+
+      if (puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) {
         return false;
       }
       
@@ -290,7 +324,7 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
 
     console.log('ReporteVenta: Tickets filtrados:', filtrados.length, 'de', sorteos.length);
     return filtrados;
-  }, [sorteos, fechaInicio, fechaFin]);
+  }, [sorteos, fechaInicio, fechaFin, puntoVentaFiltro]);
 
   const ticketsGanadoresEnRango = useMemo(() => {
     console.log('📊 REPORTE DE VENTAS - Calculando tickets ganadores');
@@ -339,6 +373,10 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
         sorteos.forEach(ticket => {
           ticketsProcesados++;
           if (!ticket.loteriaId || ticket.loteriaId.toString() !== loteria.id.toString()) return;
+
+          if (puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) {
+            return;
+          }
 
           const fechaTicket = parsearFecha(ticket.fecha);
           if (!fechaTicket) {
@@ -530,7 +568,7 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
     console.log('Premios totales:', agrupados.reduce((sum, t) => sum + (t.premio || 0), 0));
     
     return agrupados;
-  }, [sorteos, loterias, fechaInicio, fechaFin]);
+  }, [sorteos, loterias, fechaInicio, fechaFin, puntoVentaFiltro]);
 
   // Calcular premios pagados en el rango de fechas
   // Ya están agrupados por ticket, cada uno con su premio más alto
@@ -700,6 +738,7 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
             <h2 className="card-title">Reporte de Ventas</h2>
             <small className="ultima-actualizacion">
               Actualizado: {ultimaActualizacion.toLocaleTimeString('es-ES')} | 
+              Punto: {etiquetaPuntoVentaSeleccionado} | 
               Total en sistema: {sorteos?.length || 0} tickets | 
               En rango: {ticketsEnRango.length} tickets
             </small>
@@ -727,6 +766,23 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
                 className="input-fecha"
               />
             </div>
+            {isAdmin() && (
+              <div className="filtro-item filtro-punto-venta">
+                <label>Punto de venta:</label>
+                <select
+                  value={puntoVentaFiltro}
+                  onChange={(e) => setPuntoVentaFiltro(e.target.value)}
+                  className="input-fecha"
+                >
+                  <option value="">Todos</option>
+                  {opcionesPuntoVenta.map((opcion) => (
+                    <option key={opcion.value} value={opcion.value}>
+                      {opcion.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
           <div className="botones-rapidos">
             <button className="btn-rapido" onClick={establecerHoy}>Hoy</button>

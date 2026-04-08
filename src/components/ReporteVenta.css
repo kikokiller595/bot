@@ -54,6 +54,10 @@
   gap: 0.4rem;
 }
 
+.filtro-punto-venta {
+  min-width: 220px;
+}
+
 .filtro-item label {
   color: var(--text-main);
   font-weight: 700;
