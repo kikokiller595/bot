@@ -82,27 +82,9 @@ function App() {
   const panelesPuntoVenta = [
     {
       id: 'venta',
-      label: 'Captura de venta',
+      label: 'Punto de venta',
       code: '01',
-      summary: 'Registra jugadas y emite tickets desde el punto activo.'
-    },
-    {
-      id: 'historial',
-      label: 'Archivo del turno',
-      code: '02',
-      summary: 'Busca tickets y revisa el historial de operaciones.'
-    },
-    {
-      id: 'resumen',
-      label: 'Cierre visual',
-      code: '03',
-      summary: 'Monitorea tus ventas, ritmo diario y totales del local.'
-    },
-    {
-      id: 'ganadores',
-      label: 'Ganadores',
-      code: '04',
-      summary: 'Consulta premios, estados y tickets pendientes.'
+      summary: 'Terminal dedicada para registrar jugadas y emitir tickets del local.'
     }
   ];
 
@@ -394,11 +376,12 @@ function App() {
   }
 
   const panelesDisponibles = user.rol === 'admin' ? panelesAdmin : panelesPuntoVenta;
+  const mostrarNavegacion = panelesDisponibles.length > 1;
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
   const nombrePanel = user.rol === 'admin' ? 'Panel Administrador' : 'Panel Punto de Venta';
   const descripcionPanel = user.rol === 'admin'
     ? 'Control general del sistema, reportes, premios y configuracion.'
-    : 'Venta diaria, historial propio, resumen del local y consulta de ganadores.';
+    : 'Terminal de venta dedicada para registrar jugadas del local sin mezclar otras areas.';
   const resumenHero = user.rol === 'admin'
     ? [
         {
@@ -492,50 +475,13 @@ function App() {
   };
 
   const renderPanelPuntoVenta = () => {
-    if (panelActivo === 'venta') {
-      return (
-        <>
-          <DashboardOperativo sorteos={sorteos} loterias={loterias} />
-          <GeneradorNumeros
-            guardarSorteo={guardarSorteo}
-            guardarMultiplesSorteos={guardarMultiplesSorteos}
-            loterias={loterias}
-            sorteos={sorteos}
-          />
-        </>
-      );
-    }
-
-    if (panelActivo === 'historial') {
-      return (
-        <div className="content-grid panel-single">
-          <HistorialSorteos
-            sorteos={sorteos}
-            loterias={loterias}
-            eliminarSorteo={eliminarSorteo}
-            limpiarHistorial={limpiarHistorial}
-          />
-        </div>
-      );
-    }
-
-    if (panelActivo === 'resumen') {
-      return (
-        <>
-          <DashboardOperativo sorteos={sorteos} loterias={loterias} />
-          <div className="content-grid panel-single">
-            <ReporteVenta sorteos={sorteos} loterias={loterias} />
-          </div>
-        </>
-      );
-    }
-
     return (
       <div className="content-grid panel-single">
-        <CalculadoraPremios
-          sorteos={sorteos}
+        <GeneradorNumeros
+          guardarSorteo={guardarSorteo}
+          guardarMultiplesSorteos={guardarMultiplesSorteos}
           loterias={loterias}
-          marcarPagoTicket={marcarPagoTicket}
+          sorteos={sorteos}
         />
       </div>
     );
@@ -576,24 +522,26 @@ function App() {
               </div>
             </section>
 
-            <section className="sidebar-card sidebar-nav-card">
-              <div className="sidebar-nav-label">Mapa rapido</div>
-              <div className="sidebar-nav-list">
-                {panelesDisponibles.map((panel) => (
-                  <button
-                    key={panel.id}
-                    className={`sidebar-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
-                    onClick={() => setPanelActivo(panel.id)}
-                  >
-                    <span className="sidebar-nav-code">{panel.code}</span>
-                    <span className="sidebar-nav-copy">
-                      <strong>{panel.label}</strong>
-                      <small>{panel.summary}</small>
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </section>
+            {mostrarNavegacion && (
+              <section className="sidebar-card sidebar-nav-card">
+                <div className="sidebar-nav-label">Mapa rapido</div>
+                <div className="sidebar-nav-list">
+                  {panelesDisponibles.map((panel) => (
+                    <button
+                      key={panel.id}
+                      className={`sidebar-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
+                      onClick={() => setPanelActivo(panel.id)}
+                    >
+                      <span className="sidebar-nav-code">{panel.code}</span>
+                      <span className="sidebar-nav-copy">
+                        <strong>{panel.label}</strong>
+                        <small>{panel.summary}</small>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
 
             <section className="sidebar-card">
               <div className="sidebar-stats-grid">
