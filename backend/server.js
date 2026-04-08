@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const { connectDB, getMongoStatus } = require('./config/db');
 
 const frontendBuildPath = path.join(__dirname, '..', 'build');
 const frontendIndexPath = path.join(frontendBuildPath, 'index.html');
@@ -65,11 +65,12 @@ const createApp = () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Healthcheck simple para Railway. No depende de queries a Mongo.
+  // Healthcheck simple para Railway. Debe responder aunque Mongo tarde.
   app.get('/health', (req, res) => {
     res.json({
       success: true,
-      status: 'ok'
+      status: 'ok',
+      database: getMongoStatus()
     });
   });
 
@@ -126,8 +127,6 @@ const createApp = () => {
 };
 
 const startServer = async () => {
-  await connectDB();
-
   const { app, allowedOrigins } = createApp();
   const PORT = process.env.PORT || 5000;
 
@@ -141,8 +140,11 @@ const startServer = async () => {
     console.log(`Entorno: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Frontend permitido: ${frontendInfo}`);
     console.log(`Build frontend detectado: ${hasFrontendBuild ? 'si' : 'no'}`);
+    console.log(`Estado inicial MongoDB: ${getMongoStatus()}`);
     console.log('==============================================');
   });
+
+  await connectDB();
 };
 
 startServer().catch((err) => {
