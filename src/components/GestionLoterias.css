@@ -3,440 +3,236 @@
 }
 
 .gestion-loterias-card {
-  background: white;
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  height: 100%;
+  min-height: 100%;
+  padding: 0;
+  background: transparent;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
 .gestion-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
+  margin-bottom: 0.2rem;
 }
 
-.card-title {
+.gestion-loterias-card .card-title {
+  font-family: var(--font-display);
   font-size: 1.8rem;
-  color: #667eea;
-  margin: 0;
+  color: var(--text-main);
 }
 
-.btn-agregar-loteria {
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
+.btn-agregar-loteria,
+.btn-guardar-loteria,
+.btn-cancelar-edicion,
+.btn-editar-loteria,
+.btn-limpiar-hora {
+  border-radius: 999px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
 }
 
-.btn-agregar-loteria:hover {
-  background: #218838;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+.btn-agregar-loteria,
+.btn-guardar-loteria,
+.btn-editar-loteria {
+  padding: 0.85rem 1.2rem;
+  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+  color: var(--text-inverse);
+}
+
+.btn-cancelar-edicion,
+.btn-limpiar-hora {
+  padding: 0.85rem 1.2rem;
+  background: rgba(23, 49, 58, 0.12);
+  color: var(--text-main);
 }
 
 .formulario-agregar {
-  background: #f8f9fa;
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: 1.1rem;
+  border-radius: 24px;
+  background: rgba(247, 244, 236, 0.86);
+  border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.1rem;
 }
 
 .mensaje-edicion {
-  background: rgba(40, 167, 69, 0.12);
-  color: #1f7a37;
-  border: 1px solid rgba(40, 167, 69, 0.35);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  font-weight: 600;
-  font-size: 0.95rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: rgba(34, 119, 85, 0.12);
+  color: var(--success);
+  font-weight: 700;
 }
 
-.formulario-seccion {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.label-general {
-  font-weight: 600;
-  color: #555;
-}
-
-.input-nombre-loteria {
-  padding: 0.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.input-nombre-loteria:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-}
-
+.formulario-seccion,
 .toggle-hora {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  color: #444;
-  margin-bottom: 0.5rem;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
-.toggle-hora input {
-  accent-color: #667eea;
+.label-general,
+.toggle-hora span,
+.grid-premios label {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.input-nombre-loteria,
+.selector-hora select,
+.grid-premios input {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border-radius: 16px;
+  border: 1px solid rgba(23, 49, 58, 0.12);
+  background: rgba(255, 255, 255, 0.86);
 }
 
 .selector-hora {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
   flex-wrap: wrap;
-}
-
-.selector-hora select {
-  padding: 0.55rem 0.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.selector-hora select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.18);
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .selector-hora .separator {
-  font-weight: 600;
-  color: #555;
-  margin: 0 0.2rem;
-}
-
-.selector-hora-desactivado {
-  opacity: 0.5;
-}
-
-.btn-limpiar-hora {
-  background: #ffc107;
-  color: #333;
-  border: none;
-  border-radius: 8px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-limpiar-hora:hover {
-  background: #e0a800;
-  transform: translateY(-1px);
+  color: var(--text-soft);
+  font-weight: 700;
 }
 
 .ayuda-hora {
-  font-size: 0.85rem;
-  color: #777;
+  color: var(--text-soft);
+  line-height: 1.5;
 }
 
 .formulario-premios {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
 }
 
 .premios-col {
-  flex: 1 1 280px;
-  background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e0e0e0;
-  padding: 1.25rem;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(23, 49, 58, 0.08);
 }
 
 .premios-col h4 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  color: #445;
+  margin-bottom: 0.8rem;
+  color: var(--text-main);
 }
 
 .grid-premios {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem 1rem;
-  align-items: center;
-}
-
-.grid-premios label {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.grid-premios input {
-  width: 100%;
-  padding: 0.55rem 0.65rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.grid-premios input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.18);
+  gap: 0.7rem 1rem;
 }
 
 .acciones-formulario {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
-.btn-guardar-loteria {
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-guardar-loteria:hover {
-  background: #5568d3;
-  transform: translateY(-1px);
-}
-
-.btn-cancelar-edicion {
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-cancelar-edicion:hover {
-  background: #5a6268;
-  transform: translateY(-1px);
-}
-
 .sin-loterias {
+  padding: 3rem 1rem;
   text-align: center;
-  padding: 3rem;
-  color: #999;
+  color: var(--text-soft);
 }
 
 .texto-secundario {
-  font-size: 0.9rem;
-  color: #999;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
+  color: #82918f;
 }
 
 .loterias-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  max-height: 400px;
-  overflow-y: auto;
+  gap: 0.9rem;
 }
 
 .loteria-item {
-  background: #f8f9fa;
-  border-radius: 10px;
-  padding: 1.5rem;
-  border-left: 4px solid #667eea;
+  padding: 1rem;
+  border-radius: 24px;
+  background: rgba(247, 244, 236, 0.86);
+  border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
   gap: 1rem;
-  transition: transform 0.2s;
-}
-
-.loteria-item:hover {
-  transform: translateX(5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .loteria-info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  flex: 1;
+  gap: 0.45rem;
 }
 
 .loteria-nombre {
-  font-size: 1.3rem;
-  color: #333;
-  margin: 0;
-  font-weight: 600;
+  color: var(--text-main);
+  font-size: 1.35rem;
 }
 
-.loteria-fecha {
-  font-size: 0.85rem;
-  color: #666;
+.loteria-fecha,
+.loteria-numeros {
+  color: var(--text-soft);
 }
 
 .loteria-hora {
-  font-size: 0.85rem;
-  color: #28a745;
-  font-weight: 600;
-}
-
-.loteria-numeros {
-  font-size: 0.9rem;
-  color: #667eea;
-  font-weight: 500;
+  color: var(--success);
+  font-weight: 800;
 }
 
 .premios-resumen {
-  margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.9rem;
-  color: #444;
-}
-
-.premios-resumen strong {
-  color: #333;
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+  color: var(--text-main);
 }
 
 .loteria-acciones {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  align-items: flex-end;
-}
-
-.btn-editar-loteria {
-  background: #17a2b8;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.55rem 1.2rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-editar-loteria:hover {
-  background: #138496;
-  transform: translateY(-1px);
+  gap: 0.7rem;
 }
 
 .btn-eliminar-loteria {
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-size: 1.3rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: rgba(182, 69, 60, 0.1);
+  color: var(--danger);
+  font-size: 1.2rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-  line-height: 1;
-}
-
-.btn-eliminar-loteria:hover {
-  background: #c82333;
-  transform: scale(1.1);
 }
 
 @media (max-width: 768px) {
-  .gestion-header {
+  .gestion-header,
+  .loteria-item {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .btn-agregar-loteria {
-    width: 100%;
-  }
-  
-  .formulario-agregar {
-    flex-direction: column;
-    padding: 1rem;
-  }
-  
-  .input-nombre-loteria {
-    width: 100%;
-  }
-  
-  .btn-guardar-loteria {
-    width: 100%;
-  }
-
-  .formulario-premios {
-    flex-direction: column;
-  }
-
-  .premios-col {
-    width: 100%;
+    align-items: stretch;
   }
 
   .grid-premios {
     grid-template-columns: 1fr;
   }
 
-  .acciones-formulario {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .btn-guardar-loteria,
-  .btn-cancelar-edicion {
-    width: 100%;
-  }
-
-  .loteria-item {
-    flex-direction: column;
-  }
-
+  .acciones-formulario,
   .loteria-acciones {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
   }
 
+  .btn-eliminar-loteria,
+  .btn-agregar-loteria,
+  .btn-guardar-loteria,
+  .btn-cancelar-edicion,
   .btn-editar-loteria {
-    flex: 1;
-  }
-
-  .btn-eliminar-loteria {
-    border-radius: 8px;
-    width: auto;
-    padding: 0.6rem 1rem;
+    width: 100%;
   }
 }
-
-
-

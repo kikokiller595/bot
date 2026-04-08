@@ -824,3 +824,284 @@
     text-align: center;
   }
 }
+
+/* Redisenio visual */
+.generador-card {
+  padding: 1.45rem;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+
+.generador-card .card-title {
+  margin-bottom: 1.2rem;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  text-align: left;
+  color: var(--text-main);
+}
+
+.ticket-form-simple {
+  gap: 1.15rem;
+}
+
+.impresion-config,
+.ticket-anterior,
+.mini-historial,
+.historial-completo-container {
+  border-radius: 24px;
+  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: rgba(247, 244, 236, 0.84);
+  box-shadow: none;
+}
+
+.impresion-config {
+  padding: 1rem 1.1rem;
+}
+
+.impresion-toggle,
+.campo-loteria label,
+.campo-numero label,
+.campo-monto label,
+.campo-fecha label,
+.resumen-item label {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.impresion-estado {
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+}
+
+.loteria-cerrada-aviso,
+.loteria-parcial-aviso,
+.loteria-info-aviso {
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+}
+
+.loteria-cerrada-aviso {
+  background: rgba(209, 138, 57, 0.14);
+  border-color: rgba(209, 138, 57, 0.16);
+  color: #915f1e;
+}
+
+.loteria-parcial-aviso {
+  background: rgba(17, 78, 96, 0.09);
+  border-color: rgba(17, 78, 96, 0.12);
+  color: var(--accent-strong);
+}
+
+.loteria-info-aviso {
+  background: rgba(23, 49, 58, 0.06);
+  border-color: rgba(23, 49, 58, 0.08);
+  color: var(--text-soft);
+}
+
+.lista-loterias {
+  gap: 0.65rem;
+}
+
+.loteria-opcion {
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  border-color: rgba(23, 49, 58, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.loteria-opcion:hover {
+  border-color: rgba(17, 78, 96, 0.24);
+  box-shadow: 0 12px 24px rgba(17, 78, 96, 0.08);
+}
+
+.input-numero-grande,
+.input-monto-grande,
+.input-fecha-ticket,
+.input-resumen {
+  border-radius: 18px;
+  border: 1px solid rgba(23, 49, 58, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-main);
+}
+
+.input-numero-grande,
+.input-monto-grande {
+  padding: 1.05rem;
+}
+
+.input-numero-grande {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+}
+
+.input-numero-grande:focus,
+.input-monto-grande:focus,
+.input-fecha-ticket:focus {
+  border-color: rgba(17, 78, 96, 0.3);
+  box-shadow: 0 0 0 4px rgba(17, 78, 96, 0.1);
+}
+
+.tipo-indicador {
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.ticket-anterior {
+  padding: 1rem;
+}
+
+.ticket-anterior-content {
+  align-items: stretch;
+}
+
+.ticket-id {
+  color: var(--accent-strong);
+  font-weight: 800;
+}
+
+.ticket-monto {
+  color: var(--success);
+}
+
+.ticket-loterias {
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+}
+
+.btn-ticket-print,
+.btn.btn-primary,
+.btn.btn-secondary,
+.btn-limpiar-mini,
+.btn-toggle-historial,
+.btn-limpiar-historial,
+.btn-limpiar-mini,
+.btn-limpiar-historial {
+  border-radius: 999px;
+}
+
+.btn-ticket-print,
+.btn.btn-primary {
+  background: linear-gradient(135deg, #17313a 0%, #114e60 62%, #0f766e 100%);
+  box-shadow: 0 16px 28px rgba(17, 78, 96, 0.16);
+}
+
+.btn-ticket-print:hover,
+.btn.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #17313a 0%, #0f766e 100%);
+}
+
+.btn.btn-secondary,
+.btn-limpiar-mini {
+  background: rgba(23, 49, 58, 0.12);
+  color: var(--text-main);
+}
+
+.mini-historial-header,
+.historial-completo-header {
+  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+  color: var(--text-inverse);
+  border-radius: 24px 24px 0 0;
+}
+
+.mini-historial-content,
+.historial-completo-content {
+  background: transparent;
+}
+
+.item-numero,
+.fila-historial {
+  border-radius: 18px;
+  border-color: rgba(23, 49, 58, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.item-numero:hover,
+.fila-historial:hover {
+  border-color: rgba(17, 78, 96, 0.22);
+  transform: translateY(-1px);
+}
+
+.tipo-item {
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+  border-radius: 999px;
+}
+
+.numero-item,
+.numero-historial {
+  color: var(--text-main);
+}
+
+.monto-item,
+.stat-amount,
+.footer-value {
+  color: var(--success);
+}
+
+.resumen-area {
+  gap: 0.9rem;
+}
+
+.resumen-item {
+  gap: 0.4rem;
+}
+
+.input-resumen {
+  background: rgba(247, 244, 236, 0.9);
+  font-weight: 800;
+}
+
+.button-group {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.btn {
+  min-width: 190px;
+  border-radius: 999px;
+}
+
+.numero-stats {
+  border-radius: 20px;
+  background: rgba(247, 244, 236, 0.84);
+  border-color: rgba(23, 49, 58, 0.08);
+}
+
+.numero-stats-chip {
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+}
+
+.numero-stats-chip .chip-monto,
+.numero-stats-total {
+  color: var(--success);
+}
+
+.tabla-historial-header,
+.historial-completo-header {
+  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+}
+
+@media (max-width: 768px) {
+  .generador-card {
+    padding: 1rem;
+    border-radius: 24px;
+  }
+
+  .generador-card .card-title {
+    font-size: 1.7rem;
+  }
+
+  .button-group {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

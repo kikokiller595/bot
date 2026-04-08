@@ -1,7 +1,4 @@
-.gestion-puntos-container {
-  height: 100%;
-}
-
+.gestion-puntos-container,
 .gestion-puntos-card {
   height: 100%;
 }
@@ -9,58 +6,67 @@
 .btn-agregar-punto,
 .punto-form-actions button,
 .tabla-acciones button {
-  border: none;
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.82rem 1rem;
+  font-weight: 700;
   cursor: pointer;
-  background: #667eea;
-  color: #fff;
+}
+
+.btn-agregar-punto,
+.punto-form-actions button:not(.secondary),
+.tabla-acciones button:not(.danger) {
+  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+  color: var(--text-inverse);
+}
+
+.punto-form-actions .secondary,
+.tabla-acciones .danger {
+  background: rgba(23, 49, 58, 0.12);
+  color: var(--text-main);
 }
 
 .punto-formulario {
-  background: #f8faff;
-  border: 1px solid #dce5ff;
-  border-radius: 14px;
-  padding: 1rem;
+  padding: 1.1rem;
+  border-radius: 24px;
+  background: rgba(247, 244, 236, 0.86);
+  border: 1px solid rgba(23, 49, 58, 0.08);
   margin-bottom: 1rem;
 }
 
 .punto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.8rem;
 }
 
 .punto-grid input {
   width: 100%;
-  border: 1px solid #d4d9e8;
-  border-radius: 10px;
-  padding: 0.85rem 0.95rem;
+  padding: 0.9rem 0.95rem;
+  border-radius: 16px;
+  border: 1px solid rgba(23, 49, 58, 0.12);
+  background: rgba(255, 255, 255, 0.86);
 }
 
 .punto-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  color: #4f5d78;
+  gap: 0.55rem;
+  color: var(--text-main);
+  font-weight: 700;
 }
 
 .punto-form-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1rem;
 }
 
-.punto-form-actions .secondary,
-.tabla-acciones .danger {
-  background: #eef2ff;
-  color: #445;
-}
-
 .tabla-puntos-wrapper {
-  overflow-x: auto;
+  overflow: auto;
+  border-radius: 22px;
+  background: rgba(247, 244, 236, 0.86);
+  border: 1px solid rgba(23, 49, 58, 0.08);
 }
 
 .tabla-puntos {
@@ -70,43 +76,67 @@
 
 .tabla-puntos th,
 .tabla-puntos td {
-  padding: 0.9rem 0.75rem;
-  border-bottom: 1px solid #e7ebf5;
+  padding: 0.95rem 0.85rem;
   text-align: left;
 }
 
 .tabla-puntos th {
-  color: #5b6480;
-  font-size: 0.9rem;
+  position: sticky;
+  top: 0;
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+}
+
+.tabla-puntos td {
+  border-top: 1px solid rgba(23, 49, 58, 0.08);
+  color: var(--text-main);
 }
 
 .estado-badge {
   display: inline-flex;
+  align-items: center;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .estado-badge.activo {
-  background: #e7f7ec;
-  color: #177245;
+  background: rgba(34, 119, 85, 0.12);
+  color: var(--success);
 }
 
 .estado-badge.inactivo {
-  background: #fde8e8;
-  color: #b42318;
+  background: rgba(182, 69, 60, 0.12);
+  color: var(--danger);
 }
 
 .tabla-acciones {
   display: flex;
-  gap: 0.5rem;
   flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .punto-empty {
-  padding: 1rem 0;
-  color: #606b85;
+  padding: 2rem 1rem;
+  color: var(--text-soft);
+}
+
+@media (max-width: 768px) {
+  .punto-form-actions,
+  .tabla-acciones {
+    flex-direction: column;
+  }
+
+  .btn-agregar-punto,
+  .punto-form-actions button,
+  .tabla-acciones button {
+    width: 100%;
+  }
 }

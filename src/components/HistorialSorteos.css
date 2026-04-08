@@ -3,11 +3,12 @@
 }
 
 .historial-card {
-  background: white;
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  height: 100%;
+  min-height: 100%;
+  padding: 1.45rem;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
 }
@@ -16,167 +17,257 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
 }
 
-.card-title {
-  font-size: 1.8rem;
-  color: #667eea;
-  margin: 0;
+.historial-card .card-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--text-main);
+}
+
+.btn-limpiar,
+.btn-limpiar-filtro,
+.btn-toggle,
+.btn-eliminar {
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .btn-limpiar {
-  padding: 0.5rem 1rem;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s;
+  padding: 0.75rem 1.1rem;
+  background: rgba(182, 69, 60, 0.1);
+  color: var(--danger);
 }
 
-.btn-limpiar:hover {
-  background: #c82333;
-  transform: translateY(-2px);
+.btn-limpiar:hover,
+.btn-eliminar:hover {
+  background: rgba(182, 69, 60, 0.18);
 }
 
 .historial-filtros {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  align-items: flex-end;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.9rem;
+  padding: 1rem;
+  border-radius: 24px;
+  background: rgba(247, 244, 236, 0.86);
+  border: 1px solid rgba(23, 49, 58, 0.08);
+  margin-bottom: 1rem;
 }
 
 .filtros-column {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .filtros-column label {
-  font-weight: 600;
-  color: #444;
-  font-size: 0.9rem;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .historial-filtros input,
 .historial-filtros select {
-  padding: 0.45rem 0.75rem;
-  border: 1px solid #d0d5dd;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background: #fff;
+  padding: 0.85rem 0.95rem;
+  border-radius: 16px;
+  border: 1px solid rgba(23, 49, 58, 0.12);
+  background: rgba(255, 255, 255, 0.86);
 }
 
 .btn-limpiar-filtro {
-  padding: 0.4rem 0.9rem;
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-limpiar-filtro:hover {
-  background: #5a6268;
-  transform: translateY(-1px);
+  align-self: end;
+  padding: 0.85rem 1rem;
+  background: rgba(17, 78, 96, 0.1);
+  color: var(--accent-strong);
 }
 
 .historial-resumen {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1rem;
 }
 
 .resumen-card {
-  background: #f8f9fa;
-  border-radius: 10px;
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(23, 49, 58, 0.08);
 }
 
 .resumen-label {
-  font-size: 0.85rem;
-  color: #6b7280;
-  font-weight: 600;
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .resumen-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #111827;
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--text-main);
+  font-size: 1.45rem;
+  font-weight: 800;
 }
 
 .resumen-texto {
   font-size: 1rem;
-  line-height: 1.35;
-}
-
-.resumen-pendientes {
-  color: #dc2626;
+  line-height: 1.4;
 }
 
 .resumen-premios {
-  color: #047857;
+  color: var(--success);
+}
+
+.resumen-pendientes {
+  color: var(--danger);
 }
 
 .sin-sorteos {
+  padding: 3.5rem 1rem;
   text-align: center;
-  padding: 3rem 1rem;
-  color: #666;
+  color: var(--text-soft);
+  line-height: 1.6;
 }
 
 .texto-secundario {
-  font-size: 0.9rem;
-  color: #999;
-  margin-top: 0.5rem;
+  margin-top: 0.45rem;
+  color: #82918f;
 }
 
 .sorteos-list {
   flex: 1;
-  overflow-y: auto;
-  max-height: 600px;
-  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
 }
 
 .sorteo-item {
-  background: #f8f9fa;
-  border-radius: 10px;
   padding: 1rem;
-  margin-bottom: 1rem;
-  border-left: 4px solid #667eea;
-  transition: transform 0.2s;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  border-radius: 24px;
+  background: rgba(247, 244, 236, 0.86);
+  border: 1px solid rgba(23, 49, 58, 0.08);
 }
 
-.sorteo-item:hover {
-  transform: translateX(5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.sorteo-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+}
+
+.sorteo-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sorteo-id-fecha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.sorteo-ticket-id,
+.sorteo-loteria-badge,
+.chip-numero,
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.sorteo-ticket-id {
+  padding: 0.45rem 0.75rem;
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+}
+
+.sorteo-fecha {
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.sorteo-loterias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.sorteo-loteria-badge {
+  padding: 0.38rem 0.75rem;
+  background: rgba(209, 138, 57, 0.14);
+  color: #8a5a1a;
+}
+
+.sorteo-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.estado-badge {
+  justify-content: center;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.estado-badge.estado-gano {
+  background: rgba(34, 119, 85, 0.12);
+  color: var(--success);
+}
+
+.estado-badge.estado-perdio {
+  background: rgba(182, 69, 60, 0.12);
+  color: var(--danger);
+}
+
+.estado-badge.estado-pendiente {
+  background: rgba(209, 138, 57, 0.14);
+  color: #8a5a1a;
+}
+
+.btn-toggle {
+  padding: 0.65rem 0.95rem;
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+}
+
+.btn-eliminar {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(182, 69, 60, 0.1);
+  color: var(--danger);
+  font-size: 1.2rem;
 }
 
 .sorteo-resumen {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
-  padding: 1rem;
-  background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
 }
 
 .resumen-block {
+  padding: 0.9rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -187,61 +278,65 @@
 }
 
 .resumen-titulo {
-  font-size: 0.85rem;
-  color: #6b7280;
-  font-weight: 600;
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .resumen-valor {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1f2937;
+  color: var(--text-main);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.resumen-valor.premio {
+  color: var(--success);
 }
 
 .resumen-numeros {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.45rem;
 }
 
 .chip-numero {
-  background: #eef2ff;
-  color: #4338ca;
-  padding: 0.3rem 0.65rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.35rem 0.7rem;
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.82rem;
 }
 
 .sorteo-detalle-expandido {
-  margin-top: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  margin-top: 0.9rem;
+  border-radius: 20px;
   overflow: hidden;
-  background: #ffffff;
+  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .detalle-table-header,
 .detalle-row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  align-items: center;
 }
 
 .detalle-table-header {
-  background: #f1f5f9;
-  font-size: 0.8rem;
-  font-weight: 700;
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6b7280;
 }
 
 .detalle-row {
-  border-top: 1px solid #e5e7eb;
-  font-size: 0.9rem;
-  align-items: center;
+  border-top: 1px solid rgba(23, 49, 58, 0.08);
+  color: var(--text-main);
 }
 
 .detalle-table-header.admin-view,
@@ -249,207 +344,35 @@
   grid-template-columns: 1fr 1fr 0.8fr 1.1fr 1.1fr 0.8fr 0.9fr;
 }
 
-.estado-badge {
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  text-align: center;
-}
+@media (max-width: 900px) {
+  .sorteo-header {
+    flex-direction: column;
+  }
 
-.estado-badge.estado-gano {
-  background: #dcfce7;
-  color: #166534;
-}
+  .sorteo-acciones {
+    justify-content: flex-start;
+  }
 
-.estado-badge.estado-perdio {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.estado-badge.estado-pendiente {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.sorteo-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.sorteo-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  flex: 1;
-}
-
-.sorteo-id-fecha {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sorteo-loterias {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.sorteo-acciones {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.sorteo-tipo {
-  font-weight: 600;
-  color: #667eea;
-  font-size: 0.9rem;
-}
-
-.sorteo-ticket-id {
-  font-weight: 600;
-  color: #667eea;
-  font-size: 0.85rem;
-  background: #f0f4ff;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  display: inline-block;
-}
-
-.sorteo-loteria-badge {
-  font-weight: 600;
-  color: #28a745;
-  font-size: 0.85rem;
-  background: #e8f5e9;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  display: inline-block;
-}
-
-.sorteo-fecha {
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 0.25rem;
-}
-
-
-.btn-toggle {
-  padding: 0.35rem 0.8rem;
-  background: #f0f4ff;
-  color: #4c51bf;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease;
-}
-
-.btn-toggle:hover {
-  background: #e0e7ff;
-}
-
-.sorteo-numeros {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.sorteo-numeros-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.numero-historial {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.sorteo-tickets-detalle {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border-top: 2px solid #e0e0e0;
-}
-
-.ticket-individual {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  background: white;
-  border-radius: 6px;
-  border-left: 3px solid #667eea;
-}
-
-.ticket-individual:last-child {
-  margin-bottom: 0;
-}
-
-.ticket-numero {
-  font-weight: 600;
-  color: #333;
-  font-size: 1rem;
-  letter-spacing: 0.1rem;
-}
-
-.ticket-tipo {
-  font-size: 0.85rem;
-  color: #667eea;
-  background: #e3f2fd;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-.ticket-monto {
-  font-weight: 600;
-  color: #28a745;
-  font-size: 0.95rem;
-}
-
-.resumen-value.resumen-premios {
-  color: #047857;
-}
-
-.resumen-valor.premio {
-  color: #047857;
+  .detalle-table-header,
+  .detalle-row,
+  .detalle-table-header.admin-view,
+  .detalle-row.admin-view {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
   .historial-card {
-    padding: 1.5rem;
+    padding: 1rem;
+    border-radius: 24px;
   }
-  
+
   .historial-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    align-items: stretch;
   }
-  
+
   .btn-limpiar {
     width: 100%;
-  }
-
-  .historial-filtros {
-    grid-template-columns: 1fr;
-  }
-
-  .detalle-table-header,
-  .detalle-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

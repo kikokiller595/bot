@@ -7,39 +7,51 @@ import GestionUsuarios from './GestionUsuarios';
 
 const PanelAdministracion = ({ loterias, setLoterias }) => {
   const [pestanaActiva, setPestanaActiva] = useState('loterias');
+  const pestanas = [
+    {
+      id: 'loterias',
+      label: 'Loterias',
+      description: 'Catalogo, horarios y premios'
+    },
+    {
+      id: 'numeros',
+      label: 'Resultados',
+      description: 'Carga de numeros ganadores'
+    },
+    {
+      id: 'puntos',
+      label: 'Puntos de venta',
+      description: 'Locales, responsables y estado'
+    },
+    {
+      id: 'usuarios',
+      label: 'Usuarios',
+      description: 'Accesos y permisos del sistema'
+    }
+  ];
 
   return (
     <div className="panel-administracion-container">
       <div className="panel-administracion-card">
         <div className="panel-header">
-          <h2 className="panel-title">Panel de Administracion</h2>
+          <span className="panel-kicker">Centro administrativo</span>
+          <h2 className="panel-title">Configuracion general del sistema</h2>
+          <p className="panel-description">
+            Organiza loterias, resultados, locales y accesos desde una sola vista.
+          </p>
         </div>
 
         <div className="tabs-panel">
-          <button
-            className={`tab-panel-button ${pestanaActiva === 'loterias' ? 'active' : ''}`}
-            onClick={() => setPestanaActiva('loterias')}
-          >
-            Gestionar loterias
-          </button>
-          <button
-            className={`tab-panel-button ${pestanaActiva === 'numeros' ? 'active' : ''}`}
-            onClick={() => setPestanaActiva('numeros')}
-          >
-            Numeros ganadores
-          </button>
-          <button
-            className={`tab-panel-button ${pestanaActiva === 'puntos' ? 'active' : ''}`}
-            onClick={() => setPestanaActiva('puntos')}
-          >
-            Puntos de venta
-          </button>
-          <button
-            className={`tab-panel-button ${pestanaActiva === 'usuarios' ? 'active' : ''}`}
-            onClick={() => setPestanaActiva('usuarios')}
-          >
-            Usuarios
-          </button>
+          {pestanas.map((pestana) => (
+            <button
+              key={pestana.id}
+              className={`tab-panel-button ${pestanaActiva === pestana.id ? 'active' : ''}`}
+              onClick={() => setPestanaActiva(pestana.id)}
+            >
+              <span>{pestana.label}</span>
+              <small>{pestana.description}</small>
+            </button>
+          ))}
         </div>
 
         <div className="panel-content">

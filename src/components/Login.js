@@ -77,9 +77,14 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-box">
+        <div className="login-brand-pill">
+          <span className="login-brand-mark">TBY</span>
+          <span className="login-brand-copy">Sistema central de loteria</span>
+        </div>
+
         <div className="login-header">
-          <h1>TBY Sistemas</h1>
-          <h2>Acceso por punto de venta</h2>
+          <h1>Acceso operativo</h1>
+          <h2>Ingresa con tu usuario para entrar al panel de ventas o administracion.</h2>
         </div>
 
         <div className={`login-status login-status-${backendStatus}`}>
@@ -128,6 +133,10 @@ function Login() {
             {loading ? 'Entrando...' : 'Iniciar sesion'}
           </button>
         </form>
+
+        <div className="login-footnote">
+          Panel listo para operar con frontend y backend unificados.
+        </div>
       </div>
     </div>
   );

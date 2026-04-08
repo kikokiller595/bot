@@ -20,6 +20,38 @@ function App() {
   const [error, setError] = useState(null);
   const [panelActivo, setPanelActivo] = useState('resumen');
 
+  const obtenerClaveFecha = (valor) => {
+    if (!valor) return null;
+
+    if (valor instanceof Date && !Number.isNaN(valor.getTime())) {
+      const anio = valor.getFullYear();
+      const mes = String(valor.getMonth() + 1).padStart(2, '0');
+      const dia = String(valor.getDate()).padStart(2, '0');
+      return `${anio}-${mes}-${dia}`;
+    }
+
+    const isoMatch = String(valor).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (isoMatch) {
+      return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
+    }
+
+    const fecha = new Date(valor);
+    if (Number.isNaN(fecha.getTime())) {
+      return null;
+    }
+
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
+  };
+
+  const formatearMoneda = (valor = 0) =>
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(Number(valor) || 0);
+
   const panelesAdmin = [
     { id: 'resumen', label: 'Resumen general' },
     { id: 'ventas', label: 'Ventas y tickets' },
@@ -33,6 +65,34 @@ function App() {
     { id: 'resumen', label: 'Resumen' },
     { id: 'ganadores', label: 'Ganadores' }
   ];
+
+  const fechaPanel = new Intl.DateTimeFormat('es-ES', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  }).format(new Date());
+
+  const hoyClave = obtenerClaveFecha(new Date());
+  const sorteosHoy = sorteos.filter(
+    (sorteo) => obtenerClaveFecha(sorteo.fechaISO || sorteo.fecha) === hoyClave
+  );
+  const ventaHoy = sorteosHoy.reduce(
+    (total, sorteo) => total + (Number(sorteo.monto) || 0),
+    0
+  );
+  const ventaAcumulada = sorteos.reduce(
+    (total, sorteo) => total + (Number(sorteo.monto) || 0),
+    0
+  );
+  const ticketsTotales = new Set(
+    sorteos
+      .map((sorteo) => String(sorteo.ticketId || sorteo.grupoId || sorteo.id || ''))
+      .filter(Boolean)
+  ).size;
+  const puntosActivos = new Set(
+    sorteos.map((sorteo) => String(sorteo.puntoVentaNombre || '').trim()).filter(Boolean)
+  ).size;
 
   const normalizarHoraCierre = (valor) => {
     if (!valor) return '';
@@ -264,8 +324,12 @@ function App() {
     return (
       <div className="App">
         <Header />
-        <div className="container" style={{ textAlign: 'center', padding: '2rem' }}>
-          <h2>Cargando datos...</h2>
+        <div className="container">
+          <div className="state-card">
+            <span className="state-kicker">Preparando entorno</span>
+            <h2>Cargando datos del sistema...</h2>
+            <p>Estamos sincronizando ventas, loterias, resultados y paneles para dejar todo listo.</p>
+          </div>
         </div>
       </div>
     );
@@ -275,22 +339,15 @@ function App() {
     return (
       <div className="App">
         <Header />
-        <div className="container" style={{ textAlign: 'center', padding: '2rem' }}>
-          <h2 style={{ color: '#e53e3e' }}>{error}</h2>
-          <button 
-            onClick={() => window.location.reload()} 
-            style={{
-              marginTop: '1rem',
-              padding: '0.5rem 1rem',
-              backgroundColor: '#667eea',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Recargar
-          </button>
+        <div className="container">
+          <div className="state-card state-card-error">
+            <span className="state-kicker">Error de sincronizacion</span>
+            <h2>{error}</h2>
+            <p>Recarga la aplicacion para volver a intentar la conexion con el servicio.</p>
+            <button className="state-action" onClick={() => window.location.reload()}>
+              Recargar sistema
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -301,6 +358,51 @@ function App() {
   const descripcionPanel = user.rol === 'admin'
     ? 'Control general del sistema, reportes, premios y configuracion.'
     : 'Venta diaria, historial propio, resumen del local y consulta de ganadores.';
+  const resumenHero = user.rol === 'admin'
+    ? [
+        {
+          label: 'Venta del dia',
+          value: formatearMoneda(ventaHoy),
+          note: `${sorteosHoy.length} jugadas registradas hoy`
+        },
+        {
+          label: 'Tickets en sistema',
+          value: ticketsTotales,
+          note: `${formatearMoneda(ventaAcumulada)} acumulados`
+        },
+        {
+          label: 'Loterias activas',
+          value: loterias.length,
+          note: 'Catalogo disponible'
+        },
+        {
+          label: 'Puntos activos',
+          value: puntosActivos,
+          note: 'Locales con movimiento'
+        }
+      ]
+    : [
+        {
+          label: 'Venta del dia',
+          value: formatearMoneda(ventaHoy),
+          note: `${sorteosHoy.length} jugadas cargadas`
+        },
+        {
+          label: 'Tus tickets',
+          value: ticketsTotales,
+          note: `${formatearMoneda(ventaAcumulada)} en sistema`
+        },
+        {
+          label: 'Loterias listas',
+          value: loterias.length,
+          note: 'Disponibles para vender'
+        },
+        {
+          label: 'Sesion',
+          value: user.username || user.nombre,
+          note: user.puntoVentaNombre || 'Operacion central'
+        }
+      ];
 
   const renderPanelAdmin = () => {
     if (panelActivo === 'resumen') {
@@ -403,14 +505,45 @@ function App() {
       <Header />
       <div className="container">
         <div className="panel-shell">
+          <section className="workspace-hero">
+            <div className="workspace-copy">
+              <span className="workspace-kicker">
+                {user.rol === 'admin' ? 'Centro de control' : 'Estacion de ventas'}
+              </span>
+              <h2 className="workspace-title">{nombrePanel}</h2>
+              <p className="workspace-description">{descripcionPanel}</p>
+              <div className="workspace-inline-meta">
+                <span>{user.nombre}</span>
+                <span>{user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}</span>
+                <span>{user.puntoVentaNombre || 'Central'}</span>
+              </div>
+            </div>
+            <div className="workspace-metrics">
+              {resumenHero.map((item) => (
+                <div key={item.label} className="workspace-metric">
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                  <small>{item.note}</small>
+                </div>
+              ))}
+              <div className="workspace-metric workspace-metric-wide">
+                <span>Fecha</span>
+                <strong>{fechaPanel}</strong>
+                <small>Operacion sincronizada con el panel central</small>
+              </div>
+            </div>
+          </section>
+
           <div className="panel-selector">
             <div className="panel-selector-head">
               <div>
                 <span className="panel-role-badge">
                   {user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}
                 </span>
-                <h2 className="panel-selector-title">{nombrePanel}</h2>
-                <p className="panel-selector-description">{descripcionPanel}</p>
+                <h3 className="panel-selector-title">Navegacion del panel</h3>
+                <p className="panel-selector-description">
+                  Cambia rapidamente entre las vistas principales del sistema.
+                </p>
               </div>
             </div>
             <div className="panel-tabs">

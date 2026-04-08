@@ -8,21 +8,26 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-content">
-        <div>
-          <h1 className="header-title">TBY Sistemas</h1>
-          <p className="header-subtitle">Sistema de Loteria</p>
+        <div className="header-brand">
+          <div className="header-mark">77</div>
+          <div className="header-copy">
+            <span className="header-kicker">Red operativa centralizada</span>
+            <h1 className="header-title">TBY Sistemas</h1>
+            <p className="header-subtitle">Control de loteria, ventas y resultados en una sola vista</p>
+          </div>
         </div>
         {user && (
           <div className="header-user">
-            <span className="user-info">
+            <div className="user-info">
+              <span className="user-label">Sesion actual</span>
               <strong>{user.nombre}</strong>
+            </div>
+            <div className="user-tags">
               <span className="user-role">
-                {user.rol === 'admin' ? '(Administrador)' : '(Punto de venta)'}
+                {user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}
               </span>
-              {user.puntoVentaNombre && (
-                <span className="user-role">{user.puntoVentaNombre}</span>
-              )}
-            </span>
+              <span className="user-location">{user.puntoVentaNombre || 'Central'}</span>
+            </div>
             <button onClick={logout} className="logout-btn">
               Cerrar sesion
             </button>

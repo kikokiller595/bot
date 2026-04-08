@@ -8,15 +8,12 @@ function AppWithAuth() {
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '1.5rem',
-        color: '#667eea'
-      }}>
-        Cargando...
+      <div className="app-splash">
+        <div className="app-splash-card">
+          <span className="app-splash-kicker">TBY Sistemas</span>
+          <h1>Cargando entorno operativo</h1>
+          <p>Preparando acceso, paneles y conexion con el servicio central.</p>
+        </div>
       </div>
     );
   }
