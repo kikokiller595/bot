@@ -383,6 +383,7 @@ function App() {
 
   const panelesDisponibles = user.rol === 'admin' ? panelesAdmin : panelesPuntoVenta;
   const mostrarNavegacion = panelesDisponibles.length > 1;
+  const mostrarResumenSuperior = user.rol === 'admin';
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
   const nombrePanel = user.rol === 'admin' ? 'Panel Administrador' : 'Panel Punto de Venta';
   const descripcionPanel = user.rol === 'admin'
@@ -576,44 +577,48 @@ function App() {
           </aside>
 
           <main className="studio-stage">
-            <section className="stage-masthead">
-              <div className="stage-masthead-copy">
-                <span className="masthead-kicker">
-                  {panelActivoData.code} / {user.rol === 'admin' ? 'Administracion' : 'Operacion diaria'}
-                </span>
-                <h1 className="stage-title">{panelActivoData.label}</h1>
-                <p className="stage-description">{panelActivoData.summary}</p>
-              </div>
+            {mostrarResumenSuperior && (
+              <>
+                <section className="stage-masthead">
+                  <div className="stage-masthead-copy">
+                    <span className="masthead-kicker">
+                      {panelActivoData.code} / {user.rol === 'admin' ? 'Administracion' : 'Operacion diaria'}
+                    </span>
+                    <h1 className="stage-title">{panelActivoData.label}</h1>
+                    <p className="stage-description">{panelActivoData.summary}</p>
+                  </div>
 
-              <div className="stage-masthead-board">
-                <div className="board-row">
-                  <span>Fecha de trabajo</span>
-                  <strong>{fechaPanel}</strong>
-                </div>
-                <div className="board-row">
-                  <span>Venta del dia</span>
-                  <strong>{formatearMoneda(ventaHoy)}</strong>
-                </div>
-                <div className="board-row">
-                  <span>Tickets activos</span>
-                  <strong>{ticketsTotales}</strong>
-                </div>
-                <div className="board-row">
-                  <span>Loterias visibles</span>
-                  <strong>{loterias.length}</strong>
-                </div>
-              </div>
-            </section>
+                  <div className="stage-masthead-board">
+                    <div className="board-row">
+                      <span>Fecha de trabajo</span>
+                      <strong>{fechaPanel}</strong>
+                    </div>
+                    <div className="board-row">
+                      <span>Venta del dia</span>
+                      <strong>{formatearMoneda(ventaHoy)}</strong>
+                    </div>
+                    <div className="board-row">
+                      <span>Tickets activos</span>
+                      <strong>{ticketsTotales}</strong>
+                    </div>
+                    <div className="board-row">
+                      <span>Loterias visibles</span>
+                      <strong>{loterias.length}</strong>
+                    </div>
+                  </div>
+                </section>
 
-            <section className="stage-ribbon">
-              {resumenHero.map((item) => (
-                <article key={item.label} className="ribbon-card">
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                  <p>{item.note}</p>
-                </article>
-              ))}
-            </section>
+                <section className="stage-ribbon">
+                  {resumenHero.map((item) => (
+                    <article key={item.label} className="ribbon-card">
+                      <span>{item.label}</span>
+                      <strong>{item.value}</strong>
+                      <p>{item.note}</p>
+                    </article>
+                  ))}
+                </section>
+              </>
+            )}
 
             <section className="stage-body">
               {user.rol === 'admin' ? renderPanelAdmin() : renderPanelPuntoVenta()}
