@@ -366,9 +366,9 @@ function App() {
         <Header />
         <div className="container">
           <div className="state-card">
-            <span className="state-kicker">Preparando entorno</span>
-            <h2>Cargando datos del sistema...</h2>
-            <p>Estamos sincronizando ventas, loterias, resultados y paneles para dejar todo listo.</p>
+            <span className="state-kicker">Cabina en arranque</span>
+            <h2>Estamos montando el tablero operativo.</h2>
+            <p>Sincronizando ventas, loterias, resultados y paneles para abrir la nueva vista completa del sistema.</p>
           </div>
         </div>
       </div>
@@ -381,9 +381,9 @@ function App() {
         <Header />
         <div className="container">
           <div className="state-card state-card-error">
-            <span className="state-kicker">Error de sincronizacion</span>
+            <span className="state-kicker">Conexion interrumpida</span>
             <h2>{error}</h2>
-            <p>Recarga la aplicacion para volver a intentar la conexion con el servicio.</p>
+            <p>La interfaz nueva no pudo completar la sincronizacion. Recarga el sistema para volver a intentar la conexion.</p>
             <button className="state-action" onClick={() => window.location.reload()}>
               Recargar sistema
             </button>
@@ -545,86 +545,107 @@ function App() {
     <div className="App">
       <Header />
       <div className="container">
-        <div className="ops-layout">
-          <aside className="control-rail">
-            <div className="rail-brand">
-              <span className="rail-badge">
-                {user.rol === 'admin' ? 'Central admin' : 'Local conectado'}
+        <div className="studio-shell">
+          <aside className="studio-sidebar">
+            <section className="sidebar-card sidebar-brand-card">
+              <span className="sidebar-kicker">
+                {user.rol === 'admin' ? 'Control central' : 'Cabina local'}
               </span>
-              <h2 className="rail-title">Mesa de operaciones</h2>
-              <p className="rail-description">{descripcionPanel}</p>
-            </div>
+              <h2 className="sidebar-title">{nombrePanel}</h2>
+              <p className="sidebar-description">{descripcionPanel}</p>
+            </section>
 
-            <div className="rail-identity">
-              <div className="rail-identity-row">
-                <span>Sesion</span>
-                <strong>{user.nombre}</strong>
+            <section className="sidebar-card">
+              <div className="sidebar-session-grid">
+                <div className="sidebar-session-item">
+                  <span>Sesion</span>
+                  <strong>{user.nombre}</strong>
+                </div>
+                <div className="sidebar-session-item">
+                  <span>Modo</span>
+                  <strong>{user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}</strong>
+                </div>
+                <div className="sidebar-session-item">
+                  <span>Operacion</span>
+                  <strong>{user.puntoVentaNombre || 'Central'}</strong>
+                </div>
+                <div className="sidebar-session-item">
+                  <span>Fecha</span>
+                  <strong>{fechaPanel}</strong>
+                </div>
               </div>
-              <div className="rail-identity-row">
-                <span>Modo</span>
-                <strong>{user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}</strong>
-              </div>
-              <div className="rail-identity-row">
-                <span>Operacion</span>
-                <strong>{user.puntoVentaNombre || 'Central'}</strong>
-              </div>
-              <div className="rail-identity-row">
-                <span>Fecha</span>
-                <strong>{fechaPanel}</strong>
-              </div>
-            </div>
+            </section>
 
-            <div className="rail-nav">
-              <div className="rail-nav-title">Rutas del sistema</div>
-              <div className="rail-nav-list">
+            <section className="sidebar-card sidebar-nav-card">
+              <div className="sidebar-nav-label">Mapa rapido</div>
+              <div className="sidebar-nav-list">
                 {panelesDisponibles.map((panel) => (
                   <button
                     key={panel.id}
-                    className={`rail-nav-item ${panelActivo === panel.id ? 'active' : ''}`}
+                    className={`sidebar-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
                     onClick={() => setPanelActivo(panel.id)}
                   >
-                    <span className="rail-nav-code">{panel.code}</span>
-                    <span className="rail-nav-copy">
+                    <span className="sidebar-nav-code">{panel.code}</span>
+                    <span className="sidebar-nav-copy">
                       <strong>{panel.label}</strong>
                       <small>{panel.summary}</small>
                     </span>
                   </button>
                 ))}
               </div>
-            </div>
+            </section>
 
-            <div className="rail-metrics">
-              {resumenHero.map((item) => (
-                <div key={item.label} className="rail-metric-card">
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                  <small>{item.note}</small>
-                </div>
-              ))}
-            </div>
+            <section className="sidebar-card">
+              <div className="sidebar-stats-grid">
+                {resumenHero.map((item) => (
+                  <div key={item.label} className="sidebar-stat-chip">
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                    <small>{item.note}</small>
+                  </div>
+                ))}
+              </div>
+            </section>
           </aside>
 
-          <main className="workspace-stage">
-            <section className="stage-banner">
-              <div className="stage-banner-copy">
-                <span className="stage-banner-kicker">{nombrePanel}</span>
-                <h2 className="stage-banner-title">{panelActivoData.label}</h2>
-                <p className="stage-banner-description">{panelActivoData.summary}</p>
+          <main className="studio-stage">
+            <section className="stage-masthead">
+              <div className="stage-masthead-copy">
+                <span className="masthead-kicker">
+                  {panelActivoData.code} / {user.rol === 'admin' ? 'Administracion' : 'Operacion diaria'}
+                </span>
+                <h1 className="stage-title">{panelActivoData.label}</h1>
+                <p className="stage-description">{panelActivoData.summary}</p>
               </div>
-              <div className="stage-banner-meta">
-                <div className="stage-meta-item">
+
+              <div className="stage-masthead-board">
+                <div className="board-row">
+                  <span>Fecha de trabajo</span>
+                  <strong>{fechaPanel}</strong>
+                </div>
+                <div className="board-row">
                   <span>Venta del dia</span>
                   <strong>{formatearMoneda(ventaHoy)}</strong>
                 </div>
-                <div className="stage-meta-item">
-                  <span>Tickets</span>
+                <div className="board-row">
+                  <span>Tickets activos</span>
                   <strong>{ticketsTotales}</strong>
                 </div>
-                <div className="stage-meta-item">
-                  <span>Loterias</span>
+                <div className="board-row">
+                  <span>Loterias visibles</span>
                   <strong>{loterias.length}</strong>
                 </div>
               </div>
+            </section>
+
+            <section className="stage-ribbon">
+              {resumenHero.map((item) => (
+                <article key={item.label} className="ribbon-card">
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                  <p>{item.note}</p>
+                </article>
+              ))}
             </section>
 
             <section className="stage-body">

@@ -30,9 +30,7 @@ function Login() {
     const checkBackend = async () => {
       try {
         const response = await fetch(HEALTHCHECK_URL);
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
         if (!response.ok) {
           setBackendStatus('offline');
@@ -77,42 +75,48 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-shell">
-        <aside className="login-showcase">
-          <span className="login-showcase-stamp">TBY SYSTEM GRID</span>
-          <h1>Venta distribuida, control central y resultados en tiempo real.</h1>
-          <p>
-            Un entorno visual mas limpio para operar puntos de venta, premios,
-            loterias y usuarios desde una sola red conectada.
-          </p>
+        <aside className="login-poster">
+          <div className="login-poster-top">
+            <span className="login-poster-tag">TBY SISTEMAS</span>
+            <span className="login-poster-signal">red operativa</span>
+          </div>
 
-          <div className="login-showcase-grid">
-            <div className="login-showcase-card">
-              <span>Modo</span>
-              <strong>Operacion conectada</strong>
-              <small>Frontend y backend trabajando bajo un solo dominio.</small>
-            </div>
-            <div className="login-showcase-card">
-              <span>Escala</span>
-              <strong>Puntos remotos</strong>
-              <small>Preparado para administracion y ventas distribuidas.</small>
-            </div>
-            <div className="login-showcase-card">
+          <div className="login-poster-copy">
+            <h1>Un acceso nuevo para vender, cuadrar y supervisar sin parecerse al sistema anterior.</h1>
+            <p>
+              Cabina visual renovada para administracion central, puntos de venta,
+              tickets, resultados y premios en una sola red.
+            </p>
+          </div>
+
+          <div className="login-poster-panels">
+            <article className="login-poster-panel accent-blue">
+              <span>Vista</span>
+              <strong>Operacion viva</strong>
+              <small>Lectura rapida de ventas, premios y movimiento comercial.</small>
+            </article>
+            <article className="login-poster-panel accent-red">
               <span>Flujo</span>
-              <strong>Tickets y premios</strong>
-              <small>Ventas, ganadores y cierres desde el mismo sistema.</small>
-            </div>
+              <strong>Tickets distribuidos</strong>
+              <small>Paneles conectados para locales remotos y administracion central.</small>
+            </article>
+            <article className="login-poster-panel accent-dark">
+              <span>Control</span>
+              <strong>Un solo sistema</strong>
+              <small>Backend, frontend y estados del servicio en la misma cabina.</small>
+            </article>
           </div>
         </aside>
 
         <section className="login-box">
-          <div className="login-brand-pill">
-            <span className="login-brand-mark">ACC</span>
-            <span className="login-brand-copy">Ingreso al tablero operativo</span>
+          <div className="login-box-head">
+            <span className="login-box-kicker">Ingreso seguro</span>
+            <div className="login-box-mark">TBY</div>
           </div>
 
           <div className="login-header">
-            <h1>Entrar al sistema</h1>
-            <h2>Usa tu usuario para abrir el panel asignado a tu rol y punto de venta.</h2>
+            <h1>Entrar al tablero</h1>
+            <h2>Abre el panel asignado a tu rol y a tu punto de venta.</h2>
           </div>
 
           <div className={`login-status login-status-${backendStatus}`}>
@@ -163,7 +167,7 @@ function Login() {
           </form>
 
           <div className="login-footnote">
-            Acceso visual renovado para administracion central y estaciones de venta.
+            Interfaz rediseñada para que el acceso se sienta mas claro, mas moderno y mucho mejor organizado.
           </div>
         </section>
       </div>
