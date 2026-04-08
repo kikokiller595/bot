@@ -161,13 +161,39 @@ function DashboardOperativo({ sorteos = [], loterias = [] }) {
       ? 'Resumen central de ventas y actividad por local'
       : `${user?.puntoVentaNombre || 'Punto de venta'} - actividad del dia`;
 
+  const tarjetas = [
+    {
+      label: 'Ventas del dia',
+      value: `$${resumenHoy.totalVendido.toFixed(2)}`,
+      note: `${resumenHoy.totalJugadas} jugadas procesadas`
+    },
+    {
+      label: 'Tickets activos',
+      value: resumenHoy.totalTickets,
+      note: 'Resumen del turno actual'
+    },
+    {
+      label: 'Loterias en movimiento',
+      value: loterias.length,
+      note: 'Catalogo visible hoy'
+    },
+    {
+      label: user?.rol === 'admin' ? 'Locales con actividad' : 'Sesion activa',
+      value: user?.rol === 'admin' ? puntosActivos : user?.username || 'Sin usuario',
+      note: user?.rol === 'admin' ? 'Puntos con movimiento' : user?.puntoVentaNombre || 'Punto central'
+    }
+  ];
+
   return (
     <div className="dashboard-operativo">
       <div className="dashboard-operativo-card">
         <div className="dashboard-header">
           <div>
+            <span className="dashboard-eyebrow">
+              {user?.rol === 'admin' ? 'Briefing central' : 'Pulso del local'}
+            </span>
             <h2 className="dashboard-title">
-              {user?.rol === 'admin' ? 'Dashboard Central' : 'Dashboard Punto de Venta'}
+              {user?.rol === 'admin' ? 'Pulso general de la red' : 'Ritmo operativo del turno'}
             </h2>
             <p className="dashboard-subtitle">{tituloSecundario}</p>
           </div>
@@ -178,33 +204,21 @@ function DashboardOperativo({ sorteos = [], loterias = [] }) {
         </div>
 
         <div className="dashboard-cards">
-          <div className="dashboard-stat">
-            <span className="stat-label">Ventas de hoy</span>
-            <strong className="stat-value">${resumenHoy.totalVendido.toFixed(2)}</strong>
-          </div>
-          <div className="dashboard-stat">
-            <span className="stat-label">Tickets de hoy</span>
-            <strong className="stat-value">{resumenHoy.totalTickets}</strong>
-          </div>
-          <div className="dashboard-stat">
-            <span className="stat-label">Jugadas de hoy</span>
-            <strong className="stat-value">{resumenHoy.totalJugadas}</strong>
-          </div>
-          <div className="dashboard-stat">
-            <span className="stat-label">
-              {user?.rol === 'admin' ? 'Puntos activos' : 'Usuario activo'}
-            </span>
-            <strong className="stat-value">
-              {user?.rol === 'admin'
-                ? puntosActivos
-                : user?.username || 'Sin usuario'}
-            </strong>
-          </div>
+          {tarjetas.map((tarjeta) => (
+            <article key={tarjeta.label} className="dashboard-stat">
+              <span className="stat-label">{tarjeta.label}</span>
+              <strong className="stat-value">{tarjeta.value}</strong>
+              <small className="stat-note">{tarjeta.note}</small>
+            </article>
+          ))}
         </div>
 
         <div className="dashboard-grid">
           <section className="dashboard-panel">
             <div className="dashboard-panel-header">
+              <span className="dashboard-panel-kicker">
+                {user?.rol === 'admin' ? 'Lectura comercial' : 'Lectura por loteria'}
+              </span>
               <h3>
                 {user?.rol === 'admin'
                   ? 'Ventas de hoy por punto de venta'
@@ -255,6 +269,7 @@ function DashboardOperativo({ sorteos = [], loterias = [] }) {
 
           <section className="dashboard-panel">
             <div className="dashboard-panel-header">
+              <span className="dashboard-panel-kicker">Actividad reciente</span>
               <h3>
                 {user?.rol === 'admin' ? 'Ultimos tickets del sistema' : 'Tus ultimos tickets'}
               </h3>

@@ -53,17 +53,57 @@ function App() {
     }).format(Number(valor) || 0);
 
   const panelesAdmin = [
-    { id: 'resumen', label: 'Resumen general' },
-    { id: 'ventas', label: 'Ventas y tickets' },
-    { id: 'premios', label: 'Premios' },
-    { id: 'administracion', label: 'Administracion' }
+    {
+      id: 'resumen',
+      label: 'Pulso general',
+      code: '01',
+      summary: 'Ventas del dia, actividad y panorama de toda la red.'
+    },
+    {
+      id: 'ventas',
+      label: 'Mesa de ventas',
+      code: '02',
+      summary: 'Carga tickets, revisa historial y mira el movimiento comercial.'
+    },
+    {
+      id: 'premios',
+      label: 'Mesa de premios',
+      code: '03',
+      summary: 'Consulta ganadores, pagos y balances de premios.'
+    },
+    {
+      id: 'administracion',
+      label: 'Configuracion',
+      code: '04',
+      summary: 'Loterias, usuarios, puntos de venta y resultados.'
+    }
   ];
 
   const panelesPuntoVenta = [
-    { id: 'venta', label: 'Nueva venta' },
-    { id: 'historial', label: 'Historial' },
-    { id: 'resumen', label: 'Resumen' },
-    { id: 'ganadores', label: 'Ganadores' }
+    {
+      id: 'venta',
+      label: 'Captura de venta',
+      code: '01',
+      summary: 'Registra jugadas y emite tickets desde el punto activo.'
+    },
+    {
+      id: 'historial',
+      label: 'Archivo del turno',
+      code: '02',
+      summary: 'Busca tickets y revisa el historial de operaciones.'
+    },
+    {
+      id: 'resumen',
+      label: 'Cierre visual',
+      code: '03',
+      summary: 'Monitorea tus ventas, ritmo diario y totales del local.'
+    },
+    {
+      id: 'ganadores',
+      label: 'Ganadores',
+      code: '04',
+      summary: 'Consulta premios, estados y tickets pendientes.'
+    }
   ];
 
   const fechaPanel = new Intl.DateTimeFormat('es-ES', {
@@ -354,6 +394,7 @@ function App() {
   }
 
   const panelesDisponibles = user.rol === 'admin' ? panelesAdmin : panelesPuntoVenta;
+  const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
   const nombrePanel = user.rol === 'admin' ? 'Panel Administrador' : 'Panel Punto de Venta';
   const descripcionPanel = user.rol === 'admin'
     ? 'Control general del sistema, reportes, premios y configuracion.'
@@ -504,62 +545,93 @@ function App() {
     <div className="App">
       <Header />
       <div className="container">
-        <div className="panel-shell">
-          <section className="workspace-hero">
-            <div className="workspace-copy">
-              <span className="workspace-kicker">
-                {user.rol === 'admin' ? 'Centro de control' : 'Estacion de ventas'}
+        <div className="ops-layout">
+          <aside className="control-rail">
+            <div className="rail-brand">
+              <span className="rail-badge">
+                {user.rol === 'admin' ? 'Central admin' : 'Local conectado'}
               </span>
-              <h2 className="workspace-title">{nombrePanel}</h2>
-              <p className="workspace-description">{descripcionPanel}</p>
-              <div className="workspace-inline-meta">
-                <span>{user.nombre}</span>
-                <span>{user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}</span>
-                <span>{user.puntoVentaNombre || 'Central'}</span>
+              <h2 className="rail-title">Mesa de operaciones</h2>
+              <p className="rail-description">{descripcionPanel}</p>
+            </div>
+
+            <div className="rail-identity">
+              <div className="rail-identity-row">
+                <span>Sesion</span>
+                <strong>{user.nombre}</strong>
+              </div>
+              <div className="rail-identity-row">
+                <span>Modo</span>
+                <strong>{user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}</strong>
+              </div>
+              <div className="rail-identity-row">
+                <span>Operacion</span>
+                <strong>{user.puntoVentaNombre || 'Central'}</strong>
+              </div>
+              <div className="rail-identity-row">
+                <span>Fecha</span>
+                <strong>{fechaPanel}</strong>
               </div>
             </div>
-            <div className="workspace-metrics">
+
+            <div className="rail-nav">
+              <div className="rail-nav-title">Rutas del sistema</div>
+              <div className="rail-nav-list">
+                {panelesDisponibles.map((panel) => (
+                  <button
+                    key={panel.id}
+                    className={`rail-nav-item ${panelActivo === panel.id ? 'active' : ''}`}
+                    onClick={() => setPanelActivo(panel.id)}
+                  >
+                    <span className="rail-nav-code">{panel.code}</span>
+                    <span className="rail-nav-copy">
+                      <strong>{panel.label}</strong>
+                      <small>{panel.summary}</small>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rail-metrics">
               {resumenHero.map((item) => (
-                <div key={item.label} className="workspace-metric">
+                <div key={item.label} className="rail-metric-card">
                   <span>{item.label}</span>
                   <strong>{item.value}</strong>
                   <small>{item.note}</small>
                 </div>
               ))}
-              <div className="workspace-metric workspace-metric-wide">
-                <span>Fecha</span>
-                <strong>{fechaPanel}</strong>
-                <small>Operacion sincronizada con el panel central</small>
-              </div>
             </div>
-          </section>
+          </aside>
 
-          <div className="panel-selector">
-            <div className="panel-selector-head">
-              <div>
-                <span className="panel-role-badge">
-                  {user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}
-                </span>
-                <h3 className="panel-selector-title">Navegacion del panel</h3>
-                <p className="panel-selector-description">
-                  Cambia rapidamente entre las vistas principales del sistema.
-                </p>
+          <main className="workspace-stage">
+            <section className="stage-banner">
+              <div className="stage-banner-copy">
+                <span className="stage-banner-kicker">{nombrePanel}</span>
+                <h2 className="stage-banner-title">{panelActivoData.label}</h2>
+                <p className="stage-banner-description">{panelActivoData.summary}</p>
               </div>
-            </div>
-            <div className="panel-tabs">
-              {panelesDisponibles.map((panel) => (
-                <button
-                  key={panel.id}
-                  className={`panel-tab-button ${panelActivo === panel.id ? 'active' : ''}`}
-                  onClick={() => setPanelActivo(panel.id)}
-                >
-                  {panel.label}
-                </button>
-              ))}
-            </div>
-          </div>
+              <div className="stage-banner-meta">
+                <div className="stage-meta-item">
+                  <span>Venta del dia</span>
+                  <strong>{formatearMoneda(ventaHoy)}</strong>
+                </div>
+                <div className="stage-meta-item">
+                  <span>Tickets</span>
+                  <strong>{ticketsTotales}</strong>
+                </div>
+                <div className="stage-meta-item">
+                  <span>Loterias</span>
+                  <strong>{loterias.length}</strong>
+                </div>
+              </div>
+            </section>
+
+            <section className="stage-body">
+              {user.rol === 'admin' ? renderPanelAdmin() : renderPanelPuntoVenta()}
+            </section>
+          </main>
         </div>
-        {user.rol === 'admin' ? renderPanelAdmin() : renderPanelPuntoVenta()}
       </div>
     </div>
   );

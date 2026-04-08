@@ -1,103 +1,52 @@
 .header {
-  padding: 1.25rem 1.4rem 0;
+  padding: 0.9rem 1rem 0;
 }
 
 .header-content {
-  max-width: 1480px;
+  max-width: 1560px;
   margin: 0 auto;
-  padding: 1rem 1.2rem;
+  min-height: 72px;
+  padding: 0.85rem 1rem;
+  border-radius: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  border-radius: calc(var(--radius-xl) - 4px);
-  background: rgba(255, 252, 247, 0.7);
+  background: rgba(255, 252, 247, 0.72);
   border: 1px solid rgba(23, 49, 58, 0.08);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 40px rgba(23, 49, 58, 0.08);
+  backdrop-filter: blur(16px);
 }
 
-.header-brand {
+.header-brandline {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  min-width: 0;
+  flex-wrap: wrap;
+  gap: 0.55rem;
 }
 
-.header-mark {
-  width: 70px;
-  height: 70px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 22px;
-  background:
-    linear-gradient(135deg, #17313a 0%, #114e60 62%, #0f766e 100%);
-  color: var(--text-inverse);
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 700;
-  box-shadow: 0 18px 32px rgba(17, 78, 96, 0.25);
-}
-
-.header-copy {
-  min-width: 0;
-}
-
-.header-kicker {
+.header-stamp {
   display: inline-flex;
-  margin-bottom: 0.35rem;
-  color: var(--accent-strong);
-  font-size: 0.8rem;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(14, 31, 40, 0.92);
+  color: var(--text-inverse);
+  font-size: 0.76rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.header-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3vw, 3rem);
-  line-height: 0.95;
-  color: var(--text-main);
-}
-
-.header-subtitle {
-  margin-top: 0.4rem;
-  color: var(--text-soft);
-  max-width: 34rem;
-  line-height: 1.55;
+.header-stamp.muted {
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
 }
 
 .header-user {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.15rem;
-}
-
-.user-label {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-soft);
-}
-
-.user-info strong {
-  font-size: 1.05rem;
-  color: var(--text-main);
-}
-
-.user-tags {
-  display: flex;
+  gap: 0.7rem;
   flex-wrap: wrap;
-  gap: 0.45rem;
   justify-content: flex-end;
 }
 
@@ -105,77 +54,69 @@
 .user-location {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 0.75rem;
+  padding: 0.45rem 0.7rem;
   border-radius: 999px;
-  font-size: 0.84rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .user-role {
-  background: rgba(17, 78, 96, 0.09);
+  background: rgba(17, 78, 96, 0.08);
   color: var(--accent-strong);
 }
 
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.user-info strong {
+  color: var(--text-main);
+  font-size: 0.98rem;
+}
+
 .user-location {
-  background: rgba(209, 138, 57, 0.14);
-  color: #8a5a1a;
+  padding: 0;
+  background: transparent;
+  color: var(--text-soft);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 600;
 }
 
 .logout-btn {
-  padding: 0.8rem 1.15rem;
+  padding: 0.8rem 1rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+  background: linear-gradient(135deg, #0f2530 0%, #0f766e 100%);
   color: var(--text-inverse);
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 14px 24px rgba(17, 78, 96, 0.2);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.logout-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 18px 28px rgba(17, 78, 96, 0.26);
-}
-
-@media (max-width: 960px) {
-  .header-content,
-  .header-user {
+@media (max-width: 920px) {
+  .header-content {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .user-info,
-  .user-tags {
-    align-items: flex-start;
+  .header-user {
     justify-content: flex-start;
-  }
-
-  .logout-btn {
-    width: 100%;
   }
 }
 
 @media (max-width: 768px) {
   .header {
-    padding: 1rem 0.9rem 0;
+    padding: 0.75rem 0.75rem 0;
   }
 
   .header-content {
-    padding: 1rem;
+    border-radius: 20px;
   }
 
-  .header-mark {
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
-    font-size: 1.45rem;
-  }
-
-  .header-title {
-    font-size: 2rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.94rem;
+  .logout-btn {
+    width: 100%;
   }
 }
