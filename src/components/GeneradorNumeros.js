@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 import './GeneradorNumeros.css';
 
@@ -37,7 +38,17 @@ const obtenerClaveFecha = (fechaStr) => {
   return null;
 };
 
+const obtenerFechaActualLocal = () => {
+  const ahora = new Date();
+  const anio = ahora.getFullYear();
+  const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+  const dia = String(ahora.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`;
+};
+
 const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [], sorteos = [] }) => {
+  const { user } = useAuth();
+  const esAdmin = user?.rol === 'admin';
   const [numero, setNumero] = useState('');
   const [monto, setMonto] = useState('');
   const [loteriasSeleccionadas, setLoteriasSeleccionadas] = useState([]);
@@ -66,6 +77,15 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
   };
   
   const [fechaSeleccionada, setFechaSeleccionada] = useState(obtenerFechaLocal());
+
+  useEffect(() => {
+    if (!esAdmin) {
+      const fechaHoy = obtenerFechaActualLocal();
+      if (fechaSeleccionada !== fechaHoy) {
+        setFechaSeleccionada(fechaHoy);
+      }
+    }
+  }, [esAdmin, fechaSeleccionada]);
 
   useEffect(() => {
     try {
@@ -178,6 +198,24 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
     if (valor === 'straight') return 'Straight';
     return tipo;
   };
+
+  const validarFechaPermitida = useCallback(() => {
+    if (!fechaSeleccionada) {
+      alert('Selecciona una fecha valida para el ticket.');
+      return false;
+    }
+
+    if (!esAdmin) {
+      const fechaHoy = obtenerFechaActualLocal();
+      if (fechaSeleccionada !== fechaHoy) {
+        setFechaSeleccionada(fechaHoy);
+        alert('El punto de venta solo puede registrar tickets con la fecha de hoy.');
+        return false;
+      }
+    }
+
+    return true;
+  }, [esAdmin, fechaSeleccionada]);
 
   const numeroBaseActual = useMemo(() => numero.trim().replace(/[^0-9]/g, ''), [numero]);
 
@@ -442,8 +480,7 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
       return;
     }
 
-    if (!fechaSeleccionada) {
-      alert('Selecciona una fecha válida para la jugada.');
+    if (!validarFechaPermitida()) {
       return;
     }
 
@@ -666,8 +703,7 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
       return;
     }
 
-    if (!fechaSeleccionada) {
-      alert('Selecciona una fecha válida para el ticket.');
+    if (!validarFechaPermitida()) {
       return;
     }
 
@@ -891,7 +927,13 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
                 value={fechaSeleccionada}
                 onChange={(e) => setFechaSeleccionada(e.target.value)}
                 className="input-fecha-ticket"
+                disabled={!esAdmin}
               />
+              <small className="campo-fecha-ayuda">
+                {esAdmin
+                  ? 'Administrador: puedes registrar tickets para cualquier fecha.'
+                  : 'Punto de venta: solo puedes registrar tickets con la fecha de hoy.'}
+              </small>
             </div>
 
             {loterias.length > 0 && (

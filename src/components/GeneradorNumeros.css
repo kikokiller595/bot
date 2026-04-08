@@ -208,6 +208,13 @@
   border-color: #667eea;
 }
 
+.input-fecha-ticket:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+  background: rgba(23, 49, 58, 0.08);
+  color: #5b6472;
+}
+
 .input-numero-grande:focus,
 .input-monto-grande:focus {
   outline: none;
@@ -220,6 +227,12 @@
   font-size: 0.85rem;
   display: block;
   margin-top: 0.5rem;
+}
+
+.campo-fecha-ayuda {
+  color: #5b6472;
+  font-size: 0.82rem;
+  line-height: 1.4;
 }
 
 .tipo-indicador {

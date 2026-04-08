@@ -22,6 +22,26 @@ const esPuntoVenta = (rol) => {
   return valor === 'punto_venta' || valor === 'vendedor';
 };
 
+const obtenerClaveLocalFecha = (fecha) => {
+  const valor = fecha instanceof Date ? fecha : new Date(fecha);
+  if (Number.isNaN(valor.getTime())) {
+    return null;
+  }
+
+  const anio = valor.getFullYear();
+  const mes = String(valor.getMonth() + 1).padStart(2, '0');
+  const dia = String(valor.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`;
+};
+
+const fechaPermitidaParaUsuario = (usuario, fecha) => {
+  if (String(usuario?.rol || '').trim().toLowerCase() === 'admin') {
+    return true;
+  }
+
+  return obtenerClaveLocalFecha(fecha) === obtenerClaveLocalFecha(new Date());
+};
+
 const premiosPorDefecto = {
   pick2: {
     straightPrimera: 55,
@@ -304,8 +324,8 @@ const calcularPremio = (tipoApuesta, numero, monto, configuracionPremios, opcion
   return 0;
 };
 
-const crearDocumentoSorteo = ({ sorteo, loteriaDoc, usuario }) => {
-  const fecha = parseFechaEntrada(sorteo.fecha);
+const crearDocumentoSorteo = ({ sorteo, loteriaDoc, usuario, fechaEntrada = null }) => {
+  const fecha = fechaEntrada || parseFechaEntrada(sorteo.fecha);
   const puntoVentaId =
     usuario?.puntoVenta?._id || usuario?.puntoVenta || null;
   const puntoVentaNombre =
@@ -514,6 +534,7 @@ router.post(
     try {
       const { loteria } = req.body;
       const loteriaDoc = await Loteria.findById(loteria);
+      const fechaSorteo = parseFechaEntrada(req.body.fecha);
 
       if (!loteriaDoc) {
         return res.status(404).json({
@@ -529,11 +550,19 @@ router.post(
         });
       }
 
+      if (!fechaPermitidaParaUsuario(req.user, fechaSorteo)) {
+        return res.status(403).json({
+          success: false,
+          message: 'Solo el administrador puede registrar tickets para una fecha distinta a hoy'
+        });
+      }
+
       const sorteo = await Sorteo.create(
         crearDocumentoSorteo({
           sorteo: req.body,
           loteriaDoc,
-          usuario: req.user
+          usuario: req.user,
+          fechaEntrada: fechaSorteo
         })
       );
 
@@ -577,6 +606,7 @@ router.post('/multiple', protect, async (req, res) => {
 
       const numero = String(sorteo?.numero || '').trim();
       const monto = numeroSeguro(sorteo?.monto, 0);
+      const fechaSorteo = parseFechaEntrada(sorteo?.fecha);
       if (!numero || monto <= 0 || !sorteo?.loteria) {
         continue;
       }
@@ -586,11 +616,19 @@ router.post('/multiple', protect, async (req, res) => {
         continue;
       }
 
+      if (!fechaPermitidaParaUsuario(req.user, fechaSorteo)) {
+        return res.status(403).json({
+          success: false,
+          message: 'Solo el administrador puede registrar tickets para una fecha distinta a hoy'
+        });
+      }
+
       sorteosPreparados.push(
         crearDocumentoSorteo({
           sorteo: { ...sorteo, tipoApuesta, numero, monto },
           loteriaDoc,
-          usuario: req.user
+          usuario: req.user,
+          fechaEntrada: fechaSorteo
         })
       );
     }
