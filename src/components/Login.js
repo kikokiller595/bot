@@ -2,8 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
-const BACKEND_URL =
-  (process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000').replace(/\/+$/, '');
+const normalizeBaseUrl = (value, fallback = '') =>
+  (value || fallback || '').trim().replace(/\/+$/, '');
+
+const defaultBackendUrl =
+  process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+
+const BACKEND_URL = normalizeBaseUrl(
+  process.env.REACT_APP_BACKEND_URL,
+  defaultBackendUrl
+);
+
+const HEALTHCHECK_URL = BACKEND_URL ? `${BACKEND_URL}/health` : '/health';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -11,6 +21,7 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [backendStatus, setBackendStatus] = useState('checking');
+  const [databaseStatus, setDatabaseStatus] = useState('checking');
   const { login } = useAuth();
 
   useEffect(() => {
@@ -18,14 +29,24 @@ function Login() {
 
     const checkBackend = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/api/init/status`);
+        const response = await fetch(HEALTHCHECK_URL);
         if (!active) {
           return;
         }
-        setBackendStatus(response.ok ? 'online' : 'offline');
+
+        if (!response.ok) {
+          setBackendStatus('offline');
+          setDatabaseStatus('offline');
+          return;
+        }
+
+        const data = await response.json();
+        setBackendStatus('online');
+        setDatabaseStatus(data?.database || 'unknown');
       } catch (requestError) {
         if (active) {
           setBackendStatus('offline');
+          setDatabaseStatus('offline');
         }
       }
     };
@@ -62,10 +83,15 @@ function Login() {
         </div>
 
         <div className={`login-status login-status-${backendStatus}`}>
-          {backendStatus === 'online' && <span>Servidor listo</span>}
+          {backendStatus === 'online' && databaseStatus === 'connected' && (
+            <span>Servidor listo</span>
+          )}
+          {backendStatus === 'online' && databaseStatus !== 'connected' && (
+            <span>Servidor activo, pero la base de datos aun no esta conectada.</span>
+          )}
           {backendStatus === 'checking' && <span>Verificando servidor...</span>}
           {backendStatus === 'offline' && (
-            <span>Backend no disponible. Revisa el servidor local en el puerto 5000.</span>
+            <span>No se pudo conectar con el servidor.</span>
           )}
         </div>
 
