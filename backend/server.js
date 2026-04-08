@@ -128,15 +128,16 @@ const createApp = () => {
 
 const startServer = async () => {
   const { app, allowedOrigins } = createApp();
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 8080;
+  const HOST = process.env.HOST || '0.0.0.0';
 
-  app.listen(PORT, () => {
+  app.listen(PORT, HOST, () => {
     const frontendInfo =
       allowedOrigins.length > 0 ? allowedOrigins.join(', ') : 'mismo dominio';
 
     console.log('==============================================');
     console.log('TBY SISTEMAS - API DE LOTERIA');
-    console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log(`Servidor corriendo en ${HOST}:${PORT}`);
     console.log(`Entorno: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Frontend permitido: ${frontendInfo}`);
     console.log(`Build frontend detectado: ${hasFrontendBuild ? 'si' : 'no'}`);
