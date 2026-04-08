@@ -91,6 +91,12 @@ function App() {
       label: 'Historial de tickets',
       code: '02',
       summary: 'Consulta y revisa los tickets registrados desde el punto de venta.'
+    },
+    {
+      id: 'reportes',
+      label: 'Reportes',
+      code: '03',
+      summary: 'Revisa ventas, montos y resultados operativos del punto de venta.'
     }
   ];
 
@@ -491,6 +497,14 @@ function App() {
             eliminarSorteo={eliminarSorteo}
             limpiarHistorial={limpiarHistorial}
           />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'reportes') {
+      return (
+        <div className="content-grid panel-single">
+          <ReporteVenta sorteos={sorteos} loterias={loterias} />
         </div>
       );
     }
