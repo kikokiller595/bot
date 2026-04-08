@@ -94,9 +94,21 @@ const extenderNumerosGanadores = (numeros = []) => {
         });
       }
     } else if (numeroStr.length === 4) {
+      const primerosTres = numeroStr.slice(0, 3);
       const primeros = numeroStr.slice(0, 2);
       const ultimos = numeroStr.slice(-2);
       const ultimosTres = numeroStr.slice(-3);
+
+      if (primerosTres.length === 3) {
+        lista.push({
+          ...numeroGanador,
+          id: `${numeroGanador.id || numeroStr}-pick4-head3`,
+          numero: primerosTres,
+          posicion: 'primeros 3',
+          esDerivado: true,
+          fuenteDerivada: 'pick4-head3'
+        });
+      }
 
       if (primeros.length === 2) {
         lista.push({
@@ -195,6 +207,10 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
           tipoApuestaDetectado = 'bolita1';
         } else if (numeroLower.match(/^\d{2}\+2$/)) {
           tipoApuestaDetectado = 'bolita2';
+        } else if (numeroLower.match(/^\d{3}f\+$/)) {
+          tipoApuestaDetectado = 'pick4head3box';
+        } else if (numeroLower.match(/^\d{3}f$/)) {
+          tipoApuestaDetectado = 'pick4head3';
         } else if (numeroLower.match(/^\d{3}b\+$/)) {
           tipoApuestaDetectado = 'pick4tail3box';
         } else if (numeroLower.match(/^\d{3}b$/)) {
@@ -246,6 +262,13 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
               return;
             }
             if (tipoApuesta !== 'pick4tail3' && tipoApuesta !== 'pick4tail3box') {
+              return;
+            }
+          } else if (candidato.fuenteDerivada === 'pick4-head3') {
+            if (longitudTicket !== 3 || longitudGanador !== 3) {
+              return;
+            }
+            if (tipoApuesta !== 'pick4head3' && tipoApuesta !== 'pick4head3box') {
               return;
             }
           } else {
@@ -473,6 +496,8 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
     const valor = (tipoApuesta || '').toLowerCase();
     if (valor === 'straight') return 'Straight';
     if (valor === 'box') return 'Box';
+    if (valor === 'pick4head3') return 'Primeros 3 Pick 4';
+    if (valor === 'pick4head3box') return 'Primeros 3 Pick 4 Box';
     if (valor === 'pick4tail3') return 'Ultimos 3 Pick 4';
     if (valor === 'pick4tail3box') return 'Ultimos 3 Pick 4 Box';
     if (valor === 'bolita1') return 'Bolita 1';
@@ -536,6 +561,8 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
               <option value="">Todos</option>
               <option value="straight">Straight</option>
               <option value="box">Box</option>
+              <option value="pick4head3">Primeros 3 Pick 4</option>
+              <option value="pick4head3box">Primeros 3 Pick 4 Box</option>
               <option value="pick4tail3">Ultimos 3 Pick 4</option>
               <option value="pick4tail3box">Ultimos 3 Pick 4 Box</option>
               <option value="bolita1">Bolita 1</option>
