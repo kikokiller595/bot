@@ -85,6 +85,12 @@ function App() {
       label: 'Punto de venta',
       code: '01',
       summary: 'Terminal dedicada para registrar jugadas y emitir tickets del local.'
+    },
+    {
+      id: 'historial',
+      label: 'Historial de tickets',
+      code: '02',
+      summary: 'Consulta y revisa los tickets registrados desde el punto de venta.'
     }
   ];
 
@@ -475,6 +481,19 @@ function App() {
   };
 
   const renderPanelPuntoVenta = () => {
+    if (panelActivo === 'historial') {
+      return (
+        <div className="content-grid panel-single">
+          <HistorialSorteos
+            sorteos={sorteos}
+            loterias={loterias}
+            eliminarSorteo={eliminarSorteo}
+            limpiarHistorial={limpiarHistorial}
+          />
+        </div>
+      );
+    }
+
     return (
       <div className="content-grid panel-single">
         <GeneradorNumeros
