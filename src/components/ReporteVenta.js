@@ -29,6 +29,7 @@ function extenderNumerosGanadores(numeros = []) {
     } else if (numeroStr.length === 4) {
       const primeros = numeroStr.slice(0, 2);
       const ultimos = numeroStr.slice(-2);
+      const ultimosTres = numeroStr.slice(-3);
 
       if (primeros.length === 2) {
         lista.push({
@@ -51,6 +52,17 @@ function extenderNumerosGanadores(numeros = []) {
           fuenteDerivada: 'pick4-fin'
         });
       }
+
+      if (ultimosTres.length === 3) {
+        lista.push({
+          ...numeroGanador,
+          id: `${numeroGanador.id || numeroStr}-pick4-tail3`,
+          numero: ultimosTres,
+          posicion: 'ultimos 3',
+          esDerivado: true,
+          fuenteDerivada: 'pick4-tail3'
+        });
+      }
     }
   });
 
@@ -62,6 +74,10 @@ function obtenerDatosTipoApuesta(tipoApuesta = '', tipoFallback = '') {
   switch (valor) {
     case 'box':
       return { clase: 'badge-box', etiqueta: 'Box' };
+    case 'pick4tail3':
+      return { clase: 'badge-straight', etiqueta: 'Ultimos 3 Pick 4' };
+    case 'pick4tail3box':
+      return { clase: 'badge-box', etiqueta: 'Ultimos 3 Pick 4 Box' };
     case 'bolita1':
       return { clase: 'badge-bolita1', etiqueta: 'Bolita 1' };
     case 'bolita2':
@@ -76,6 +92,7 @@ function obtenerDatosTipoApuesta(tipoApuesta = '', tipoFallback = '') {
 function obtenerPosicionLabel(posicion = '', tipoApuesta = '') {
   if (posicion) return posicion;
   const valor = (tipoApuesta || '').toLowerCase();
+  if (valor === 'pick4tail3' || valor === 'pick4tail3box') return 'ultimos 3';
   if (valor === 'bolita1') return 'primera';
   if (valor === 'bolita2') return 'segunda';
   return posicion || '';
@@ -328,6 +345,10 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
               tipoApuestaDetectado = 'bolita1';
             } else if (numeroLower.match(/^\d{2}\+2$/)) {
               tipoApuestaDetectado = 'bolita2';
+            } else if (numeroLower.match(/^\d{3}b\+$/)) {
+              tipoApuestaDetectado = 'pick4tail3box';
+            } else if (numeroLower.match(/^\d{3}b$/)) {
+              tipoApuestaDetectado = 'pick4tail3';
             } else if (numeroLower.endsWith('+') && !numeroLower.match(/\+\d$/)) {
               tipoApuestaDetectado = 'box';
             } else if (numeroLower.match(/^\d$/)) {
@@ -371,13 +392,20 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
 
           // Validación estricta: Si el número ganador es derivado, solo puede ganar si el ticket es Pick 2 straight
           if (numeroGanador.esDerivado) {
-            // Los números derivados son siempre Pick 2 (2 dígitos) y solo para straight
-            if (numeroTicketLimpio.length !== 2 || tipoApuesta !== 'straight') {
-              return; // El ticket debe ser exactamente Pick 2 straight para ganar con número derivado
-            }
-            // Para números derivados, la comparación debe ser exacta (straight)
-            if (numeroTicketLimpio !== numeroGanadorStr) {
-              return; // No coincide exactamente
+            if (numeroGanador.fuenteDerivada === 'pick4-tail3') {
+              if (numeroTicketLimpio.length !== 3) {
+                return;
+              }
+              if (tipoApuesta !== 'pick4tail3' && tipoApuesta !== 'pick4tail3box') {
+                return;
+              }
+            } else {
+              if (numeroTicketLimpio.length !== 2 || tipoApuesta !== 'straight') {
+                return;
+              }
+              if (numeroTicketLimpio !== numeroGanadorStr) {
+                return;
+              }
             }
           } else {
             // Si el número ganador NO es derivado, las longitudes deben coincidir exactamente
@@ -388,6 +416,7 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
 
           if (numeroCoincide(numeroTicketLimpio, numeroGanadorStr, tipoApuesta, { 
             esDerivado: numeroGanador.esDerivado,
+            fuenteDerivada: numeroGanador.fuenteDerivada,
             longitudTicket: numeroTicketLimpio.length 
           })) {
             ticketsCoinciden++;
@@ -526,10 +555,10 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
 
       const tipoApuesta = (ticket.tipoApuesta || ticket.tipo || 'straight').toLowerCase();
       
-      if (tipoApuesta === 'straight' || tipoApuesta === 'singulation') {
+      if (tipoApuesta === 'straight' || tipoApuesta === 'singulation' || tipoApuesta === 'pick4tail3') {
         stats.ticketsStraight++;
         stats.ventaStraight += monto;
-      } else if (tipoApuesta === 'box') {
+      } else if (tipoApuesta === 'box' || tipoApuesta === 'pick4tail3box') {
         stats.ticketsBox++;
         stats.ventaBox += monto;
       } else if (tipoApuesta === 'bolita1' || tipoApuesta === 'bolita2') {

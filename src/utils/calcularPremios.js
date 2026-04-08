@@ -144,12 +144,12 @@ export const calcularPremio = (
     }
     
     // Straight (derecho) - solo para no triples
-    if (tipoApuesta === 'straight') {
+    if (tipoApuesta === 'straight' || tipoApuesta === 'pick4tail3') {
       return montoNum * premios.pick3.straight;
     }
     
     // Box - solo para no triples
-    if (tipoApuesta === 'box') {
+    if (tipoApuesta === 'box' || tipoApuesta === 'pick4tail3box') {
       switch (tipoBox) {
         case 'par':
           // Un par (112, 232)
@@ -208,13 +208,24 @@ export const numeroCoincide = (numeroTicket, numeroGanador, tipoApuesta, opcione
   const ticketStr = String(numeroTicket).trim();
   const ganadorStr = String(numeroGanador).trim();
 
-  // Validación: Si el número ganador es derivado, solo puede coincidir con tickets Pick 2 straight
+  // Validación: si el número ganador es derivado, aplica reglas distintas según su origen.
   if (opciones.esDerivado) {
-    // Los números derivados son siempre Pick 2 (2 dígitos)
+    if (opciones.fuenteDerivada === 'pick4-tail3') {
+      if (ticketStr.length !== 3 || ganadorStr.length !== 3) return false;
+      if (tipo === 'pick4tail3') {
+        return ticketStr === ganadorStr;
+      }
+      if (tipo === 'pick4tail3box') {
+        const ticketSorted = ticketStr.split('').sort().join('');
+        const ganadorSorted = ganadorStr.split('').sort().join('');
+        return ticketSorted === ganadorSorted;
+      }
+      return false;
+    }
+
+    // Los demás derivados son Pick 2 y solo aplican a straight.
     if (ticketStr.length !== 2) return false;
-    // Los números derivados solo aplican para straight
     if (tipo !== 'straight') return false;
-    // Para números derivados, debe coincidir exactamente
     return ticketStr === ganadorStr;
   }
 
@@ -266,4 +277,3 @@ export const numeroCoincide = (numeroTicket, numeroGanador, tipoApuesta, opcione
   
   return false;
 };
-

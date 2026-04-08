@@ -27,7 +27,9 @@ const sorteoSchema = new mongoose.Schema({
       'backPair',
       'bolita1',
       'bolita2',
-      'singulation'
+      'singulation',
+      'pick4tail3',
+      'pick4tail3box'
     ],
     required: [true, 'El tipo de apuesta es requerido']
   },

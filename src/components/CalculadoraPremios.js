@@ -29,6 +29,7 @@ function extenderNumerosGanadores(numeros = []) {
     } else if (numeroStr.length === 4) {
       const primeros = numeroStr.slice(0, 2);
       const ultimos = numeroStr.slice(-2);
+      const ultimosTres = numeroStr.slice(-3);
 
       if (primeros.length === 2) {
         lista.push({
@@ -51,6 +52,17 @@ function extenderNumerosGanadores(numeros = []) {
           fuenteDerivada: 'pick4-fin'
         });
       }
+
+      if (ultimosTres.length === 3) {
+        lista.push({
+          ...numeroGanador,
+          id: `${numeroGanador.id || numeroStr}-pick4-tail3`,
+          numero: ultimosTres,
+          posicion: 'ultimos 3',
+          esDerivado: true,
+          fuenteDerivada: 'pick4-tail3'
+        });
+      }
     }
   });
 
@@ -62,6 +74,10 @@ function obtenerDatosTipoApuesta(tipoApuesta = '') {
   switch (valor) {
     case 'box':
       return { clase: 'badge-box', etiqueta: 'Box' };
+    case 'pick4tail3':
+      return { clase: 'badge-straight', etiqueta: 'Ultimos 3 Pick 4' };
+    case 'pick4tail3box':
+      return { clase: 'badge-box', etiqueta: 'Ultimos 3 Pick 4 Box' };
     case 'bolita1':
       return { clase: 'badge-bolita1', etiqueta: 'Bolita 1' };
     case 'bolita2':
@@ -76,6 +92,7 @@ function obtenerDatosTipoApuesta(tipoApuesta = '') {
 function obtenerPosicionLabel(posicion = '', tipoApuesta = '') {
   if (posicion) return posicion;
   const valor = (tipoApuesta || '').toLowerCase();
+  if (valor === 'pick4tail3' || valor === 'pick4tail3box') return 'ultimos 3';
   if (valor === 'bolita1') return 'primera';
   if (valor === 'bolita2') return 'segunda';
   return posicion || '';
@@ -437,6 +454,10 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
             tipoApuestaDetectado = 'bolita1';
           } else if (numeroLower.match(/^\d{2}\+2$/)) {
             tipoApuestaDetectado = 'bolita2';
+          } else if (numeroLower.match(/^\d{3}b\+$/)) {
+            tipoApuestaDetectado = 'pick4tail3box';
+          } else if (numeroLower.match(/^\d{3}b$/)) {
+            tipoApuestaDetectado = 'pick4tail3';
           } else if (numeroLower.endsWith('+') && !numeroLower.match(/\+\d$/)) {
             tipoApuestaDetectado = 'box';
           } else if (numeroLower.match(/^\d$/)) {
@@ -478,13 +499,21 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
 
         // Validación estricta: Si el número ganador es derivado, solo puede ganar si el ticket es Pick 2 straight
         if (candidato.esDerivado) {
-          // Los números derivados son siempre Pick 2 (2 dígitos) y solo para straight
-          if (numeroTicketLimpio.length !== 2 || tipoApuesta !== 'straight') {
-            return; // El ticket debe ser exactamente Pick 2 straight para ganar con número derivado
-          }
-          // Para números derivados, la comparación debe ser exacta (straight)
-          if (numeroTicketLimpio !== numeroGanadorStr) {
-            return; // No coincide exactamente
+          if (candidato.fuenteDerivada === 'pick4-tail3') {
+            if (numeroTicketLimpio.length !== 3) {
+              return;
+            }
+            if (tipoApuesta !== 'pick4tail3' && tipoApuesta !== 'pick4tail3box') {
+              return;
+            }
+          } else {
+            // Los números derivados de Pick 2 solo aplican a straight.
+            if (numeroTicketLimpio.length !== 2 || tipoApuesta !== 'straight') {
+              return;
+            }
+            if (numeroTicketLimpio !== numeroGanadorStr) {
+              return;
+            }
           }
         } else {
           // Si el número ganador NO es derivado, las longitudes deben coincidir exactamente
@@ -495,6 +524,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
 
         if (numeroCoincide(numeroTicketLimpio, numeroGanadorStr, tipoApuesta, { 
           esDerivado: candidato.esDerivado,
+          fuenteDerivada: candidato.fuenteDerivada,
           longitudTicket: numeroTicketLimpio.length 
         })) {
           const monto = parseFloat(ticket.monto) || 0;
@@ -636,6 +666,10 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
               tipoApuestaDetectado = 'bolita1';
             } else if (numeroLower.match(/^\d{2}\+2$/)) {
               tipoApuestaDetectado = 'bolita2';
+            } else if (numeroLower.match(/^\d{3}b\+$/)) {
+              tipoApuestaDetectado = 'pick4tail3box';
+            } else if (numeroLower.match(/^\d{3}b$/)) {
+              tipoApuestaDetectado = 'pick4tail3';
             } else if (numeroLower.endsWith('+') && !numeroLower.match(/\+\d$/)) {
               tipoApuestaDetectado = 'box';
             } else if (numeroLower.match(/^\d$/)) {
@@ -659,22 +693,26 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           
           // Validación estricta: Si el número ganador es derivado, solo puede ganar si el ticket es Pick 2 straight
           if (numeroGanador.esDerivado) {
-            // IMPORTANTE: Los números derivados son SIEMPRE de 2 dígitos y solo aplican a tickets Pick 2 straight
-            // Si el número del ticket limpio NO es exactamente 2 dígitos, NO puede ganar con número derivado
-            if (numeroTicketLimpio.length !== 2) {
-              return; // El ticket NO es Pick 2, no puede ganar con número derivado
-            }
-            // Los números derivados solo aplican para straight, NO para box
-            if (tipoApuesta !== 'straight') {
-              return; // El ticket debe ser straight, no box
-            }
-            // Para números derivados, debe coincidir exactamente
-            if (numeroTicketLimpio !== numeroGanadorStr) {
-              return; // No coincide exactamente
-            }
-            // Verificación adicional: El número ganador derivado debe ser de 2 dígitos
-            if (numeroGanadorStr.length !== 2) {
-              return; // El número derivado debe ser de 2 dígitos
+            if (numeroGanador.fuenteDerivada === 'pick4-tail3') {
+              if (numeroTicketLimpio.length !== 3) {
+                return;
+              }
+              if (tipoApuesta !== 'pick4tail3' && tipoApuesta !== 'pick4tail3box') {
+                return;
+              }
+            } else {
+              if (numeroTicketLimpio.length !== 2) {
+                return;
+              }
+              if (tipoApuesta !== 'straight') {
+                return;
+              }
+              if (numeroTicketLimpio !== numeroGanadorStr) {
+                return;
+              }
+              if (numeroGanadorStr.length !== 2) {
+                return;
+              }
             }
           } else {
             // Si el número ganador NO es derivado, las longitudes deben coincidir exactamente
@@ -686,6 +724,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           // Llamar a numeroCoincide con información sobre si es derivado
           if (numeroCoincide(numeroTicketLimpio, numeroGanadorStr, tipoApuesta, { 
             esDerivado: numeroGanador.esDerivado,
+            fuenteDerivada: numeroGanador.fuenteDerivada,
             longitudTicket: numeroTicketLimpio.length 
           })) {
             const claveTicket = obtenerClaveFecha(ticket.fecha);
@@ -820,6 +859,10 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         tipoPorFormato = 'bolita1';
       } else if (numeroLower.match(/^\d{2}\+2$/)) {
         tipoPorFormato = 'bolita2';
+      } else if (numeroLower.match(/^\d{3}b\+$/)) {
+        tipoPorFormato = 'pick4tail3box';
+      } else if (numeroLower.match(/^\d{3}b$/)) {
+        tipoPorFormato = 'pick4tail3';
       } else if (numeroLower.endsWith('+') && !numeroLower.match(/\+\d$/)) {
         // Termina en + pero no es bolita (ej: "123+")
         tipoPorFormato = 'box';
@@ -833,7 +876,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
       
       // Usar tipo del ticket si existe y es válido, sino usar el detectado por formato
       if (tipoTicket && (tipoTicket === 'box' || tipoTicket === 'straight' || tipoTicket === 'singulation' || 
-          tipoTicket === 'bolita1' || tipoTicket === 'bolita2')) {
+          tipoTicket === 'bolita1' || tipoTicket === 'bolita2' || tipoTicket === 'pick4tail3' || tipoTicket === 'pick4tail3box')) {
         tipoDetectado = tipoTicket;
       } else {
         tipoDetectado = tipoPorFormato;
@@ -865,6 +908,8 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           longitud: numeroBase.length,
           straight: { conteo: 0, monto: 0 },
           box: { conteo: 0, monto: 0 },
+          pick4tail3: { conteo: 0, monto: 0 },
+          pick4tail3box: { conteo: 0, monto: 0 },
           bolita1: { conteo: 0, monto: 0 },
           bolita2: { conteo: 0, monto: 0 },
           singulation: { conteo: 0, monto: 0 },
@@ -876,6 +921,10 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
       let tipoKey = 'straight'; // Valor por defecto
       if (tipoDetectado === 'box') {
         tipoKey = 'box';
+      } else if (tipoDetectado === 'pick4tail3') {
+        tipoKey = 'pick4tail3';
+      } else if (tipoDetectado === 'pick4tail3box') {
+        tipoKey = 'pick4tail3box';
       } else if (tipoDetectado === 'singulation') {
         tipoKey = 'singulation';
       } else if (tipoDetectado === 'bolita1') {
@@ -906,6 +955,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         // Filtrar números que tengan al menos una jugada straight, singulation, bolita1 o bolita2
         resultados = resultados.filter(item => {
           return item.straight.conteo > 0 || 
+                 item.pick4tail3.conteo > 0 ||
                  item.singulation.conteo > 0 || 
                  item.bolita1.conteo > 0 || 
                  item.bolita2.conteo > 0;
@@ -914,8 +964,8 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         // Recalcular totales solo con straight, singulation, bolita1, bolita2 (ignorar box)
         resultados = resultados.map(item => {
           const nuevoTotal = {
-            conteo: item.straight.conteo + item.singulation.conteo + item.bolita1.conteo + item.bolita2.conteo,
-            monto: item.straight.monto + item.singulation.monto + item.bolita1.monto + item.bolita2.monto
+            conteo: item.straight.conteo + item.pick4tail3.conteo + item.singulation.conteo + item.bolita1.conteo + item.bolita2.conteo,
+            monto: item.straight.monto + item.pick4tail3.monto + item.singulation.monto + item.bolita1.monto + item.bolita2.monto
           };
           // Crear una copia del item con los totales recalculados
           return {
@@ -929,7 +979,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
       } else if (tipoApuestaFiltro === 'box') {
         // Filtrar números que tengan jugadas box
         resultados = resultados.filter(item => {
-          return item.box.conteo > 0;
+          return item.box.conteo > 0 || item.pick4tail3box.conteo > 0;
         });
 
         // Recalcular totales solo con box (ignorar straight)
@@ -937,9 +987,11 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           // Crear una copia del item con los totales solo de box
           return {
             ...item,
-            total: { conteo: item.box.conteo, monto: item.box.monto },
+            total: { conteo: item.box.conteo + item.pick4tail3box.conteo, monto: item.box.monto + item.pick4tail3box.monto },
             // Opcional: poner straight en 0 para que se vea más claro
             straight: { conteo: 0, monto: 0 },
+            pick4tail3: { conteo: 0, monto: 0 },
+            pick4tail3box: { conteo: item.pick4tail3box.conteo, monto: item.pick4tail3box.monto },
             singulation: { conteo: 0, monto: 0 },
             bolita1: { conteo: 0, monto: 0 },
             bolita2: { conteo: 0, monto: 0 }
@@ -975,6 +1027,8 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
     if (valor === 'bolita1') return 'Bolita 1';
     if (valor === 'bolita2') return 'Bolita 2';
     if (valor === 'singulation') return 'Singulation';
+    if (valor === 'pick4tail3') return 'Ultimos 3 Pick 4';
+    if (valor === 'pick4tail3box') return 'Ultimos 3 Pick 4 Box';
     if (valor === 'box') return 'Box';
     if (valor === 'straight') return 'Straight';
     return tipo;

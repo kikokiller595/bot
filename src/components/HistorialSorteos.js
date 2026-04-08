@@ -96,6 +96,7 @@ const extenderNumerosGanadores = (numeros = []) => {
     } else if (numeroStr.length === 4) {
       const primeros = numeroStr.slice(0, 2);
       const ultimos = numeroStr.slice(-2);
+      const ultimosTres = numeroStr.slice(-3);
 
       if (primeros.length === 2) {
         lista.push({
@@ -116,6 +117,17 @@ const extenderNumerosGanadores = (numeros = []) => {
           posicion: 'tercera',
           esDerivado: true,
           fuenteDerivada: 'pick4-fin'
+        });
+      }
+
+      if (ultimosTres.length === 3) {
+        lista.push({
+          ...numeroGanador,
+          id: `${numeroGanador.id || numeroStr}-pick4-tail3`,
+          numero: ultimosTres,
+          posicion: 'ultimos 3',
+          esDerivado: true,
+          fuenteDerivada: 'pick4-tail3'
         });
       }
     }
@@ -183,6 +195,10 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
           tipoApuestaDetectado = 'bolita1';
         } else if (numeroLower.match(/^\d{2}\+2$/)) {
           tipoApuestaDetectado = 'bolita2';
+        } else if (numeroLower.match(/^\d{3}b\+$/)) {
+          tipoApuestaDetectado = 'pick4tail3box';
+        } else if (numeroLower.match(/^\d{3}b$/)) {
+          tipoApuestaDetectado = 'pick4tail3';
         } else if (numeroLower.endsWith('+') && !numeroLower.match(/\+\d$/)) {
           tipoApuestaDetectado = 'box';
         } else if (numeroLower.match(/^\d$/)) {
@@ -225,22 +241,26 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
 
         // VALIDACIÓN CRÍTICA: Si el número ganador es derivado (Pick 2 desde Pick 3/4)
         if (candidato.esDerivado) {
-          // Los números derivados SOLO aplican a tickets que sean realmente Pick 2 (2 dígitos) straight
-          // Si el ticket tiene más de 2 dígitos, NO puede ganar con números derivados
-          if (longitudTicket !== 2) {
-            return; // El ticket NO es Pick 2, no puede ganar con número derivado
-          }
-          // Los números derivados SOLO aplican para straight, NO para box ni bolitas
-          if (tipoApuesta !== 'straight') {
-            return; // El ticket debe ser straight, no box ni bolitas
-          }
-          // El número derivado debe ser de 2 dígitos
-          if (longitudGanador !== 2) {
-            return; // El número derivado debe ser de 2 dígitos
-          }
-          // Para números derivados, debe coincidir exactamente (ya validado arriba, pero doble verificación)
-          if (numeroTicketLimpio !== numeroGanadorStr) {
-            return; // No coincide exactamente
+          if (candidato.fuenteDerivada === 'pick4-tail3') {
+            if (longitudTicket !== 3 || longitudGanador !== 3) {
+              return;
+            }
+            if (tipoApuesta !== 'pick4tail3' && tipoApuesta !== 'pick4tail3box') {
+              return;
+            }
+          } else {
+            if (longitudTicket !== 2) {
+              return;
+            }
+            if (tipoApuesta !== 'straight') {
+              return;
+            }
+            if (longitudGanador !== 2) {
+              return;
+            }
+            if (numeroTicketLimpio !== numeroGanadorStr) {
+              return;
+            }
           }
         } else {
           // Si el número ganador NO es derivado, debe tener la misma longitud que el ticket
@@ -266,6 +286,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
         // Verificar coincidencia con validaciones adicionales
         if (numeroCoincide(numeroTicketLimpio, numeroGanadorStr, tipoApuesta, { 
           esDerivado: candidato.esDerivado,
+          fuenteDerivada: candidato.fuenteDerivada,
           longitudTicket: longitudTicket 
         })) {
           const premio = calcularPremio(
@@ -452,6 +473,8 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
     const valor = (tipoApuesta || '').toLowerCase();
     if (valor === 'straight') return 'Straight';
     if (valor === 'box') return 'Box';
+    if (valor === 'pick4tail3') return 'Ultimos 3 Pick 4';
+    if (valor === 'pick4tail3box') return 'Ultimos 3 Pick 4 Box';
     if (valor === 'bolita1') return 'Bolita 1';
     if (valor === 'bolita2') return 'Bolita 2';
     if (valor === 'singulation') return 'Singulation';
@@ -513,6 +536,8 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
               <option value="">Todos</option>
               <option value="straight">Straight</option>
               <option value="box">Box</option>
+              <option value="pick4tail3">Ultimos 3 Pick 4</option>
+              <option value="pick4tail3box">Ultimos 3 Pick 4 Box</option>
               <option value="bolita1">Bolita 1</option>
               <option value="bolita2">Bolita 2</option>
               <option value="singulation">Singulation</option>
