@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Sorteo = require('../models/Sorteo');
 const Loteria = require('../models/Loteria');
+const PuntoVenta = require('../models/PuntoVenta');
 const { protect, authorize } = require('../middleware/auth');
 
 const TIPOS_APUESTA_VALIDOS = new Set([
@@ -44,6 +45,54 @@ const fechaPermitidaParaUsuario = (usuario, fecha) => {
   }
 
   return obtenerClaveLocalFecha(fecha) === obtenerClaveLocalFecha(new Date());
+};
+
+const obtenerPuntoVentaUsuarioId = (usuario) =>
+  usuario?.puntoVenta?._id || usuario?.puntoVenta || null;
+
+const aplicarRestriccionOperativa = (query, usuario) => {
+  const puntoVentaId = obtenerPuntoVentaUsuarioId(usuario);
+  if (puntoVentaId) {
+    query.puntoVenta = puntoVentaId;
+    return query;
+  }
+
+  query.usuario = usuario.id;
+  return query;
+};
+
+const crearErrorHttp = (statusCode, message) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+};
+
+const resolverPuntoVentaDestino = async (usuario, puntoVentaDestinoId) => {
+  const destino = String(
+    puntoVentaDestinoId || ''
+  ).trim();
+
+  if (!destino) {
+    return null;
+  }
+
+  if (String(usuario?.rol || '').trim().toLowerCase() !== 'admin') {
+    throw crearErrorHttp(
+      403,
+      'Solo el administrador puede registrar ventas hacia otra terminal'
+    );
+  }
+
+  const puntoVenta = await PuntoVenta.findById(destino);
+  if (!puntoVenta) {
+    throw crearErrorHttp(404, 'Punto de venta destino no encontrado');
+  }
+
+  if (!puntoVenta.activo) {
+    throw crearErrorHttp(400, 'El punto de venta destino no esta activo');
+  }
+
+  return puntoVenta;
 };
 
 const premiosPorDefecto = {
@@ -328,11 +377,18 @@ const calcularPremio = (tipoApuesta, numero, monto, configuracionPremios, opcion
   return 0;
 };
 
-const crearDocumentoSorteo = ({ sorteo, loteriaDoc, usuario, fechaEntrada = null }) => {
+const crearDocumentoSorteo = ({
+  sorteo,
+  loteriaDoc,
+  usuario,
+  fechaEntrada = null,
+  puntoVentaDestino = null
+}) => {
   const fecha = fechaEntrada || parseFechaEntrada(sorteo.fecha);
   const puntoVentaId =
-    usuario?.puntoVenta?._id || usuario?.puntoVenta || null;
+    puntoVentaDestino?._id || obtenerPuntoVentaUsuarioId(usuario);
   const puntoVentaNombre =
+    puntoVentaDestino?.nombre ||
     usuario?.puntoVenta?.nombre ||
     (usuario?.rol === 'admin' ? 'Administracion Central' : '');
 
@@ -362,10 +418,7 @@ router.get('/', protect, async (req, res) => {
     const query = {};
 
     if (esPuntoVenta(req.user.rol)) {
-      query.usuario = req.user.id;
-      if (req.user.puntoVenta?._id || req.user.puntoVenta) {
-        query.puntoVenta = req.user.puntoVenta?._id || req.user.puntoVenta;
-      }
+      aplicarRestriccionOperativa(query, req.user);
     }
 
     if (fecha) {
@@ -419,10 +472,7 @@ router.get('/reporte', protect, async (req, res) => {
     const query = {};
 
     if (esPuntoVenta(req.user.rol)) {
-      query.usuario = req.user.id;
-      if (req.user.puntoVenta?._id || req.user.puntoVenta) {
-        query.puntoVenta = req.user.puntoVenta?._id || req.user.puntoVenta;
-      }
+      aplicarRestriccionOperativa(query, req.user);
     }
 
     if (fecha) {
@@ -539,6 +589,10 @@ router.post(
       const { loteria } = req.body;
       const loteriaDoc = await Loteria.findById(loteria);
       const fechaSorteo = parseFechaEntrada(req.body.fecha);
+      const puntoVentaDestino = await resolverPuntoVentaDestino(
+        req.user,
+        req.body.puntoVentaDestinoId
+      );
 
       if (!loteriaDoc) {
         return res.status(404).json({
@@ -566,7 +620,8 @@ router.post(
           sorteo: req.body,
           loteriaDoc,
           usuario: req.user,
-          fechaEntrada: fechaSorteo
+          fechaEntrada: fechaSorteo,
+          puntoVentaDestino
         })
       );
 
@@ -581,9 +636,9 @@ router.post(
       });
     } catch (error) {
       console.error('Error al crear sorteo:', error);
-      res.status(500).json({
+      res.status(error.statusCode || 500).json({
         success: false,
-        message: 'Error al crear sorteo'
+        message: error.message || 'Error al crear sorteo'
       });
     }
   }
@@ -620,6 +675,11 @@ router.post('/multiple', protect, async (req, res) => {
         continue;
       }
 
+      const puntoVentaDestino = await resolverPuntoVentaDestino(
+        req.user,
+        sorteo?.puntoVentaDestinoId
+      );
+
       if (!fechaPermitidaParaUsuario(req.user, fechaSorteo)) {
         return res.status(403).json({
           success: false,
@@ -632,7 +692,8 @@ router.post('/multiple', protect, async (req, res) => {
           sorteo: { ...sorteo, tipoApuesta, numero, monto },
           loteriaDoc,
           usuario: req.user,
-          fechaEntrada: fechaSorteo
+          fechaEntrada: fechaSorteo,
+          puntoVentaDestino
         })
       );
     }
@@ -660,9 +721,9 @@ router.post('/multiple', protect, async (req, res) => {
     });
   } catch (error) {
     console.error('Error al crear multiples sorteos:', error);
-    res.status(500).json({
+    res.status(error.statusCode || 500).json({
       success: false,
-      message: 'Error al crear sorteos'
+      message: error.message || 'Error al crear sorteos'
     });
   }
 });
@@ -686,7 +747,7 @@ router.put('/ticket/pagado', protect, async (req, res) => {
     }
 
     if (esPuntoVenta(req.user.rol)) {
-      query.usuario = req.user.id;
+      aplicarRestriccionOperativa(query, req.user);
     }
 
     const sorteos = await Sorteo.find(query);
@@ -751,11 +812,23 @@ router.delete('/:id', protect, async (req, res) => {
       });
     }
 
-    if (esPuntoVenta(req.user.rol) && sorteo.usuario.toString() !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: 'No autorizado para eliminar este sorteo'
-      });
+    if (esPuntoVenta(req.user.rol)) {
+      const puntoVentaUsuarioId = obtenerPuntoVentaUsuarioId(req.user);
+      const sorteoPuntoVentaId = sorteo.puntoVenta ? sorteo.puntoVenta.toString() : '';
+
+      if (puntoVentaUsuarioId) {
+        if (sorteoPuntoVentaId !== String(puntoVentaUsuarioId)) {
+          return res.status(403).json({
+            success: false,
+            message: 'No autorizado para eliminar este sorteo'
+          });
+        }
+      } else if (sorteo.usuario.toString() !== req.user.id) {
+        return res.status(403).json({
+          success: false,
+          message: 'No autorizado para eliminar este sorteo'
+        });
+      }
     }
 
     await sorteo.deleteOne();
@@ -778,7 +851,7 @@ router.delete('/grupo/:grupoId', protect, async (req, res) => {
     const query = { grupoId: req.params.grupoId };
 
     if (esPuntoVenta(req.user.rol)) {
-      query.usuario = req.user.id;
+      aplicarRestriccionOperativa(query, req.user);
     }
 
     const result = await Sorteo.deleteMany(query);

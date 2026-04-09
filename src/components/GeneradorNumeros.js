@@ -46,7 +46,13 @@ const obtenerFechaActualLocal = () => {
   return `${anio}-${mes}-${dia}`;
 };
 
-const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [], sorteos = [] }) => {
+const GeneradorNumeros = ({
+  guardarSorteo,
+  guardarMultiplesSorteos,
+  loterias = [],
+  sorteos = [],
+  puntosVenta = []
+}) => {
   const { user } = useAuth();
   const esAdmin = user?.rol === 'admin';
   const [numero, setNumero] = useState('');
@@ -66,6 +72,7 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
   const inputNumeroRef = useRef(null);
   const inputMontoRef = useRef(null);
   const [horaActual, setHoraActual] = useState(new Date());
+  const [puntoVentaDestinoId, setPuntoVentaDestinoId] = useState('');
   
   // Función para obtener la fecha local en formato YYYY-MM-DD
   const obtenerFechaLocal = () => {
@@ -77,6 +84,20 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
   };
   
   const [fechaSeleccionada, setFechaSeleccionada] = useState(obtenerFechaLocal());
+  const puntosVentaActivos = useMemo(
+    () =>
+      esAdmin
+        ? puntosVenta.filter((puntoVenta) => puntoVenta?.activo !== false)
+        : [],
+    [esAdmin, puntosVenta]
+  );
+  const puntoVentaDestinoSeleccionado = useMemo(
+    () =>
+      puntosVentaActivos.find(
+        (puntoVenta) => String(puntoVenta.id) === String(puntoVentaDestinoId)
+      ) || null,
+    [puntosVentaActivos, puntoVentaDestinoId]
+  );
 
   useEffect(() => {
     if (!esAdmin) {
@@ -86,6 +107,24 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
       }
     }
   }, [esAdmin, fechaSeleccionada]);
+
+  useEffect(() => {
+    if (!esAdmin) {
+      if (puntoVentaDestinoId) {
+        setPuntoVentaDestinoId('');
+      }
+      return;
+    }
+
+    if (
+      puntoVentaDestinoId &&
+      !puntosVentaActivos.some(
+        (puntoVenta) => String(puntoVenta.id) === String(puntoVentaDestinoId)
+      )
+    ) {
+      setPuntoVentaDestinoId('');
+    }
+  }, [esAdmin, puntoVentaDestinoId, puntosVentaActivos]);
 
   useEffect(() => {
     try {
@@ -435,6 +474,7 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
             <div class="meta">
               <div><strong>Ticket:</strong> ${escaparHtml(ticket.ticketId)}</div>
               <div><strong>Fecha:</strong> ${escaparHtml(ticket.fecha)}</div>
+              <div><strong>Destino:</strong> ${escaparHtml(ticket.puntoVentaDestinoNombre || 'Administracion Central')}</div>
               <div><strong>Loterias:</strong> ${escaparHtml(loteriasTexto)}</div>
             </div>
 
@@ -794,7 +834,11 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
           ticketId: `TKT-${idTicket.toString().slice(-6)}`,
           grupoId: timestampBase,
           loteriaId: loteria.id,
-          loteriaNombre: loteria.nombre
+          loteriaNombre: loteria.nombre,
+          puntoVentaDestinoId: esAdmin ? puntoVentaDestinoId || undefined : undefined,
+          puntoVentaDestinoNombre: esAdmin
+            ? puntoVentaDestinoSeleccionado?.nombre || 'Administracion Central'
+            : user?.puntoVentaNombre || ''
         });
       });
     });
@@ -831,7 +875,10 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
       montoTotal: montoTotalConLoterias,
       jugadas: jugadasConLoterias,
       tickets: tickets,
-      loterias: loteriasAbiertas.map(l => l.nombre)
+      loterias: loteriasAbiertas.map(l => l.nombre),
+      puntoVentaDestinoNombre: esAdmin
+        ? puntoVentaDestinoSeleccionado?.nombre || 'Administracion Central'
+        : user?.puntoVentaNombre || ''
     };
 
     setTicketAnterior(nuevoTicket);
@@ -1056,6 +1103,29 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
               </small>
             </div>
 
+            {esAdmin && (
+              <div className="campo-terminal">
+                <label>Registrar venta para</label>
+                <select
+                  value={puntoVentaDestinoId}
+                  onChange={(e) => setPuntoVentaDestinoId(e.target.value)}
+                  className="input-terminal-ticket"
+                >
+                  <option value="">Administracion central</option>
+                  {puntosVentaActivos.map((puntoVenta) => (
+                    <option key={puntoVenta.id} value={puntoVenta.id}>
+                      {puntoVenta.nombre} ({puntoVenta.codigo})
+                    </option>
+                  ))}
+                </select>
+                <small className="campo-fecha-ayuda">
+                  {puntoVentaDestinoSeleccionado
+                    ? `Los tickets se guardaran bajo ${puntoVentaDestinoSeleccionado.nombre}.`
+                    : 'Si no eliges una terminal, la venta quedara en Administracion Central.'}
+                </small>
+              </div>
+            )}
+
             {loterias.length > 0 && (
               <div className="campo-loteria">
                 <label>Loterías</label>
@@ -1183,6 +1253,11 @@ const GeneradorNumeros = ({ guardarSorteo, guardarMultiplesSorteos, loterias = [
                 {ticketAnterior.loterias && ticketAnterior.loterias.length > 0 && (
                   <span className="ticket-loterias">
                     {ticketAnterior.loterias.join(', ')}
+                  </span>
+                )}
+                {ticketAnterior.puntoVentaDestinoNombre && (
+                  <span className="ticket-terminal-destino">
+                    {ticketAnterior.puntoVentaDestinoNombre}
                   </span>
                 )}
                 <button

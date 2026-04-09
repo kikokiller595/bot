@@ -11,11 +11,13 @@ import { normalizarPremios } from './utils/premiosDefault';
 import { useAuth } from './context/AuthContext';
 import sorteosService from './services/sorteosService';
 import loteriasService from './services/loteriasService';
+import puntosVentaService from './services/puntosVentaService';
 
 function App() {
   const { user } = useAuth();
   const [sorteos, setSorteos] = useState([]);
   const [loterias, setLoterias] = useState([]);
+  const [puntosVenta, setPuntosVenta] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [panelActivo, setPanelActivo] = useState('resumen');
@@ -187,12 +189,16 @@ function App() {
         setError(null);
         
         // Cargar loterías desde el servidor
-        const loteriasData = await loteriasService.obtenerLoterias();
+        const [loteriasData, sorteosData, puntosVentaData] = await Promise.all([
+          loteriasService.obtenerLoterias(),
+          sorteosService.obtenerSorteos(),
+          user?.rol === 'admin'
+            ? puntosVentaService.getPuntosVenta()
+            : Promise.resolve([])
+        ]);
         setLoterias(normalizarListaLoterias(loteriasData));
-        
-        // Cargar sorteos desde el servidor
-        const sorteosData = await sorteosService.obtenerSorteos();
         setSorteos(sorteosData);
+        setPuntosVenta(Array.isArray(puntosVentaData) ? puntosVentaData : []);
         
       } catch (error) {
         console.error('Error al cargar datos:', error);
@@ -271,7 +277,8 @@ function App() {
           monto: ticket.monto || 1,
           tipoApuesta: ticket.tipoApuesta || 'straight',
           loteria: ticket.loteriaId || ticket.configuracion?.loteria,
-          grupoId: ticket.grupoId
+          grupoId: ticket.grupoId,
+          puntoVentaDestinoId: ticket.puntoVentaDestinoId || ''
         }))
       );
       
@@ -466,6 +473,7 @@ function App() {
             guardarMultiplesSorteos={guardarMultiplesSorteos}
             loterias={loterias}
             sorteos={sorteos}
+            puntosVenta={puntosVenta}
           />
         </div>
       );
@@ -540,6 +548,7 @@ function App() {
           guardarMultiplesSorteos={guardarMultiplesSorteos}
           loterias={loterias}
           sorteos={sorteos}
+          puntosVenta={puntosVenta}
         />
       </div>
     );
