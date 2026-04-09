@@ -60,21 +60,33 @@ function App() {
       summary: 'Ventas del dia, actividad y panorama de toda la red.'
     },
     {
-      id: 'ventas',
-      label: 'Mesa de ventas',
+      id: 'venta',
+      label: 'Ventas',
       code: '02',
-      summary: 'Carga tickets, revisa historial y mira el movimiento comercial.'
+      summary: 'Registra jugadas y emite tickets desde la vista de administrador.'
+    },
+    {
+      id: 'historial',
+      label: 'Historial de tickets',
+      code: '03',
+      summary: 'Consulta tickets guardados, revisa detalles y administra historial.'
+    },
+    {
+      id: 'reportes',
+      label: 'Reportes',
+      code: '04',
+      summary: 'Analiza ventas, resultados y movimiento por fechas y por punto.'
     },
     {
       id: 'premios',
-      label: 'Mesa de premios',
-      code: '03',
+      label: 'Premios',
+      code: '05',
       summary: 'Consulta ganadores, pagos y balances de premios.'
     },
     {
       id: 'administracion',
       label: 'Configuracion',
-      code: '04',
+      code: '06',
       summary: 'Loterias, usuarios, puntos de venta y resultados.'
     }
   ];
@@ -446,25 +458,37 @@ function App() {
       return <DashboardOperativo sorteos={sorteos} loterias={loterias} />;
     }
 
-    if (panelActivo === 'ventas') {
+    if (panelActivo === 'venta') {
       return (
-        <>
+        <div className="content-grid panel-single">
           <GeneradorNumeros
             guardarSorteo={guardarSorteo}
             guardarMultiplesSorteos={guardarMultiplesSorteos}
             loterias={loterias}
             sorteos={sorteos}
           />
-          <div className="content-grid">
-            <HistorialSorteos
-              sorteos={sorteos}
-              loterias={loterias}
-              eliminarSorteo={eliminarSorteo}
-              limpiarHistorial={limpiarHistorial}
-            />
-            <ReporteVenta sorteos={sorteos} loterias={loterias} />
-          </div>
-        </>
+        </div>
+      );
+    }
+
+    if (panelActivo === 'historial') {
+      return (
+        <div className="content-grid panel-single">
+          <HistorialSorteos
+            sorteos={sorteos}
+            loterias={loterias}
+            eliminarSorteo={eliminarSorteo}
+            limpiarHistorial={limpiarHistorial}
+          />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'reportes') {
+      return (
+        <div className="content-grid panel-single">
+          <ReporteVenta sorteos={sorteos} loterias={loterias} />
+        </div>
       );
     }
 
