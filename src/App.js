@@ -401,7 +401,7 @@ function App() {
 
   const panelesDisponibles = user.rol === 'admin' ? panelesAdmin : panelesPuntoVenta;
   const mostrarNavegacion = panelesDisponibles.length > 1;
-  const mostrarResumenSuperior = user.rol === 'admin';
+  const mostrarResumenSuperior = user.rol === 'admin' && panelActivo === 'resumen';
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
   const nombrePanel = user.rol === 'admin' ? 'Panel Administrador' : 'Panel Punto de Venta';
   const descripcionPanel = user.rol === 'admin'
