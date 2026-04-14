@@ -80,9 +80,12 @@ export const normalizePuntoVenta = (puntoVenta) => {
     _id: id,
     codigo: String(puntoVenta.codigo || '').trim(),
     nombre: String(puntoVenta.nombre || '').trim(),
+    tipo: String(puntoVenta.tipo || '').trim(),
     ubicacion: String(puntoVenta.ubicacion || '').trim(),
     telefono: String(puntoVenta.telefono || '').trim(),
     responsable: String(puntoVenta.responsable || '').trim(),
+    username: String(puntoVenta.username || '').trim().toLowerCase(),
+    usuarioId: toId(puntoVenta.usuarioId || puntoVenta.userId || ''),
     activo: typeof puntoVenta.activo === 'boolean' ? puntoVenta.activo : true
   };
 };

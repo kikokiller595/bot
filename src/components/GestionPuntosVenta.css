@@ -3,13 +3,48 @@
   height: 100%;
 }
 
+.gestion-puntos-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gestion-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.gestion-kicker,
+.terminal-section-kicker {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gestion-copy p,
+.terminal-form-note,
+.punto-empty {
+  color: var(--text-soft);
+}
+
 .btn-agregar-punto,
 .punto-form-actions button,
-.tabla-acciones button {
+.tabla-acciones button,
+.terminal-toggle {
   border-radius: 999px;
   padding: 0.82rem 1rem;
   font-weight: 700;
   cursor: pointer;
+  border: none;
 }
 
 .btn-agregar-punto,
@@ -20,39 +55,113 @@
 }
 
 .punto-form-actions .secondary,
-.tabla-acciones .danger {
+.tabla-acciones .danger,
+.terminal-toggle.inactivo {
   background: rgba(23, 49, 58, 0.12);
   color: var(--text-main);
 }
 
-.punto-formulario {
-  padding: 1.1rem;
-  border-radius: 24px;
-  background: rgba(247, 244, 236, 0.86);
-  border: 1px solid rgba(23, 49, 58, 0.08);
-  margin-bottom: 1rem;
+.terminal-toggle.activo {
+  background: rgba(28, 137, 99, 0.14);
+  color: var(--success);
 }
 
-.punto-grid {
+.terminal-summary-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.8rem;
 }
 
-.punto-grid input {
-  width: 100%;
-  padding: 0.9rem 0.95rem;
-  border-radius: 16px;
-  border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(255, 255, 255, 0.86);
+.terminal-summary-card,
+.terminal-card,
+.terminal-form-panel {
+  border-radius: 28px;
+  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: rgba(247, 244, 236, 0.88);
+  box-shadow: 0 14px 28px rgba(17, 78, 96, 0.08);
 }
 
-.punto-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
+.terminal-summary-card {
+  padding: 1rem 1.1rem;
+}
+
+.terminal-summary-card span,
+.terminal-meta-label {
+  display: block;
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.terminal-summary-card strong {
+  display: block;
+  margin-top: 0.45rem;
   color: var(--text-main);
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-family: var(--font-display);
+}
+
+.terminal-form-panel {
+  padding: 1.2rem;
+}
+
+.terminal-form-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.terminal-form-header h3 {
+  margin-top: 0.45rem;
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+}
+
+.terminal-form-note {
+  max-width: 21rem;
+  line-height: 1.6;
+}
+
+.terminal-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.terminal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.terminal-field span {
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.terminal-field input {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(23, 49, 58, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-main);
+}
+
+.terminal-field-wide {
+  grid-column: 1 / -1;
+}
+
+.terminal-switch {
+  justify-content: flex-end;
 }
 
 .punto-form-actions {
@@ -62,38 +171,58 @@
   margin-top: 1rem;
 }
 
-.tabla-puntos-wrapper {
-  overflow: auto;
-  border-radius: 22px;
-  background: rgba(247, 244, 236, 0.86);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+.terminal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.9rem;
 }
 
-.tabla-puntos {
-  width: 100%;
-  border-collapse: collapse;
+.terminal-card {
+  padding: 1rem;
 }
 
-.tabla-puntos th,
-.tabla-puntos td {
-  padding: 0.95rem 0.85rem;
-  text-align: left;
+.terminal-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
 }
 
-.tabla-puntos th {
-  position: sticky;
-  top: 0;
+.terminal-card-code {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.38rem 0.68rem;
+  border-radius: 999px;
   background: rgba(17, 78, 96, 0.08);
   color: var(--accent-strong);
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.tabla-puntos td {
-  border-top: 1px solid rgba(23, 49, 58, 0.08);
+.terminal-card h3 {
+  margin-top: 0.65rem;
   color: var(--text-main);
+  font-size: 1.35rem;
+}
+
+.terminal-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.terminal-card-grid strong {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-main);
+  line-height: 1.55;
+}
+
+.terminal-meta-wide {
+  grid-column: 1 / -1;
 }
 
 .estado-badge {
@@ -123,20 +252,39 @@
   gap: 0.5rem;
 }
 
+.terminal-card-actions {
+  margin-top: 1rem;
+}
+
 .punto-empty {
   padding: 2rem 1rem;
-  color: var(--text-soft);
+}
+
+@media (max-width: 900px) {
+  .terminal-summary-strip,
+  .terminal-form-grid,
+  .terminal-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-field-wide,
+  .terminal-meta-wide {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 768px) {
   .punto-form-actions,
-  .tabla-acciones {
+  .tabla-acciones,
+  .terminal-form-header,
+  .terminal-card-head {
     flex-direction: column;
   }
 
   .btn-agregar-punto,
   .punto-form-actions button,
-  .tabla-acciones button {
+  .tabla-acciones button,
+  .terminal-toggle {
     width: 100%;
   }
 }

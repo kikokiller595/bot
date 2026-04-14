@@ -14,6 +14,11 @@ const puntoVentaSchema = new mongoose.Schema(
       required: [true, 'El nombre es requerido'],
       trim: true
     },
+    tipo: {
+      type: String,
+      trim: true,
+      default: ''
+    },
     ubicacion: {
       type: String,
       trim: true,
