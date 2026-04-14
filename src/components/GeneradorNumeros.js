@@ -177,14 +177,12 @@ const GeneradorNumeros = ({
     setHoraActual(new Date());
   }, [loteriasSeleccionadas]);
 
-  const loteriaEstaCerrada = useCallback((loteria) => {
-    if (!loteria || !loteria.horaCierre) return false;
+  const obtenerMinutosCierre = useCallback((loteria) => {
+    if (!loteria || !loteria.horaCierre) return Number.MAX_SAFE_INTEGER;
 
-    const horaTexto = loteria.horaCierre.trim();
-    if (!horaTexto) return false;
-
+    const horaTexto = String(loteria.horaCierre || '').trim();
     const match = horaTexto.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-    if (!match) return false;
+    if (!match) return Number.MAX_SAFE_INTEGER;
 
     let horas = parseInt(match[1], 10);
     const minutos = parseInt(match[2], 10);
@@ -194,17 +192,39 @@ const GeneradorNumeros = ({
       if (horas === 12) {
         horas = 0;
       }
-    } else if (periodo === 'PM') {
-      if (horas !== 12) {
-        horas += 12;
-      }
+    } else if (periodo === 'PM' && horas !== 12) {
+      horas += 12;
     }
 
-    const totalMinutosCierre = horas * 60 + minutos;
+    return horas * 60 + minutos;
+  }, []);
+
+  const loteriaEstaCerrada = useCallback((loteria) => {
+    if (!loteria || !loteria.horaCierre) return false;
+    const totalMinutosCierre = obtenerMinutosCierre(loteria);
+    if (!Number.isFinite(totalMinutosCierre)) return false;
     const totalMinutosActual = horaActual.getHours() * 60 + horaActual.getMinutes();
 
     return totalMinutosActual >= totalMinutosCierre;
-  }, [horaActual]);
+  }, [horaActual, obtenerMinutosCierre]);
+
+  const loteriasOrdenadas = useMemo(() => {
+    return [...loterias].sort((loteriaA, loteriaB) => {
+      const cerradaA = loteriaEstaCerrada(loteriaA);
+      const cerradaB = loteriaEstaCerrada(loteriaB);
+      if (cerradaA !== cerradaB) {
+        return cerradaA ? 1 : -1;
+      }
+
+      const minutosA = obtenerMinutosCierre(loteriaA);
+      const minutosB = obtenerMinutosCierre(loteriaB);
+      if (minutosA !== minutosB) {
+        return minutosA - minutosB;
+      }
+
+      return String(loteriaA.nombre || '').localeCompare(String(loteriaB.nombre || ''));
+    });
+  }, [loterias, loteriaEstaCerrada, obtenerMinutosCierre]);
 
   const loteriasSeleccionadasObjs = useMemo(
     () => loterias.filter(l => loteriasSeleccionadas.includes(l.id.toString())),
@@ -1126,11 +1146,11 @@ const GeneradorNumeros = ({
               </div>
             )}
 
-            {loterias.length > 0 && (
+            {loteriasOrdenadas.length > 0 && (
               <div className="campo-loteria">
                 <label>Loterías</label>
                 <div className="lista-loterias">
-                  {loterias.map(loteria => {
+                  {loteriasOrdenadas.map(loteria => {
                     const idStr = loteria.id.toString();
                     const seleccionada = loteriasSeleccionadas.includes(idStr);
                     const cerrada = loteriaEstaCerrada(loteria);
