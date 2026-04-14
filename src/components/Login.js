@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import authService from '../services/authService';
 import './Login.css';
 
 const normalizeBaseUrl = (value, fallback = '') =>
@@ -22,9 +23,15 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [backendStatus, setBackendStatus] = useState('checking');
   const [databaseStatus, setDatabaseStatus] = useState('checking');
+  const [sessionNotice, setSessionNotice] = useState('');
   const { login } = useAuth();
 
   useEffect(() => {
+    const logoutReason = authService.consumeLogoutReason();
+    if (logoutReason === 'inactivity') {
+      setSessionNotice('La sesion se cerro automaticamente por inactividad. Vuelve a entrar para continuar.');
+    }
+
     let active = true;
 
     const checkBackend = async () => {
@@ -133,6 +140,7 @@ function Login() {
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
+            {sessionNotice && <div className="login-notice">{sessionNotice}</div>}
             {error && <div className="login-error">{error}</div>}
 
             <div className="form-group">

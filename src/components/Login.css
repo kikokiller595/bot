@@ -203,6 +203,7 @@
 }
 
 .login-status,
+.login-notice,
 .login-error {
   margin-bottom: 1rem;
   padding: 1rem 1.05rem;
@@ -229,6 +230,12 @@
   background: rgba(191, 63, 44, 0.1);
   border-color: rgba(191, 63, 44, 0.16);
   color: var(--danger);
+}
+
+.login-notice {
+  background: rgba(217, 119, 6, 0.1);
+  border: 1px solid rgba(217, 119, 6, 0.18);
+  color: #9a6700;
 }
 
 .login-form {

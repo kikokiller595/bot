@@ -1,6 +1,8 @@
 import api from './api';
 import { extractData, normalizeUser, normalizeUsers } from './normalizers';
 
+const LOGOUT_REASON_KEY = 'tby_logout_reason';
+
 const authService = {
   login: async (username, password) => {
     const response = await api.post('/auth/login', { username, password });
@@ -9,6 +11,7 @@ const authService = {
       const user = normalizeUser(response.data.user);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.removeItem(LOGOUT_REASON_KEY);
       return {
         ...response.data,
         user
@@ -18,11 +21,12 @@ const authService = {
     throw new Error('Error en el login');
   },
 
-  logout: () => {
+  logout: (reason = 'manual') => {
+    localStorage.setItem(LOGOUT_REASON_KEY, reason);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+      window.dispatchEvent(new CustomEvent('auth:logout', { detail: { reason } }));
     }
   },
 
@@ -66,6 +70,12 @@ const authService = {
   deleteUsuario: async (id) => {
     const response = await api.delete(`/auth/usuarios/${id}`);
     return response.data;
+  },
+
+  consumeLogoutReason: () => {
+    const reason = localStorage.getItem(LOGOUT_REASON_KEY);
+    localStorage.removeItem(LOGOUT_REASON_KEY);
+    return reason;
   }
 };
 
