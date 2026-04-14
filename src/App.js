@@ -7,6 +7,7 @@ import HistorialSorteos from './components/HistorialSorteos';
 import ReporteVenta from './components/ReporteVenta';
 import PanelAdministracion from './components/PanelAdministracion';
 import CalculadoraPremios from './components/CalculadoraPremios';
+import NumerosGanadores from './components/NumerosGanadores';
 import { normalizarPremios } from './utils/premiosDefault';
 import { useAuth } from './context/AuthContext';
 import sorteosService from './services/sorteosService';
@@ -111,6 +112,12 @@ function App() {
       label: 'Reportes',
       code: '03',
       summary: 'Revisa ventas, montos y resultados operativos del punto de venta.'
+    },
+    {
+      id: 'ganadores',
+      label: 'Numeros ganadores',
+      code: '04',
+      summary: 'Consulta los resultados cargados para cada loteria.'
     }
   ];
 
@@ -537,6 +544,18 @@ function App() {
       return (
         <div className="content-grid panel-single">
           <ReporteVenta sorteos={sorteos} loterias={loterias} />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'ganadores') {
+      return (
+        <div className="content-grid panel-single">
+          <NumerosGanadores
+            loterias={loterias}
+            setLoterias={actualizarLoterias}
+            soloLectura
+          />
         </div>
       );
     }

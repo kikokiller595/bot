@@ -17,6 +17,17 @@
   color: var(--text-main);
 }
 
+.numeros-ganadores-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.numeros-ganadores-copy {
+  max-width: 58ch;
+  color: var(--text-soft);
+}
+
 .formulario-numero {
   padding: 1.1rem;
   border-radius: 24px;
@@ -93,6 +104,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+}
+
+.numeros-ganadores-toolbar {
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  background: rgba(247, 244, 236, 0.72);
+  border: 1px solid rgba(23, 49, 58, 0.08);
 }
 
 .numeros-ganadores-list h3 {
