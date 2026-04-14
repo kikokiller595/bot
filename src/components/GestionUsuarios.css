@@ -3,6 +3,37 @@
   height: 100%;
 }
 
+.gestion-usuarios-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gestion-usuarios-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.usuarios-kicker {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(17, 78, 96, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gestion-usuarios-copy p,
+.usuario-empty {
+  color: var(--text-soft);
+}
+
 .btn-agregar-usuario,
 .usuario-form-actions button,
 .tabla-acciones button {
@@ -26,11 +57,35 @@
 }
 
 .usuario-formulario {
-  padding: 1.1rem;
+  padding: 1.15rem;
   border-radius: 24px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
   margin-bottom: 1rem;
+}
+
+.usuario-role-switch {
+  display: inline-flex;
+  gap: 0.5rem;
+  padding: 0.4rem;
+  border-radius: 999px;
+  background: rgba(17, 78, 96, 0.06);
+  margin-bottom: 1rem;
+}
+
+.usuario-role-switch button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  color: var(--text-soft);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.usuario-role-switch button.active {
+  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+  color: var(--text-inverse);
 }
 
 .usuario-grid {
@@ -39,13 +94,34 @@
   gap: 0.8rem;
 }
 
-.usuario-grid input,
-.usuario-grid select {
+.usuario-grid-terminal {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.usuario-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.usuario-field span {
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.usuario-field input {
   width: 100%;
-  padding: 0.9rem 0.95rem;
+  padding: 0.92rem 0.95rem;
   border-radius: 16px;
   border: 1px solid rgba(23, 49, 58, 0.12);
   background: rgba(255, 255, 255, 0.86);
+}
+
+.usuario-field-wide {
+  grid-column: 1 / -1;
 }
 
 .usuario-checkbox {
@@ -54,6 +130,11 @@
   gap: 0.55rem;
   color: var(--text-main);
   font-weight: 700;
+}
+
+.usuario-checkbox-inline {
+  align-self: end;
+  min-height: 100%;
 }
 
 .usuario-form-actions {
@@ -97,20 +178,58 @@
   color: var(--text-main);
 }
 
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.estado-badge.activo {
+  background: rgba(34, 119, 85, 0.12);
+  color: var(--success);
+}
+
+.estado-badge.inactivo {
+  background: rgba(182, 69, 60, 0.12);
+  color: var(--danger);
+}
+
+.tabla-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .usuario-empty {
   padding: 2rem 1rem;
-  color: var(--text-soft);
+}
+
+@media (max-width: 900px) {
+  .usuario-grid-terminal {
+    grid-template-columns: 1fr;
+  }
+
+  .usuario-field-wide {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 768px) {
   .usuario-form-actions,
-  .tabla-acciones {
+  .tabla-acciones,
+  .usuario-role-switch {
     flex-direction: column;
   }
 
   .btn-agregar-usuario,
   .usuario-form-actions button,
-  .tabla-acciones button {
+  .tabla-acciones button,
+  .usuario-role-switch button {
     width: 100%;
   }
 }
