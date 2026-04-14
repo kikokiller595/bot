@@ -33,7 +33,6 @@ const formatearUsuario = (usuario) => {
     id: usuario._id,
     nombre: usuario.nombre,
     username: usuario.username || '',
-    email: usuario.email || '',
     rol: normalizarRol(usuario.rol),
     activo: Boolean(usuario.activo),
     puntoVentaId: puntoVenta?._id || usuario.puntoVenta || null,
@@ -82,10 +81,6 @@ router.post(
       .isLength({ min: 6 })
       .withMessage('La contrasena debe tener al menos 6 caracteres'),
     body('rol').isIn(['admin', 'punto_venta']).withMessage('Rol invalido'),
-    body('email')
-      .optional({ checkFalsy: true })
-      .isEmail()
-      .withMessage('Email invalido'),
     body('puntoVentaId')
       .optional({ nullable: true, checkFalsy: true })
       .isMongoId()
@@ -103,7 +98,6 @@ router.post(
         username,
         password,
         rol,
-        email,
         puntoVentaId
       } = req.body;
 
@@ -120,18 +114,6 @@ router.post(
         });
       }
 
-      if (email) {
-        const emailExiste = await Usuario.findOne({
-          email: String(email).trim().toLowerCase()
-        });
-        if (emailExiste) {
-          return res.status(400).json({
-            success: false,
-            message: 'El email ya esta registrado'
-          });
-        }
-      }
-
       let puntoVenta = null;
       if (rolNormalizado === 'punto_venta') {
         if (!puntoVentaId) {
@@ -146,7 +128,6 @@ router.post(
       const usuario = await Usuario.create({
         nombre: String(nombre).trim(),
         username: usernameNormalizado,
-        email: email ? String(email).trim().toLowerCase() : undefined,
         password,
         rol: rolNormalizado,
         puntoVenta: puntoVenta?._id || null
@@ -300,10 +281,6 @@ router.put(
       .optional({ checkFalsy: true })
       .isIn(['admin', 'punto_venta'])
       .withMessage('Rol invalido'),
-    body('email')
-      .optional({ checkFalsy: true })
-      .isEmail()
-      .withMessage('Email invalido'),
     body('puntoVentaId')
       .optional({ nullable: true, checkFalsy: true })
       .isMongoId()
@@ -330,7 +307,6 @@ router.put(
         password,
         rol,
         activo,
-        email,
         puntoVentaId
       } = req.body;
 
@@ -351,25 +327,6 @@ router.put(
           });
         }
         usuario.username = usernameNormalizado;
-      }
-
-      if (typeof email !== 'undefined') {
-        if (email) {
-          const emailNormalizado = String(email).trim().toLowerCase();
-          const emailExiste = await Usuario.findOne({
-            email: emailNormalizado,
-            _id: { $ne: usuario._id }
-          });
-          if (emailExiste) {
-            return res.status(400).json({
-              success: false,
-              message: 'El email ya esta registrado'
-            });
-          }
-          usuario.email = emailNormalizado;
-        } else {
-          usuario.email = undefined;
-        }
       }
 
       const rolNormalizado = rol ? normalizarRol(rol) : normalizarRol(usuario.rol);

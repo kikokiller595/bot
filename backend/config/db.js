@@ -13,10 +13,30 @@ const getMongoStatus = () => {
   }
 };
 
+const cleanupLegacyUserEmailIndex = async (conn) => {
+  try {
+    const usuariosCollection = conn.connection.db.collection('usuarios');
+    await usuariosCollection.updateMany(
+      { email: null },
+      { $unset: { email: '' } }
+    );
+
+    const indexes = await usuariosCollection.indexes();
+    const emailIndex = indexes.find((index) => index.name === 'email_1');
+    if (emailIndex) {
+      await usuariosCollection.dropIndex('email_1');
+      console.log('Indice legado email_1 eliminado de usuarios');
+    }
+  } catch (error) {
+    console.error(`No se pudo limpiar el indice email_1: ${error.message}`);
+  }
+};
+
 const connectDB = async (attempt = 1) => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
     console.log(`MongoDB conectado: ${conn.connection.host}`);
+    await cleanupLegacyUserEmailIndex(conn);
     return conn;
   } catch (error) {
     const retryDelay = Number(process.env.MONGODB_RETRY_DELAY_MS || 5000);

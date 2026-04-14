@@ -8,7 +8,6 @@ const formularioInicial = {
   username: '',
   password: '',
   nombre: '',
-  email: '',
   ubicacion: '',
   telefono: '',
   tipo: '',
@@ -163,7 +162,6 @@ function GestionUsuarios() {
       nombre: formulario.nombre.trim(),
       username: formulario.username.trim().toLowerCase(),
       rol: 'admin',
-      email: formulario.email.trim() || undefined,
       activo: formulario.activo
     };
 
@@ -205,7 +203,6 @@ function GestionUsuarios() {
         username: usuario.username || '',
         password: '',
         nombre: usuario.nombre || '',
-        email: usuario.email || '',
         ubicacion: '',
         telefono: '',
         tipo: '',
@@ -218,7 +215,6 @@ function GestionUsuarios() {
         username: usuario.username || puntoVenta.username || '',
         password: '',
         nombre: '',
-        email: '',
         ubicacion: puntoVenta.ubicacion || '',
         telefono: puntoVenta.telefono || '',
         tipo: puntoVenta.tipo || '',
@@ -375,15 +371,6 @@ function GestionUsuarios() {
                     placeholder={editandoId ? 'Nueva contrasena (opcional)' : 'Contrasena'}
                     value={formulario.password}
                     onChange={(e) => actualizarCampo('password', e.target.value)}
-                  />
-                </label>
-                <label className="usuario-field">
-                  <span>Email</span>
-                  <input
-                    type="email"
-                    placeholder="Email (opcional)"
-                    value={formulario.email}
-                    onChange={(e) => actualizarCampo('email', e.target.value)}
                   />
                 </label>
                 <label className="usuario-checkbox usuario-checkbox-inline">

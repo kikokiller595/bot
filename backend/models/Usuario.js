@@ -17,11 +17,9 @@ const usuarioSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
-      sparse: true,
       lowercase: true,
       trim: true,
-      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,10})+$/, 'Email invalido']
+      default: undefined
     },
     password: {
       type: String,
