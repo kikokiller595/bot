@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import authService from '../services/authService';
 
 const AuthContext = createContext();
-const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000;
+const INACTIVITY_TIMEOUT_MS = 60 * 60 * 1000;
 const ACTIVITY_SYNC_THROTTLE_MS = 30000;
 const LAST_ACTIVITY_KEY = 'tby_last_activity';
 
