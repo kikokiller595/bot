@@ -21,7 +21,7 @@ function App() {
   const [puntosVenta, setPuntosVenta] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [panelActivo, setPanelActivo] = useState('resumen');
+  const [panelActivo, setPanelActivo] = useState('venta');
   const [menuRapidoAbierto, setMenuRapidoAbierto] = useState(false);
   const menuRapidoRef = useRef(null);
 
@@ -59,40 +59,40 @@ function App() {
 
   const panelesAdmin = [
     {
-      id: 'resumen',
-      label: 'Pulso general',
-      code: '01',
-      summary: 'Ventas del dia, actividad y panorama de toda la red.'
-    },
-    {
       id: 'venta',
-      label: 'Ventas',
-      code: '02',
+      label: 'Punto de venta',
+      code: '01',
       summary: 'Registra jugadas y emite tickets desde la vista de administrador.'
     },
     {
       id: 'historial',
       label: 'Historial de tickets',
-      code: '03',
+      code: '02',
       summary: 'Consulta tickets guardados, revisa detalles y administra historial.'
     },
     {
       id: 'reportes',
       label: 'Reportes',
-      code: '04',
+      code: '03',
       summary: 'Analiza ventas, resultados y movimiento por fechas y por punto.'
     },
     {
       id: 'premios',
       label: 'Premios',
-      code: '05',
+      code: '04',
       summary: 'Consulta ganadores, pagos y balances de premios.'
     },
     {
       id: 'administracion',
       label: 'Configuracion',
-      code: '06',
+      code: '05',
       summary: 'Loterias, usuarios, puntos de venta y resultados.'
+    },
+    {
+      id: 'resumen',
+      label: 'Pulso general',
+      code: '06',
+      summary: 'Ventas del dia, actividad y panorama de toda la red.'
     }
   ];
 
@@ -224,7 +224,7 @@ function App() {
 
   useEffect(() => {
     if (!user) return;
-    setPanelActivo(user.rol === 'admin' ? 'resumen' : 'venta');
+    setPanelActivo('venta');
   }, [user]);
 
   useEffect(() => {
