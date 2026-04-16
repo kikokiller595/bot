@@ -1107,21 +1107,20 @@ const GeneradorNumeros = ({
           )}
           {/* Área de entrada */}
           <div className="area-entrada">
-            <div className="campo-fecha">
-              <label>Fecha del Ticket</label>
-              <input
-                type="date"
-                value={fechaSeleccionada}
-                onChange={(e) => setFechaSeleccionada(e.target.value)}
-                className="input-fecha-ticket"
-                disabled={!esAdmin}
-              />
-              <small className="campo-fecha-ayuda">
-                {esAdmin
-                  ? 'Administrador: puedes registrar tickets para cualquier fecha.'
-                  : 'Punto de venta: solo puedes registrar tickets con la fecha de hoy.'}
-              </small>
-            </div>
+            {esAdmin && (
+              <div className="campo-fecha">
+                <label>Fecha del Ticket</label>
+                <input
+                  type="date"
+                  value={fechaSeleccionada}
+                  onChange={(e) => setFechaSeleccionada(e.target.value)}
+                  className="input-fecha-ticket"
+                />
+                <small className="campo-fecha-ayuda">
+                  Administrador: puedes registrar tickets para cualquier fecha.
+                </small>
+              </div>
+            )}
 
             {esAdmin && (
               <div className="campo-terminal">
