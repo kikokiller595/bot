@@ -613,7 +613,16 @@ function App() {
 
   return (
     <div className={`App ${esAdmin ? 'app-admin' : 'app-punto-venta'}`}>
-      <Header />
+      <Header
+        mostrarNavegacion={mostrarNavegacion}
+        menuRapidoAbierto={menuRapidoAbierto}
+        setMenuRapidoAbierto={setMenuRapidoAbierto}
+        menuRapidoRef={menuRapidoRef}
+        panelActivo={panelActivo}
+        panelActivoData={panelActivoData}
+        panelesDisponibles={panelesDisponibles}
+        cambiarPanel={cambiarPanel}
+      />
       <div className="container">
         <div className={`studio-shell ${mostrarSidebar ? '' : 'studio-shell-full'}`}>
           {mostrarSidebar && (
@@ -662,58 +671,6 @@ function App() {
           )}
 
           <main className="studio-stage">
-            {mostrarNavegacion && (
-              <section
-                className={`stage-top-nav ${menuRapidoAbierto ? 'is-open' : ''}`}
-                ref={menuRapidoRef}
-              >
-                <div className="stage-top-nav-bar">
-                  <button
-                    type="button"
-                    className="stage-top-nav-trigger"
-                    onClick={() => setMenuRapidoAbierto((prev) => !prev)}
-                    aria-expanded={menuRapidoAbierto}
-                    aria-haspopup="true"
-                  >
-                    <span className="stage-top-nav-trigger-icon" aria-hidden="true" />
-                    <span className="stage-top-nav-trigger-label">Menu</span>
-                    <span className="stage-top-nav-trigger-caret" aria-hidden="true">
-                      {menuRapidoAbierto ? '^' : 'v'}
-                    </span>
-                  </button>
-
-                  <div className="stage-top-nav-current">
-                    <span>Vista actual</span>
-                    <strong>{panelActivoData.label}</strong>
-                  </div>
-                </div>
-
-                {menuRapidoAbierto && (
-                  <div className="stage-top-nav-dropdown">
-                    <div className="stage-top-nav-copy">
-                      Navega entre las areas principales sin bajar al contenido.
-                    </div>
-
-                    <div className="stage-top-nav-list">
-                      {panelesDisponibles.map((panel) => (
-                        <button
-                          key={panel.id}
-                          className={`stage-top-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
-                          onClick={() => cambiarPanel(panel.id)}
-                        >
-                          <span className="stage-top-nav-code">{panel.code}</span>
-                          <span className="stage-top-nav-text">
-                            <strong>{panel.label}</strong>
-                            <small>{panel.summary}</small>
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </section>
-            )}
-
             {mostrarResumenSuperior && (
               <>
                 <section className="stage-masthead">

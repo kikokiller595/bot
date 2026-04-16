@@ -20,6 +20,20 @@
   backdrop-filter: blur(18px);
 }
 
+.header-content-with-menu {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.header-main-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
 .header-content::before {
   content: "";
   position: absolute;
@@ -41,7 +55,8 @@
 }
 
 .header-brand,
-.header-user {
+.header-user,
+.header-menu-row {
   position: relative;
   z-index: 1;
 }
@@ -154,8 +169,13 @@
   box-shadow: 0 20px 32px rgba(12, 27, 34, 0.18);
 }
 
+.header-menu-row {
+  padding-top: 0.25rem;
+  border-top: 1px solid rgba(12, 27, 34, 0.08);
+}
+
 @media (max-width: 980px) {
-  .header-content {
+  .header-main-row {
     flex-direction: column;
     align-items: stretch;
   }
