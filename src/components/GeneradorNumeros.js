@@ -157,8 +157,7 @@ const GeneradorNumeros = ({
       setLoteriasSeleccionadas(prev => {
         const disponibles = loterias.map(l => l.id.toString());
         const filtradas = prev.filter(id => disponibles.includes(id));
-        if (filtradas.length > 0) return filtradas;
-        return [disponibles[0]];
+        return filtradas;
       });
     } else {
       setLoteriasSeleccionadas([]);
