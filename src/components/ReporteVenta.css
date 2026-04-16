@@ -97,6 +97,22 @@
   margin-bottom: 1rem;
 }
 
+.resumen-ventas .stat-card.stat-principal,
+.resumen-ventas .stats-extras {
+  display: none;
+}
+
+.stats-grid.stats-grid-clean {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats-grid.stats-grid-clean .stat-card:nth-child(1),
+.stats-grid.stats-grid-clean .stat-card:nth-child(2),
+.stats-grid.stats-grid-clean .stat-card:nth-child(3),
+.stats-grid.stats-grid-clean .stat-card:nth-child(7) {
+  display: none;
+}
+
 .stat-card.stat-principal {
   padding: 1.3rem;
   margin-bottom: 1rem;

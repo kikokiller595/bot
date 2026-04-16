@@ -925,7 +925,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             </div>
           </div>
 
-          <div className="stats-grid">
+          <div className="stats-grid stats-grid-clean">
             <div className="stat-card">
               <div className="stat-label">Straight</div>
               <div className="stat-value">${estadisticas.ventaStraight.toFixed(2)}</div>
