@@ -774,6 +774,11 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     };
   }, [configuracionPuntoActual, puntoVentaFiltro, estadisticas.gananciaNeta, isAdmin, ventasPorPuntoVenta]);
 
+  const montoRestante = useMemo(
+    () => estadisticas.gananciaNeta - resumenSocio.montoSeleccionado,
+    [estadisticas.gananciaNeta, resumenSocio.montoSeleccionado]
+  );
+
   const formatearFecha = (fechaStr) => {
     try {
       const fecha = parsearFecha(fechaStr);
@@ -951,7 +956,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             </div>
 
             <div className={`stat-card ${estadisticas.gananciaNeta >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
-              <div className="stat-label">Ganancia Neta</div>
+              <div className="stat-label">Venta neta</div>
               <div className="stat-value">${estadisticas.gananciaNeta.toFixed(2)}</div>
               <div className="stat-sublabel">Ventas - Premios</div>
             </div>
@@ -968,6 +973,12 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                   ? 'Configurado para este punto'
                   : 'Con porcentaje configurado'}
               </div>
+            </div>
+
+            <div className={`stat-card ${montoRestante >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
+              <div className="stat-label">Te queda</div>
+              <div className="stat-value">${montoRestante.toFixed(2)}</div>
+              <div className="stat-sublabel">Neta - porcentaje del socio</div>
             </div>
 
             <div className={`stat-card ${resumenSocio.montoSeleccionado >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>

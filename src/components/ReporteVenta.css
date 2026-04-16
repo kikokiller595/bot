@@ -103,13 +103,13 @@
 }
 
 .stats-grid.stats-grid-clean {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .stats-grid.stats-grid-clean .stat-card:nth-child(1),
 .stats-grid.stats-grid-clean .stat-card:nth-child(2),
 .stats-grid.stats-grid-clean .stat-card:nth-child(3),
-.stats-grid.stats-grid-clean .stat-card:nth-child(7) {
+.stats-grid.stats-grid-clean .stat-card:nth-child(8) {
   display: none;
 }
 
