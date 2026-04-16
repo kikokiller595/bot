@@ -442,6 +442,7 @@ function App() {
   const panelesDisponibles = user.rol === 'admin' ? panelesAdmin : panelesPuntoVenta;
   const mostrarNavegacion = panelesDisponibles.length > 1;
   const mostrarResumenSuperior = user.rol === 'admin' && panelActivo === 'resumen';
+  const mostrarSidebar = user.rol !== 'admin';
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
   const nombrePanel = user.rol === 'admin' ? 'Panel Administrador' : 'Panel Punto de Venta';
   const descripcionPanel = user.rol === 'admin'
@@ -608,49 +609,51 @@ function App() {
     <div className="App">
       <Header />
       <div className="container">
-        <div className="studio-shell">
-          <aside className="studio-sidebar">
-            <section className="sidebar-card sidebar-brand-card">
-              <span className="sidebar-kicker">
-                {user.rol === 'admin' ? 'Control central' : 'Cabina local'}
-              </span>
-              <h2 className="sidebar-title">{nombrePanel}</h2>
-              <p className="sidebar-description">{descripcionPanel}</p>
-            </section>
+        <div className={`studio-shell ${mostrarSidebar ? '' : 'studio-shell-full'}`}>
+          {mostrarSidebar && (
+            <aside className="studio-sidebar">
+              <section className="sidebar-card sidebar-brand-card">
+                <span className="sidebar-kicker">
+                  {user.rol === 'admin' ? 'Control central' : 'Cabina local'}
+                </span>
+                <h2 className="sidebar-title">{nombrePanel}</h2>
+                <p className="sidebar-description">{descripcionPanel}</p>
+              </section>
 
-            <section className="sidebar-card">
-              <div className="sidebar-session-grid">
-                <div className="sidebar-session-item">
-                  <span>Sesion</span>
-                  <strong>{user.nombre}</strong>
-                </div>
-                <div className="sidebar-session-item">
-                  <span>Modo</span>
-                  <strong>{user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}</strong>
-                </div>
-                <div className="sidebar-session-item">
-                  <span>Operacion</span>
-                  <strong>{user.puntoVentaNombre || 'Central'}</strong>
-                </div>
-                <div className="sidebar-session-item">
-                  <span>Fecha</span>
-                  <strong>{fechaPanel}</strong>
-                </div>
-              </div>
-            </section>
-
-            <section className="sidebar-card">
-              <div className="sidebar-stats-grid">
-                {resumenHero.map((item) => (
-                  <div key={item.label} className="sidebar-stat-chip">
-                    <span>{item.label}</span>
-                    <strong>{item.value}</strong>
-                    <small>{item.note}</small>
+              <section className="sidebar-card">
+                <div className="sidebar-session-grid">
+                  <div className="sidebar-session-item">
+                    <span>Sesion</span>
+                    <strong>{user.nombre}</strong>
                   </div>
-                ))}
-              </div>
-            </section>
-          </aside>
+                  <div className="sidebar-session-item">
+                    <span>Modo</span>
+                    <strong>{user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}</strong>
+                  </div>
+                  <div className="sidebar-session-item">
+                    <span>Operacion</span>
+                    <strong>{user.puntoVentaNombre || 'Central'}</strong>
+                  </div>
+                  <div className="sidebar-session-item">
+                    <span>Fecha</span>
+                    <strong>{fechaPanel}</strong>
+                  </div>
+                </div>
+              </section>
+
+              <section className="sidebar-card">
+                <div className="sidebar-stats-grid">
+                  {resumenHero.map((item) => (
+                    <div key={item.label} className="sidebar-stat-chip">
+                      <span>{item.label}</span>
+                      <strong>{item.value}</strong>
+                      <small>{item.note}</small>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </aside>
+          )}
 
           <main className="studio-stage">
             {mostrarNavegacion && (

@@ -16,6 +16,10 @@
   align-items: start;
 }
 
+.studio-shell-full {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .studio-sidebar {
   position: sticky;
   top: 1rem;
