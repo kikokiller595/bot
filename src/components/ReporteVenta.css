@@ -384,10 +384,7 @@
 }
 
 .tickets-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 260px;
+  display: none;
 }
 
 .tickets-header {
