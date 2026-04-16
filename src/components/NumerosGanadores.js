@@ -1,6 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './NumerosGanadores.css';
 import loteriasService from '../services/loteriasService';
+
+const DRAW_SUFFIXES = new Set(['am', 'pm', 'eve', 'midday', 'mid-day', 'night']);
+
+const capitalizarPalabra = (valor = '') =>
+  valor.charAt(0).toUpperCase() + valor.slice(1).toLowerCase();
+
+const obtenerEstadoLoteria = (nombre = '') => {
+  const tokens = String(nombre)
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const baseTokens = tokens.filter(
+    (token) => !DRAW_SUFFIXES.has(String(token).toLowerCase())
+  );
+
+  if (baseTokens.length === 0) {
+    return 'Especiales';
+  }
+
+  return baseTokens.map(capitalizarPalabra).join(' ');
+};
+
+const ordenarPorFechaDesc = (a, b) => new Date(b.fecha) - new Date(a.fecha);
 
 const NumerosGanadores = ({
   loterias = [],
@@ -168,7 +192,62 @@ const NumerosGanadores = ({
       if (!fechaFiltro) return true;
       return normalizarFecha(numero.fecha) === fechaFiltro;
     })
-    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    .sort(ordenarPorFechaDesc);
+
+  const loteriasPorEstado = useMemo(() => {
+    if (!soloLectura) {
+      return [];
+    }
+
+    const grupos = new Map();
+
+    loterias
+      .slice()
+      .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
+      .forEach((loteria) => {
+        const todosLosNumeros = (loteria.numerosGanadores || [])
+          .slice()
+          .sort(ordenarPorFechaDesc);
+
+        let numerosVisibles = [];
+        let fechaReferencia = '';
+
+        if (fechaFiltro) {
+          numerosVisibles = todosLosNumeros.filter(
+            (numero) => normalizarFecha(numero.fecha) === fechaFiltro
+          );
+          fechaReferencia = fechaFiltro;
+        } else if (todosLosNumeros.length > 0) {
+          fechaReferencia = normalizarFecha(todosLosNumeros[0].fecha) || '';
+          numerosVisibles = fechaReferencia
+            ? todosLosNumeros.filter(
+                (numero) => normalizarFecha(numero.fecha) === fechaReferencia
+              )
+            : [todosLosNumeros[0]];
+        }
+
+        const estado = obtenerEstadoLoteria(loteria.nombre);
+        const grupoActual = grupos.get(estado) || [];
+
+        grupoActual.push({
+          id: loteria.id,
+          nombre: loteria.nombre,
+          horaCierre: loteria.horaCierre || '',
+          fechaReferencia,
+          numerosVisibles
+        });
+
+        grupos.set(estado, grupoActual);
+      });
+
+    return Array.from(grupos.entries())
+      .sort(([estadoA], [estadoB]) => {
+        if (estadoA === 'Especiales') return 1;
+        if (estadoB === 'Especiales') return -1;
+        return estadoA.localeCompare(estadoB, 'es');
+      })
+      .map(([estado, items]) => ({ estado, items }));
+  }, [fechaFiltro, loterias, soloLectura]);
 
   return (
     <div className="numeros-ganadores-container">
@@ -177,7 +256,7 @@ const NumerosGanadores = ({
           <h2 className="card-title">Numeros ganadores</h2>
           <p className="numeros-ganadores-copy">
             {soloLectura
-              ? 'Consulta los resultados cargados por loteria y por fecha.'
+              ? 'Consulta los resultados cargados por estado, loteria y fecha.'
               : 'Carga, revisa y administra los resultados ganadores de cada loteria.'}
           </p>
         </div>
@@ -271,30 +350,9 @@ const NumerosGanadores = ({
               </div>
             )}
 
-            {loteriaActual && (
-              <div className="numeros-ganadores-list">
-                <h3>Numeros ganadores - {loteriaActual.nombre}</h3>
-
-                {soloLectura && (
-                  <div className="numeros-ganadores-toolbar">
-                    <div className="form-group">
-                      <label>Loteria:</label>
-                      <select
-                        value={loteriaSeleccionada}
-                        onChange={(e) => setLoteriaSeleccionada(e.target.value)}
-                        className="select-loteria"
-                      >
-                        {loterias.map((loteria) => (
-                          <option key={loteria.id} value={loteria.id}>
-                            {loteria.nombre}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                )}
-
-                <div className="filtro-fecha-numeros">
+            {soloLectura ? (
+              <div className="numeros-ganadores-resumen">
+                <div className="filtro-fecha-numeros filtro-fecha-global">
                   <label>Filtrar por fecha:</label>
                   <div className="acciones-fecha">
                     <input
@@ -308,31 +366,112 @@ const NumerosGanadores = ({
                         type="button"
                         onClick={() => setFechaFiltro('')}
                       >
-                        Mostrar todo
+                        Mostrar ultimo resultado
                       </button>
                     )}
                   </div>
                 </div>
 
-                {numerosFiltrados.length > 0 ? (
-                  <div className="numeros-list">
-                    {numerosFiltrados.map((numero) => (
-                      <div key={numero.id} className="numero-ganador-item">
-                        <div className="numero-ganador-info">
-                          <div className="numero-ganador-header">
-                            <span className="numero-ganador-valor">{numero.numero}</span>
-                            {Number(numero.premio) > 0 && (
-                              <span className="numero-ganador-premio">
-                                ${Number(numero.premio).toFixed(2)}
-                              </span>
-                            )}
-                          </div>
-                          <span className="numero-ganador-fecha">
-                            {numero.fecha} - Registrado: {numero.fechaRegistro}
-                          </span>
-                        </div>
+                <div className="estados-ganadores-lista">
+                  {loteriasPorEstado.map((grupo) => (
+                    <section key={grupo.estado} className="estado-ganador-bloque">
+                      <div className="estado-ganador-head">
+                        <h3>{grupo.estado}</h3>
+                        <span>{grupo.items.length} loterias</span>
+                      </div>
 
-                        {!soloLectura && (
+                      <div className="estado-ganador-grid">
+                        {grupo.items.map((item) => (
+                          <article
+                            key={item.id}
+                            className={`loteria-resultado-card ${
+                              item.numerosVisibles.length === 0 ? 'sin-resultado' : ''
+                            }`}
+                          >
+                            <div className="loteria-resultado-head">
+                              <div className="loteria-resultado-copy">
+                                <strong>{item.nombre}</strong>
+                                <span>
+                                  {item.horaCierre
+                                    ? `Cierre ${item.horaCierre}`
+                                    : 'Sin hora de cierre'}
+                                </span>
+                              </div>
+                              <span className="loteria-resultado-fecha">
+                                {item.fechaReferencia || 'Sin fecha cargada'}
+                              </span>
+                            </div>
+
+                            {item.numerosVisibles.length > 0 ? (
+                              <div className="loteria-resultado-numeros">
+                                {item.numerosVisibles.map((numero) => (
+                                  <div key={numero.id} className="resultado-chip">
+                                    <span className="resultado-chip-numero">{numero.numero}</span>
+                                    {Number(numero.premio) > 0 && (
+                                      <span className="resultado-chip-premio">
+                                        ${Number(numero.premio).toFixed(2)}
+                                      </span>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="loteria-resultado-empty">
+                                {fechaFiltro
+                                  ? 'No hay resultado para esta fecha.'
+                                  : 'Todavia no tiene numeros ganadores cargados.'}
+                              </p>
+                            )}
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              loteriaActual && (
+                <div className="numeros-ganadores-list">
+                  <h3>Numeros ganadores - {loteriaActual.nombre}</h3>
+
+                  <div className="filtro-fecha-numeros">
+                    <label>Filtrar por fecha:</label>
+                    <div className="acciones-fecha">
+                      <input
+                        type="date"
+                        value={fechaFiltro}
+                        onChange={(e) => setFechaFiltro(e.target.value)}
+                      />
+                      {fechaFiltro && (
+                        <button
+                          className="btn-limpiar-fecha"
+                          type="button"
+                          onClick={() => setFechaFiltro('')}
+                        >
+                          Mostrar todo
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {numerosFiltrados.length > 0 ? (
+                    <div className="numeros-list">
+                      {numerosFiltrados.map((numero) => (
+                        <div key={numero.id} className="numero-ganador-item">
+                          <div className="numero-ganador-info">
+                            <div className="numero-ganador-header">
+                              <span className="numero-ganador-valor">{numero.numero}</span>
+                              {Number(numero.premio) > 0 && (
+                                <span className="numero-ganador-premio">
+                                  ${Number(numero.premio).toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                            <span className="numero-ganador-fecha">
+                              {numero.fecha} - Registrado: {numero.fechaRegistro}
+                            </span>
+                          </div>
+
                           <button
                             className="btn-eliminar-ganador"
                             onClick={() => eliminarNumeroGanador(loteriaActual.id, numero.id)}
@@ -341,20 +480,20 @@ const NumerosGanadores = ({
                           >
                             x
                           </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="sin-numeros">
-                    <p>
-                      {fechaFiltro
-                        ? 'No hay numeros registrados para esa fecha.'
-                        : 'No hay numeros ganadores registrados para esta loteria.'}
-                    </p>
-                  </div>
-                )}
-              </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="sin-numeros">
+                      <p>
+                        {fechaFiltro
+                          ? 'No hay numeros registrados para esa fecha.'
+                          : 'No hay numeros ganadores registrados para esta loteria.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )
             )}
           </>
         )}
