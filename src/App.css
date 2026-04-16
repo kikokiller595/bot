@@ -153,88 +153,6 @@
   line-height: 1.45;
 }
 
-.sidebar-nav-card {
-  padding-top: 1.25rem;
-}
-
-.sidebar-nav-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.72rem;
-  margin-top: 0.95rem;
-}
-
-.sidebar-nav-button {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  gap: 0.9rem;
-  align-items: start;
-  padding: 0.9rem;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.74);
-  border: 1px solid rgba(12, 27, 34, 0.08);
-  color: var(--text-main);
-  cursor: pointer;
-  text-align: left;
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
-}
-
-.sidebar-nav-button:hover {
-  transform: translateX(4px);
-  border-color: rgba(15, 138, 124, 0.18);
-  box-shadow: 0 18px 34px rgba(12, 27, 34, 0.08);
-}
-
-.sidebar-nav-button.is-active {
-  background: linear-gradient(135deg, rgba(15, 138, 124, 0.95) 0%, rgba(12, 95, 86, 0.92) 100%);
-  border-color: transparent;
-  color: var(--text-inverse);
-  box-shadow: 0 22px 40px rgba(12, 95, 86, 0.22);
-}
-
-.sidebar-nav-code {
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border-radius: 16px;
-  background: rgba(242, 106, 75, 0.1);
-  color: var(--accent-warm);
-  font-family: var(--font-code);
-  font-size: 0.95rem;
-  font-weight: 800;
-}
-
-.sidebar-nav-button.is-active .sidebar-nav-code {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff4ee;
-}
-
-.sidebar-nav-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.28rem;
-}
-
-.sidebar-nav-copy strong {
-  font-size: 1rem;
-  line-height: 1.3;
-}
-
-.sidebar-nav-copy small {
-  color: var(--text-soft);
-  line-height: 1.5;
-}
-
-.sidebar-nav-button.is-active .sidebar-nav-copy small {
-  color: rgba(247, 251, 249, 0.74);
-}
-
 .sidebar-stats-grid {
   display: grid;
   gap: 0.75rem;
@@ -277,6 +195,104 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.stage-top-nav {
+  padding: 1rem 1.05rem 1.1rem;
+  border-radius: 28px;
+  background: rgba(252, 255, 252, 0.78);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(16px);
+}
+
+.stage-top-nav-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.stage-top-nav-copy {
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.stage-top-nav-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+
+.stage-top-nav-button {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.95rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(12, 27, 34, 0.08);
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.stage-top-nav-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(15, 138, 124, 0.18);
+  box-shadow: 0 18px 32px rgba(12, 27, 34, 0.08);
+}
+
+.stage-top-nav-button.is-active {
+  background: linear-gradient(135deg, rgba(15, 138, 124, 0.96) 0%, rgba(12, 95, 86, 0.93) 100%);
+  border-color: transparent;
+  color: var(--text-inverse);
+  box-shadow: 0 22px 38px rgba(12, 95, 86, 0.18);
+}
+
+.stage-top-nav-code {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: rgba(242, 106, 75, 0.1);
+  color: var(--accent-warm);
+  font-family: var(--font-code);
+  font-size: 0.94rem;
+  font-weight: 800;
+}
+
+.stage-top-nav-button.is-active .stage-top-nav-code {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff1eb;
+}
+
+.stage-top-nav-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.stage-top-nav-text strong {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.stage-top-nav-text small {
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.stage-top-nav-button.is-active .stage-top-nav-text small {
+  color: rgba(247, 251, 249, 0.74);
 }
 
 .stage-masthead {
@@ -519,11 +535,20 @@
     grid-template-columns: 1fr;
   }
 
-  .sidebar-nav-button {
+  .stage-top-nav-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stage-top-nav-list {
+    grid-template-columns: 1fr;
+  }
+
+  .stage-top-nav-button {
     grid-template-columns: 44px minmax(0, 1fr);
   }
 
-  .sidebar-nav-code {
+  .stage-top-nav-code {
     width: 44px;
     height: 44px;
     border-radius: 14px;

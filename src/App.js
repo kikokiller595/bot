@@ -608,27 +608,6 @@ function App() {
               </div>
             </section>
 
-            {mostrarNavegacion && (
-              <section className="sidebar-card sidebar-nav-card">
-                <div className="sidebar-nav-label">Mapa rapido</div>
-                <div className="sidebar-nav-list">
-                  {panelesDisponibles.map((panel) => (
-                    <button
-                      key={panel.id}
-                      className={`sidebar-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
-                      onClick={() => setPanelActivo(panel.id)}
-                    >
-                      <span className="sidebar-nav-code">{panel.code}</span>
-                      <span className="sidebar-nav-copy">
-                        <strong>{panel.label}</strong>
-                        <small>{panel.summary}</small>
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
-
             <section className="sidebar-card">
               <div className="sidebar-stats-grid">
                 {resumenHero.map((item) => (
@@ -643,6 +622,33 @@ function App() {
           </aside>
 
           <main className="studio-stage">
+            {mostrarNavegacion && (
+              <section className="stage-top-nav">
+                <div className="stage-top-nav-head">
+                  <span className="sidebar-nav-label">Mapa rapido</span>
+                  <p className="stage-top-nav-copy">
+                    Navega entre las areas principales sin bajar al contenido.
+                  </p>
+                </div>
+
+                <div className="stage-top-nav-list">
+                  {panelesDisponibles.map((panel) => (
+                    <button
+                      key={panel.id}
+                      className={`stage-top-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
+                      onClick={() => setPanelActivo(panel.id)}
+                    >
+                      <span className="stage-top-nav-code">{panel.code}</span>
+                      <span className="stage-top-nav-text">
+                        <strong>{panel.label}</strong>
+                        <small>{panel.summary}</small>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {mostrarResumenSuperior && (
               <>
                 <section className="stage-masthead">
