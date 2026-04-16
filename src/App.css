@@ -11,7 +11,7 @@
 
 .studio-shell {
   display: grid;
-  grid-template-columns: 294px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.2rem;
   align-items: start;
 }
@@ -25,6 +25,10 @@
 }
 
 .app-admin .studio-sidebar {
+  display: none !important;
+}
+
+.app-punto-venta .studio-sidebar {
   display: none !important;
 }
 

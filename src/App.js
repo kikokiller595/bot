@@ -443,7 +443,7 @@ function App() {
   const panelesDisponibles = esAdmin ? panelesAdmin : panelesPuntoVenta;
   const mostrarNavegacion = panelesDisponibles.length > 1;
   const mostrarResumenSuperior = esAdmin && panelActivo === 'resumen';
-  const mostrarSidebar = !esAdmin;
+  const mostrarSidebar = false;
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
   const nombrePanel = esAdmin ? 'Panel Administrador' : 'Panel Punto de Venta';
   const descripcionPanel = esAdmin
