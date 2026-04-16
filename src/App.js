@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Header from './components/Header';
 import DashboardOperativo from './components/DashboardOperativo';
@@ -22,6 +22,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [panelActivo, setPanelActivo] = useState('resumen');
+  const [menuRapidoAbierto, setMenuRapidoAbierto] = useState(false);
+  const menuRapidoRef = useRef(null);
 
   const obtenerClaveFecha = (valor) => {
     if (!valor) return null;
@@ -224,6 +226,30 @@ function App() {
     if (!user) return;
     setPanelActivo(user.rol === 'admin' ? 'resumen' : 'venta');
   }, [user]);
+
+  useEffect(() => {
+    if (!menuRapidoAbierto) return undefined;
+
+    const handleClickFuera = (event) => {
+      if (menuRapidoRef.current && !menuRapidoRef.current.contains(event.target)) {
+        setMenuRapidoAbierto(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setMenuRapidoAbierto(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickFuera);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickFuera);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [menuRapidoAbierto]);
 
   const guardarSorteo = async (configuracion, numeros, ticket = null) => {
     try {
@@ -467,6 +493,11 @@ function App() {
         }
       ];
 
+  const cambiarPanel = (panelId) => {
+    setPanelActivo(panelId);
+    setMenuRapidoAbierto(false);
+  };
+
   const renderPanelAdmin = () => {
     if (panelActivo === 'resumen') {
       return <DashboardOperativo sorteos={sorteos} loterias={loterias} />;
@@ -623,29 +654,54 @@ function App() {
 
           <main className="studio-stage">
             {mostrarNavegacion && (
-              <section className="stage-top-nav">
-                <div className="stage-top-nav-head">
-                  <span className="sidebar-nav-label">Mapa rapido</span>
-                  <p className="stage-top-nav-copy">
-                    Navega entre las areas principales sin bajar al contenido.
-                  </p>
+              <section
+                className={`stage-top-nav ${menuRapidoAbierto ? 'is-open' : ''}`}
+                ref={menuRapidoRef}
+              >
+                <div className="stage-top-nav-bar">
+                  <button
+                    type="button"
+                    className="stage-top-nav-trigger"
+                    onClick={() => setMenuRapidoAbierto((prev) => !prev)}
+                    aria-expanded={menuRapidoAbierto}
+                    aria-haspopup="true"
+                  >
+                    <span className="stage-top-nav-trigger-icon" aria-hidden="true" />
+                    <span className="stage-top-nav-trigger-label">Menu</span>
+                    <span className="stage-top-nav-trigger-caret" aria-hidden="true">
+                      {menuRapidoAbierto ? '^' : 'v'}
+                    </span>
+                  </button>
+
+                  <div className="stage-top-nav-current">
+                    <span>Vista actual</span>
+                    <strong>{panelActivoData.label}</strong>
+                  </div>
                 </div>
 
-                <div className="stage-top-nav-list">
-                  {panelesDisponibles.map((panel) => (
-                    <button
-                      key={panel.id}
-                      className={`stage-top-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
-                      onClick={() => setPanelActivo(panel.id)}
-                    >
-                      <span className="stage-top-nav-code">{panel.code}</span>
-                      <span className="stage-top-nav-text">
-                        <strong>{panel.label}</strong>
-                        <small>{panel.summary}</small>
-                      </span>
-                    </button>
-                  ))}
-                </div>
+                {menuRapidoAbierto && (
+                  <div className="stage-top-nav-dropdown">
+                    <div className="stage-top-nav-copy">
+                      Navega entre las areas principales sin bajar al contenido.
+                    </div>
+
+                    <div className="stage-top-nav-list">
+                      {panelesDisponibles.map((panel) => (
+                        <button
+                          key={panel.id}
+                          className={`stage-top-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
+                          onClick={() => cambiarPanel(panel.id)}
+                        >
+                          <span className="stage-top-nav-code">{panel.code}</span>
+                          <span className="stage-top-nav-text">
+                            <strong>{panel.label}</strong>
+                            <small>{panel.summary}</small>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </section>
             )}
 

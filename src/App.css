@@ -198,7 +198,8 @@
 }
 
 .stage-top-nav {
-  padding: 1rem 1.05rem 1.1rem;
+  position: relative;
+  padding: 0.9rem 1rem;
   border-radius: 28px;
   background: rgba(252, 255, 252, 0.78);
   border: 1px solid var(--line);
@@ -206,17 +207,91 @@
   backdrop-filter: blur(16px);
 }
 
-.stage-top-nav-head {
+.stage-top-nav.is-open {
+  box-shadow: 0 22px 46px rgba(12, 27, 34, 0.12);
+}
+
+.stage-top-nav-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 0.9rem;
+}
+
+.stage-top-nav-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.72rem;
+  min-height: 54px;
+  padding: 0.9rem 1.15rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--bg-strong) 0%, var(--bg-strong-2) 100%);
+  color: var(--text-inverse);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 16px 30px rgba(12, 27, 34, 0.16);
+}
+
+.stage-top-nav-trigger-icon {
+  position: relative;
+  width: 14px;
+  height: 10px;
+  display: inline-block;
+  border-top: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+}
+
+.stage-top-nav-trigger-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 2px solid currentColor;
+  transform: translateY(-50%);
+}
+
+.stage-top-nav-trigger-label {
+  text-transform: uppercase;
+}
+
+.stage-top-nav-trigger-caret {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.stage-top-nav-current {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.18rem;
+}
+
+.stage-top-nav-current span {
+  color: var(--text-soft);
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stage-top-nav-current strong {
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.stage-top-nav-dropdown {
+  margin-top: 0.95rem;
+  padding-top: 0.95rem;
+  border-top: 1px solid rgba(12, 27, 34, 0.08);
 }
 
 .stage-top-nav-copy {
   color: var(--text-soft);
   line-height: 1.5;
+  margin-bottom: 0.85rem;
 }
 
 .stage-top-nav-list {
@@ -535,8 +610,12 @@
     grid-template-columns: 1fr;
   }
 
-  .stage-top-nav-head {
+  .stage-top-nav-bar {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stage-top-nav-current {
     align-items: flex-start;
   }
 
