@@ -149,6 +149,8 @@ const extenderNumerosGanadores = (numeros = []) => {
 };
 
 const normalizarId = (ticket) => ticket.ticketId || ticket.id;
+const obtenerClavePuntoVenta = (ticket) =>
+  String(ticket?.puntoVentaId || ticket?.puntoVentaNombre || '').trim();
 
 const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiarHistorial }) => {
   const { isAdmin } = useAuth();
@@ -156,6 +158,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
   const [fechaHasta, setFechaHasta] = useState('');
   const [textoBusqueda, setTextoBusqueda] = useState('');
   const [loteriaFiltro, setLoteriaFiltro] = useState('');
+  const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState('');
   const [resultadoFiltro, setResultadoFiltro] = useState('');
   const [gruposExpandido, setGruposExpandido] = useState({});
@@ -357,6 +360,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
       if (fechaHasta && (!fechaTicket || fechaTicket > hastaDate)) return false;
 
       if (loteriaFiltro && String(ticket.loteriaId) !== loteriaFiltro) return false;
+      if (isAdmin() && puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) return false;
 
       if (tipoFiltro) {
         const tipoComparar = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase();
@@ -384,7 +388,18 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
 
       return true;
     });
-  }, [sorteos, fechaDesde, fechaHasta, textoBusqueda, loteriaFiltro, tipoFiltro, resultadoFiltro, resultadoTicketsMapa]);
+  }, [
+    sorteos,
+    fechaDesde,
+    fechaHasta,
+    textoBusqueda,
+    loteriaFiltro,
+    puntoVentaFiltro,
+    tipoFiltro,
+    resultadoFiltro,
+    resultadoTicketsMapa,
+    isAdmin
+  ]);
 
   const resumen = useMemo(() => {
     const totalSeleccion = sorteosFiltrados.length;
@@ -424,6 +439,24 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
     return Array.from(set)
       .map(item => JSON.parse(item))
       .sort((a, b) => a.nombre.localeCompare(b.nombre));
+  }, [sorteos]);
+
+  const opcionesPuntosVenta = useMemo(() => {
+    const mapa = new Map();
+
+    sorteos.forEach((ticket) => {
+      const clave = obtenerClavePuntoVenta(ticket);
+      if (!clave) return;
+
+      if (!mapa.has(clave)) {
+        mapa.set(clave, {
+          id: clave,
+          nombre: String(ticket.puntoVentaNombre || ticket.puntoVentaId || 'Sin punto').trim()
+        });
+      }
+    });
+
+    return Array.from(mapa.values()).sort((a, b) => a.nombre.localeCompare(b.nombre));
   }, [sorteos]);
 
   const agruparTickets = () => {
@@ -471,7 +504,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
   const gruposTickets = useMemo(agruparTickets, [sorteosFiltrados]);
 
   const hayFiltroActivo = Boolean(
-    fechaDesde || fechaHasta || textoBusqueda || loteriaFiltro || tipoFiltro || resultadoFiltro
+    fechaDesde || fechaHasta || textoBusqueda || loteriaFiltro || puntoVentaFiltro || tipoFiltro || resultadoFiltro
   );
 
   const toggleGrupo = (grupoId) => {
@@ -555,6 +588,19 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
               ))}
             </select>
           </div>
+          {isAdmin() && (
+            <div className="filtros-column">
+              <label>Punto de venta</label>
+              <select value={puntoVentaFiltro} onChange={(e) => setPuntoVentaFiltro(e.target.value)}>
+                <option value="">Todos</option>
+                {opcionesPuntosVenta.map((opcion) => (
+                  <option key={opcion.id} value={opcion.id}>
+                    {opcion.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="filtros-column">
             <label>Tipo</label>
             <select value={tipoFiltro} onChange={(e) => setTipoFiltro(e.target.value)}>
@@ -587,6 +633,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
                 setFechaHasta('');
                 setTextoBusqueda('');
                 setLoteriaFiltro('');
+                setPuntoVentaFiltro('');
                 setTipoFiltro('');
                 setResultadoFiltro('');
               }}
