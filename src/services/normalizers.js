@@ -83,6 +83,7 @@ export const normalizePuntoVenta = (puntoVenta) => {
     tipo: String(puntoVenta.tipo || '').trim(),
     ubicacion: String(puntoVenta.ubicacion || '').trim(),
     telefono: String(puntoVenta.telefono || '').trim(),
+    porcentajeSocio: Number(puntoVenta.porcentajeSocio) || 0,
     responsable: String(puntoVenta.responsable || '').trim(),
     username: String(puntoVenta.username || '').trim().toLowerCase(),
     usuarioId: toId(puntoVenta.usuarioId || puntoVenta.userId || ''),

@@ -8,6 +8,7 @@ const formularioInicial = {
   ubicacion: '',
   telefono: '',
   tipo: '',
+  porcentajeSocio: '0',
   activo: true
 };
 
@@ -16,7 +17,7 @@ const ordenarTerminales = (lista = []) =>
     String(a.username || a.nombre || '').localeCompare(String(b.username || b.nombre || ''))
   );
 
-function GestionPuntosVenta() {
+function GestionPuntosVenta({ puntosVentaExternos = null, onPuntosVentaChange = null }) {
   const [puntosVenta, setPuntosVenta] = useState([]);
   const [formulario, setFormulario] = useState(formularioInicial);
   const [editandoId, setEditandoId] = useState(null);
@@ -25,6 +26,12 @@ function GestionPuntosVenta() {
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
+    if (Array.isArray(puntosVentaExternos)) {
+      setPuntosVenta(ordenarTerminales(puntosVentaExternos));
+      setCargando(false);
+      return undefined;
+    }
+
     const cargar = async () => {
       try {
         setCargando(true);
@@ -38,7 +45,8 @@ function GestionPuntosVenta() {
     };
 
     cargar();
-  }, []);
+    return undefined;
+  }, [puntosVentaExternos]);
 
   const totalActivas = useMemo(
     () => puntosVenta.filter((puntoVenta) => puntoVenta.activo).length,
@@ -64,6 +72,7 @@ function GestionPuntosVenta() {
     ubicacion: formulario.ubicacion.trim(),
     telefono: formulario.telefono.trim(),
     tipo: formulario.tipo.trim(),
+    porcentajeSocio: Number(formulario.porcentajeSocio) || 0,
     activo: formulario.activo,
     nombre: formulario.username.trim().toLowerCase(),
     responsable: formulario.username.trim().toLowerCase()
@@ -105,6 +114,12 @@ function GestionPuntosVenta() {
       return;
     }
 
+    const porcentajeSocio = Number(formulario.porcentajeSocio);
+    if (!Number.isFinite(porcentajeSocio) || porcentajeSocio < 0 || porcentajeSocio > 100) {
+      alert('Debes indicar un porcentaje del socio valido entre 0 y 100');
+      return;
+    }
+
     setGuardando(true);
 
     try {
@@ -112,14 +127,20 @@ function GestionPuntosVenta() {
 
       if (editandoId) {
         const actualizado = await puntosVentaService.updatePuntoVenta(editandoId, payload);
-        setPuntosVenta((prev) =>
-          ordenarTerminales(
+        setPuntosVenta((prev) => {
+          const nuevaLista = ordenarTerminales(
             prev.map((item) => (item.id === editandoId ? actualizado : item))
-          )
-        );
+          );
+          onPuntosVentaChange?.(nuevaLista);
+          return nuevaLista;
+        });
       } else {
         const creado = await puntosVentaService.createPuntoVenta(payload);
-        setPuntosVenta((prev) => ordenarTerminales([...prev, creado]));
+        setPuntosVenta((prev) => {
+          const nuevaLista = ordenarTerminales([...prev, creado]);
+          onPuntosVentaChange?.(nuevaLista);
+          return nuevaLista;
+        });
       }
 
       resetFormulario();
@@ -137,6 +158,7 @@ function GestionPuntosVenta() {
       ubicacion: puntoVenta.ubicacion || '',
       telefono: puntoVenta.telefono || '',
       tipo: puntoVenta.tipo || '',
+      porcentajeSocio: String(Number(puntoVenta.porcentajeSocio) || 0),
       activo: typeof puntoVenta.activo === 'boolean' ? puntoVenta.activo : true
     });
     setEditandoId(puntoVenta.id);
@@ -150,9 +172,11 @@ function GestionPuntosVenta() {
 
     try {
       await puntosVentaService.deletePuntoVenta(id);
-      setPuntosVenta((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, activo: false } : item))
-      );
+      setPuntosVenta((prev) => {
+        const nuevaLista = prev.map((item) => (item.id === id ? { ...item, activo: false } : item));
+        onPuntosVentaChange?.(nuevaLista);
+        return nuevaLista;
+      });
     } catch (error) {
       alert(error.message || 'No se pudo desactivar la terminal');
     }
@@ -259,6 +283,19 @@ function GestionPuntosVenta() {
                 />
               </label>
 
+              <label className="terminal-field">
+                <span>Porcentaje del socio (%)</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  placeholder="Ej: 15"
+                  value={formulario.porcentajeSocio}
+                  onChange={(e) => actualizarCampo('porcentajeSocio', e.target.value)}
+                />
+              </label>
+
               <label className="terminal-field terminal-switch">
                 <span>Estado</span>
                 <button
@@ -308,6 +345,10 @@ function GestionPuntosVenta() {
                   <div>
                     <span className="terminal-meta-label">Celular</span>
                     <strong>{puntoVenta.telefono || 'Sin numero'}</strong>
+                  </div>
+                  <div>
+                    <span className="terminal-meta-label">% Socio</span>
+                    <strong>{(Number(puntoVenta.porcentajeSocio) || 0).toFixed(2)}%</strong>
                   </div>
                   <div className="terminal-meta-wide">
                     <span className="terminal-meta-label">Direccion</span>

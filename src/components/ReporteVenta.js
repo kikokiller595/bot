@@ -167,8 +167,8 @@ const obtenerClavePuntoVenta = (ticket = {}) => {
   return 'sin-punto';
 };
 
-const ReporteVenta = ({ sorteos, loterias = [] }) => {
-  const { isAdmin } = useAuth();
+const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
+  const { isAdmin, user } = useAuth();
   const [fechaInicio, setFechaInicio] = useState(obtenerFechaLocal());
   const [fechaFin, setFechaFin] = useState(obtenerFechaLocal());
   const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
@@ -275,6 +275,37 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
 
     return Array.from(mapa.values()).sort((a, b) => a.label.localeCompare(b.label, 'es', { sensitivity: 'base' }));
   }, [sorteos]);
+
+  const puntosVentaMap = useMemo(() => {
+    const mapa = new Map();
+
+    (puntosVenta || []).forEach((punto) => {
+      const id = String(punto.id || punto._id || '').trim();
+      const nombre = String(punto.nombre || '').trim();
+
+      if (id) {
+        mapa.set(`id:${id}`, punto);
+      }
+      if (nombre) {
+        mapa.set(`nombre:${nombre.toLowerCase()}`, punto);
+      }
+    });
+
+    return mapa;
+  }, [puntosVenta]);
+
+  const resolverPuntoVenta = (clave, nombreFallback = '') => {
+    if (clave && puntosVentaMap.has(clave)) {
+      return puntosVentaMap.get(clave);
+    }
+
+    const nombre = String(nombreFallback || '').trim().toLowerCase();
+    if (nombre && puntosVentaMap.has(`nombre:${nombre}`)) {
+      return puntosVentaMap.get(`nombre:${nombre}`);
+    }
+
+    return null;
+  };
 
   const etiquetaPuntoVentaSeleccionado = useMemo(() => {
     if (!puntoVentaFiltro) return 'Todos los puntos';
@@ -508,13 +539,14 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
                 numero: numeroTicketLimpio,
                 tipoApuesta,
                 monto,
-                premio,
-                fechaTicket: ticket.fecha,
-                fechaSorteo: numeroGanador.fecha,
-                loteriaNombre: loteria.nombre,
-                puntoVentaNombre: ticket.puntoVentaNombre || '',
-                usuarioNombre: ticket.usuarioNombre || ticket.vendedorNombre || '',
-                pagado: Boolean(ticket.pagado),
+              premio,
+              fechaTicket: ticket.fecha,
+              fechaSorteo: numeroGanador.fecha,
+              loteriaNombre: loteria.nombre,
+              puntoVentaId: ticket.puntoVentaId || '',
+              puntoVentaNombre: ticket.puntoVentaNombre || '',
+              usuarioNombre: ticket.usuarioNombre || ticket.vendedorNombre || '',
+              pagado: Boolean(ticket.pagado),
                 posicion: obtenerPosicionLabel(numeroGanador.posicion, tipoApuesta)
               });
             } else {
@@ -666,22 +698,81 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
     const mapa = new Map();
 
     ticketsEnRango.forEach((ticket) => {
+      const clave = obtenerClavePuntoVenta(ticket);
       const nombre = String(ticket.puntoVentaNombre || '').trim() || 'Sin punto de venta';
-      if (!mapa.has(nombre)) {
-        mapa.set(nombre, {
+      if (!mapa.has(clave)) {
+        mapa.set(clave, {
+          clave,
           nombre,
           tickets: 0,
-          total: 0
+          total: 0,
+          premiosPagados: 0
         });
       }
 
-      const item = mapa.get(nombre);
+      const item = mapa.get(clave);
       item.tickets += 1;
       item.total += Number(ticket.monto) || 0;
     });
 
-    return Array.from(mapa.values()).sort((a, b) => b.total - a.total);
-  }, [ticketsEnRango]);
+    ticketsGanadoresEnRango.forEach((ticket) => {
+      if (!ticket.pagado) return;
+
+      const clave = ticket.puntoVentaId
+        ? `id:${String(ticket.puntoVentaId).trim()}`
+        : `nombre:${String(ticket.puntoVentaNombre || '').trim().toLowerCase()}`;
+      if (!mapa.has(clave)) return;
+
+      const item = mapa.get(clave);
+      item.premiosPagados += Number(ticket.premio) || 0;
+    });
+
+    const lista = Array.from(mapa.values()).map((item) => {
+      const configuracion = resolverPuntoVenta(item.clave, item.nombre);
+      const porcentajeSocio = Number(configuracion?.porcentajeSocio) || 0;
+      const gananciaNeta = item.total - item.premiosPagados;
+      return {
+        ...item,
+        porcentajeSocio,
+        gananciaNeta,
+        montoSocio: (gananciaNeta * porcentajeSocio) / 100
+      };
+    });
+
+    return lista.sort((a, b) => b.total - a.total);
+  }, [ticketsEnRango, ticketsGanadoresEnRango, puntosVentaMap]);
+
+  const configuracionPuntoActual = useMemo(() => {
+    if (puntoVentaFiltro) {
+      return resolverPuntoVenta(puntoVentaFiltro, etiquetaPuntoVentaSeleccionado);
+    }
+
+    if (!isAdmin() && Array.isArray(puntosVenta) && puntosVenta.length > 0) {
+      return puntosVenta[0];
+    }
+
+    if (!isAdmin() && user?.puntoVentaId) {
+      return resolverPuntoVenta(`id:${String(user.puntoVentaId).trim()}`, user?.puntoVentaNombre);
+    }
+
+    return null;
+  }, [puntoVentaFiltro, etiquetaPuntoVentaSeleccionado, isAdmin, puntosVenta, user, puntosVentaMap]);
+
+  const resumenSocio = useMemo(() => {
+    const porcentajeSeleccionado = Number(configuracionPuntoActual?.porcentajeSocio) || 0;
+    const montoSeleccionado =
+      configuracionPuntoActual && puntoVentaFiltro
+        ? ((estadisticas.gananciaNeta * porcentajeSeleccionado) / 100)
+        : (!isAdmin() && configuracionPuntoActual)
+        ? ((estadisticas.gananciaNeta * porcentajeSeleccionado) / 100)
+        : ventasPorPuntoVenta.reduce((sum, item) => sum + item.montoSocio, 0);
+
+    return {
+      porcentajeSeleccionado,
+      montoSeleccionado,
+      puntosConfigurados: ventasPorPuntoVenta.filter((item) => item.porcentajeSocio > 0).length
+    };
+  }, [configuracionPuntoActual, puntoVentaFiltro, estadisticas.gananciaNeta, isAdmin, ventasPorPuntoVenta]);
 
   const formatearFecha = (fechaStr) => {
     try {
@@ -823,6 +914,14 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
                   ${estadisticas.gananciaNeta.toFixed(2)}
                 </span>
               </div>
+              <div className="socio-item">
+                <span className="ganancia-label">
+                  {configuracionPuntoActual ? 'Socio sobre neta:' : 'Socio estimado:'}
+                </span>
+                <span className={`ganancia-value ${resumenSocio.montoSeleccionado >= 0 ? 'positiva' : 'negativa'}`}>
+                  ${resumenSocio.montoSeleccionado.toFixed(2)}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -856,6 +955,28 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
               <div className="stat-value">${estadisticas.gananciaNeta.toFixed(2)}</div>
               <div className="stat-sublabel">Ventas - Premios</div>
             </div>
+
+            <div className="stat-card stat-socio-porcentaje">
+              <div className="stat-label">Porcentaje socio</div>
+              <div className="stat-value">
+                {configuracionPuntoActual
+                  ? `${resumenSocio.porcentajeSeleccionado.toFixed(2)}%`
+                  : `${resumenSocio.puntosConfigurados} puntos`}
+              </div>
+              <div className="stat-sublabel">
+                {configuracionPuntoActual
+                  ? 'Configurado para este punto'
+                  : 'Con porcentaje configurado'}
+              </div>
+            </div>
+
+            <div className={`stat-card ${resumenSocio.montoSeleccionado >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
+              <div className="stat-label">Monto para socio</div>
+              <div className="stat-value">${resumenSocio.montoSeleccionado.toFixed(2)}</div>
+              <div className="stat-sublabel">
+                {configuracionPuntoActual ? 'Aplicado sobre la neta' : 'Suma estimada por punto'}
+              </div>
+            </div>
           </div>
 
           {isAdmin() && ventasPorPuntoVenta.length > 0 && (
@@ -867,6 +988,10 @@ const ReporteVenta = ({ sorteos, loterias = [] }) => {
                     <div className="punto-venta-nombre">{punto.nombre}</div>
                     <div className="punto-venta-total">${punto.total.toFixed(2)}</div>
                     <div className="punto-venta-tickets">{punto.tickets} tickets</div>
+                    <div className="punto-venta-meta">Neta: ${punto.gananciaNeta.toFixed(2)}</div>
+                    <div className="punto-venta-meta">
+                      Socio {punto.porcentajeSocio.toFixed(2)}%: ${punto.montoSocio.toFixed(2)}
+                    </div>
                   </div>
                 ))}
               </div>

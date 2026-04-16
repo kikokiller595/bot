@@ -52,6 +52,7 @@ const formatearPuntoVenta = (puntoVenta, usuario = null) => ({
   tipo: puntoVenta.tipo || '',
   ubicacion: puntoVenta.ubicacion || '',
   telefono: puntoVenta.telefono || '',
+  porcentajeSocio: Number(puntoVenta.porcentajeSocio) || 0,
   responsable: puntoVenta.responsable || '',
   username: usuario?.username || '',
   usuarioId: usuario?._id || null,
@@ -165,6 +166,10 @@ router.post(
     body('tipo').optional({ checkFalsy: true }).trim(),
     body('ubicacion').optional({ checkFalsy: true }).trim(),
     body('telefono').optional({ checkFalsy: true }).trim(),
+    body('porcentajeSocio')
+      .optional({ checkFalsy: true })
+      .isFloat({ min: 0, max: 100 })
+      .withMessage('El porcentaje del socio debe estar entre 0 y 100'),
     body('responsable').optional({ checkFalsy: true }).trim(),
     body('username')
       .optional({ checkFalsy: true })
@@ -245,6 +250,7 @@ router.post(
         tipo: String(req.body.tipo || '').trim(),
         ubicacion: String(req.body.ubicacion || '').trim(),
         telefono: String(req.body.telefono || '').trim(),
+        porcentajeSocio: Number(req.body.porcentajeSocio) || 0,
         responsable: String(req.body.responsable || username || nombre).trim(),
         activo
       });
@@ -289,6 +295,10 @@ router.put(
     body('tipo').optional().trim(),
     body('ubicacion').optional().trim(),
     body('telefono').optional().trim(),
+    body('porcentajeSocio')
+      .optional({ checkFalsy: true })
+      .isFloat({ min: 0, max: 100 })
+      .withMessage('El porcentaje del socio debe estar entre 0 y 100'),
     body('responsable').optional().trim(),
     body('username')
       .optional({ checkFalsy: true })
@@ -348,6 +358,9 @@ router.put(
       }
       if (typeof req.body.telefono !== 'undefined') {
         puntoVenta.telefono = String(req.body.telefono || '').trim();
+      }
+      if (typeof req.body.porcentajeSocio !== 'undefined') {
+        puntoVenta.porcentajeSocio = Number(req.body.porcentajeSocio) || 0;
       }
       if (typeof req.body.responsable !== 'undefined') {
         puntoVenta.responsable = String(req.body.responsable || '').trim();

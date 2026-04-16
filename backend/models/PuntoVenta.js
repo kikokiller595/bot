@@ -29,6 +29,12 @@ const puntoVentaSchema = new mongoose.Schema(
       trim: true,
       default: ''
     },
+    porcentajeSocio: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0
+    },
     responsable: {
       type: String,
       trim: true,

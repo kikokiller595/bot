@@ -158,7 +158,8 @@
 
 .info-item,
 .premios-item,
-.ganancia-neta-item {
+.ganancia-neta-item,
+.socio-item {
   padding: 0.85rem 0.95rem;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.08);
@@ -276,6 +277,13 @@
 .punto-venta-tickets,
 .extra-value {
   color: var(--text-soft);
+}
+
+.punto-venta-meta {
+  margin-top: 0.35rem;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .stats-extras {

@@ -5,7 +5,7 @@ import NumerosGanadores from './NumerosGanadores';
 import GestionPuntosVenta from './GestionPuntosVenta';
 import GestionUsuarios from './GestionUsuarios';
 
-const PanelAdministracion = ({ loterias, setLoterias }) => {
+const PanelAdministracion = ({ loterias, setLoterias, puntosVenta, setPuntosVenta }) => {
   const [pestanaActiva, setPestanaActiva] = useState('loterias');
   const pestanas = [
     {
@@ -69,7 +69,10 @@ const PanelAdministracion = ({ loterias, setLoterias }) => {
 
           {pestanaActiva === 'puntos' && (
             <div className="tab-content">
-              <GestionPuntosVenta />
+              <GestionPuntosVenta
+                puntosVentaExternos={puntosVenta}
+                onPuntosVentaChange={setPuntosVenta}
+              />
             </div>
           )}
 

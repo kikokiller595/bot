@@ -203,7 +203,7 @@ function App() {
           sorteosService.obtenerSorteos(),
           user?.rol === 'admin'
             ? puntosVentaService.getPuntosVenta()
-            : Promise.resolve([])
+            : puntosVentaService.getMiPuntoVenta().then((data) => (data ? [data] : []))
         ]);
         setLoterias(normalizarListaLoterias(loteriasData));
         setSorteos(sorteosData);
@@ -535,7 +535,7 @@ function App() {
     if (panelActivo === 'reportes') {
       return (
         <div className="content-grid panel-single">
-          <ReporteVenta sorteos={sorteos} loterias={loterias} />
+          <ReporteVenta sorteos={sorteos} loterias={loterias} puntosVenta={puntosVenta} />
         </div>
       );
     }
@@ -554,7 +554,12 @@ function App() {
 
     return (
       <div className="content-grid panel-single">
-        <PanelAdministracion loterias={loterias} setLoterias={actualizarLoterias} />
+        <PanelAdministracion
+          loterias={loterias}
+          setLoterias={actualizarLoterias}
+          puntosVenta={puntosVenta}
+          setPuntosVenta={setPuntosVenta}
+        />
       </div>
     );
   };
@@ -576,7 +581,7 @@ function App() {
     if (panelActivo === 'reportes') {
       return (
         <div className="content-grid panel-single">
-          <ReporteVenta sorteos={sorteos} loterias={loterias} />
+          <ReporteVenta sorteos={sorteos} loterias={loterias} puntosVenta={puntosVenta} />
         </div>
       );
     }
