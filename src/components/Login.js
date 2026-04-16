@@ -29,7 +29,9 @@ function Login() {
   useEffect(() => {
     const logoutReason = authService.consumeLogoutReason();
     if (logoutReason === 'inactivity') {
-      setSessionNotice('La sesion se cerro automaticamente por inactividad. Vuelve a entrar para continuar.');
+      setSessionNotice(
+        'La sesion se cerro automaticamente por inactividad. Vuelve a entrar para continuar.'
+      );
     }
 
     let active = true;
@@ -85,32 +87,32 @@ function Login() {
         <aside className="login-poster">
           <div className="login-poster-top">
             <span className="login-poster-tag">TBY SISTEMAS</span>
-            <span className="login-poster-signal">red operativa</span>
+            <span className="login-poster-signal">centro operativo</span>
           </div>
 
           <div className="login-poster-copy">
-            <h1>Un acceso nuevo para vender, cuadrar y supervisar sin parecerse al sistema anterior.</h1>
+            <h1>Controla ventas, resultados y terminales desde una cabina mucho mas clara.</h1>
             <p>
-              Cabina visual renovada para administracion central, puntos de venta,
-              tickets, resultados y premios en una sola red.
+              Una interfaz nueva para administrar la red completa, registrar tickets
+              y consultar resultados sin perder el foco en la operacion.
             </p>
           </div>
 
           <div className="login-poster-panels">
             <article className="login-poster-panel accent-blue">
-              <span>Vista</span>
-              <strong>Operacion viva</strong>
-              <small>Lectura rapida de ventas, premios y movimiento comercial.</small>
+              <span>Operacion</span>
+              <strong>Venta en tiempo real</strong>
+              <small>Lectura rapida del movimiento diario, tickets y loterias visibles.</small>
             </article>
             <article className="login-poster-panel accent-red">
-              <span>Flujo</span>
-              <strong>Tickets distribuidos</strong>
-              <small>Paneles conectados para locales remotos y administracion central.</small>
+              <span>Red</span>
+              <strong>Locales conectados</strong>
+              <small>Paneles coordinados para puntos remotos y administracion central.</small>
             </article>
             <article className="login-poster-panel accent-dark">
-              <span>Control</span>
-              <strong>Un solo sistema</strong>
-              <small>Backend, frontend y estados del servicio en la misma cabina.</small>
+              <span>Estado</span>
+              <strong>Una sola cabina</strong>
+              <small>Servicio, sesiones y resultados viviendo dentro del mismo sistema.</small>
             </article>
           </div>
         </aside>
@@ -122,8 +124,8 @@ function Login() {
           </div>
 
           <div className="login-header">
-            <h1>Entrar al tablero</h1>
-            <h2>Abre el panel asignado a tu rol y a tu punto de venta.</h2>
+            <h1>Entrar a la cabina</h1>
+            <h2>Abre tu panel de trabajo y sigue operando desde tu rol asignado.</h2>
           </div>
 
           <div className={`login-status login-status-${backendStatus}`}>
@@ -175,7 +177,7 @@ function Login() {
           </form>
 
           <div className="login-footnote">
-            Interfaz rediseñada para que el acceso se sienta mas claro, mas moderno y mucho mejor organizado.
+            Acceso renovado para que la operacion se sienta mas limpia, mas rapida y mejor organizada.
           </div>
         </section>
       </div>

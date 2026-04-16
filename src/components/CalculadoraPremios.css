@@ -1012,7 +1012,7 @@
 .calculadora-premios-card {
   padding: 1.45rem;
   border-radius: var(--radius-xl);
-  background: var(--surface);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(243, 250, 247, 0.92) 100%);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
 }
@@ -1036,13 +1036,13 @@
 .tab-button {
   padding: 0.85rem 1.1rem;
   border-radius: 999px;
-  background: rgba(247, 244, 236, 0.92);
+  background: rgba(255, 255, 255, 0.76);
   color: var(--text-main);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  border: 1px solid rgba(12, 27, 34, 0.08);
 }
 
 .tab-button.active {
-  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--bg-strong-2) 100%);
   color: var(--text-inverse);
   border-bottom-color: transparent;
 }
@@ -1052,8 +1052,8 @@
 .premios-table,
 .historial-resumen-filtros {
   border-radius: 24px;
-  border: 1px solid rgba(23, 49, 58, 0.08);
-  background: rgba(247, 244, 236, 0.86);
+  border: 1px solid rgba(12, 27, 34, 0.08);
+  background: rgba(255, 255, 255, 0.74);
 }
 
 .filtros-premios {
@@ -1077,40 +1077,40 @@
 .select-orden-historial,
 .input-fecha-historial {
   border-radius: 16px;
-  border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(12, 27, 34, 0.12);
+  background: rgba(255, 255, 255, 0.9);
   color: var(--text-main);
 }
 
 .btn-limpiar-fecha,
 .btn-toggle-historial {
   border-radius: 999px;
-  background: rgba(23, 49, 58, 0.12);
+  background: rgba(12, 27, 34, 0.08);
   color: var(--text-main);
 }
 
 .resumen-premios,
 .historial-completo-header {
-  background: linear-gradient(135deg, #17313a 0%, #114e60 62%, #0f766e 100%);
+  background: linear-gradient(135deg, var(--bg-strong) 0%, var(--bg-strong-2) 62%, var(--accent) 100%);
   color: var(--text-inverse);
 }
 
 .resumen-total {
-  color: #ffe9c8;
+  color: #fff0d4;
   text-shadow: none;
 }
 
 .premios-table-header,
 .tabla-historial-header {
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(15, 138, 124, 0.08);
   color: var(--accent-strong);
 }
 
 .premio-row,
 .fila-historial {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.78);
   border-radius: 18px;
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  border: 1px solid rgba(12, 27, 34, 0.08);
 }
 
 .premios-table-body,
@@ -1121,8 +1121,8 @@
 .ganador-row:hover,
 .premio-row:hover,
 .fila-historial:hover {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(17, 78, 96, 0.16);
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(15, 138, 124, 0.16);
   box-shadow: none;
   transform: translateY(-1px);
 }
@@ -1149,14 +1149,14 @@
 }
 
 .ticket-numero-valor {
-  background: rgba(17, 78, 96, 0.08);
-  border-color: rgba(17, 78, 96, 0.12);
+  background: rgba(15, 138, 124, 0.08);
+  border-color: rgba(15, 138, 124, 0.12);
   color: var(--accent-strong);
 }
 
 .badge-multiple {
-  background: rgba(209, 138, 57, 0.14);
-  color: #8a5a1a;
+  background: rgba(242, 106, 75, 0.12);
+  color: #9b4c3a;
 }
 
 .checkbox-pagado {

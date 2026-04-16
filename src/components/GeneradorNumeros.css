@@ -870,13 +870,14 @@
 .generador-card {
   padding: 1.45rem;
   border-radius: var(--radius-xl);
-  background: var(--surface);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(243, 250, 247, 0.92) 100%);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
 }
 
 .generador-card .card-title {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.25rem;
   font-family: var(--font-display);
   font-size: 2rem;
   text-align: left;
@@ -890,10 +891,11 @@
 .impresion-config,
 .ticket-anterior,
 .mini-historial,
-.historial-completo-container {
+.historial-completo-container,
+.numero-stats {
   border-radius: 24px;
-  border: 1px solid rgba(23, 49, 58, 0.08);
-  background: rgba(247, 244, 236, 0.84);
+  border: 1px solid rgba(12, 27, 34, 0.08);
+  background: rgba(255, 255, 255, 0.74);
   box-shadow: none;
 }
 
@@ -913,7 +915,7 @@
 }
 
 .impresion-estado {
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(15, 138, 124, 0.12);
   color: var(--accent-strong);
 }
 
@@ -925,37 +927,37 @@
 }
 
 .loteria-cerrada-aviso {
-  background: rgba(209, 138, 57, 0.14);
-  border-color: rgba(209, 138, 57, 0.16);
-  color: #915f1e;
+  background: rgba(242, 106, 75, 0.12);
+  border-color: rgba(242, 106, 75, 0.14);
+  color: #9b4c3a;
 }
 
 .loteria-parcial-aviso {
-  background: rgba(17, 78, 96, 0.09);
-  border-color: rgba(17, 78, 96, 0.12);
+  background: rgba(15, 138, 124, 0.08);
+  border-color: rgba(15, 138, 124, 0.12);
   color: var(--accent-strong);
 }
 
 .loteria-info-aviso {
-  background: rgba(23, 49, 58, 0.06);
-  border-color: rgba(23, 49, 58, 0.08);
+  background: rgba(12, 27, 34, 0.05);
+  border-color: rgba(12, 27, 34, 0.08);
   color: var(--text-soft);
 }
 
 .lista-loterias {
-  gap: 0.65rem;
+  gap: 0.7rem;
 }
 
 .loteria-opcion {
-  padding: 0.65rem 0.95rem;
-  border-radius: 999px;
-  border-color: rgba(23, 49, 58, 0.08);
-  background: rgba(255, 255, 255, 0.82);
+  padding: 0.72rem 1rem;
+  border-radius: 18px;
+  border-color: rgba(12, 27, 34, 0.08);
+  background: rgba(255, 255, 255, 0.86);
 }
 
 .loteria-opcion:hover {
-  border-color: rgba(17, 78, 96, 0.24);
-  box-shadow: 0 12px 24px rgba(17, 78, 96, 0.08);
+  border-color: rgba(15, 138, 124, 0.18);
+  box-shadow: 0 12px 26px rgba(12, 27, 34, 0.08);
 }
 
 .input-numero-grande,
@@ -964,31 +966,31 @@
 .input-terminal-ticket,
 .input-resumen {
   border-radius: 18px;
-  border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(12, 27, 34, 0.12);
+  background: rgba(255, 255, 255, 0.94);
   color: var(--text-main);
 }
 
 .input-numero-grande,
 .input-monto-grande {
-  padding: 1.05rem;
+  padding: 1.08rem;
 }
 
 .input-numero-grande {
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-size: clamp(1.8rem, 4vw, 2.45rem);
 }
 
 .input-numero-grande:focus,
 .input-monto-grande:focus,
 .input-fecha-ticket:focus,
 .input-terminal-ticket:focus {
-  border-color: rgba(17, 78, 96, 0.3);
-  box-shadow: 0 0 0 4px rgba(17, 78, 96, 0.1);
+  border-color: rgba(15, 138, 124, 0.28);
+  box-shadow: 0 0 0 4px rgba(15, 138, 124, 0.08);
 }
 
 .tipo-indicador {
   border-radius: 999px;
-  padding: 0.4rem 0.8rem;
+  padding: 0.42rem 0.82rem;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
 }
@@ -1011,15 +1013,15 @@
 }
 
 .ticket-loterias {
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(15, 138, 124, 0.09);
   color: var(--accent-strong);
   border-radius: 999px;
   padding: 0.45rem 0.8rem;
 }
 
 .ticket-terminal-destino {
-  background: rgba(217, 119, 6, 0.12);
-  color: #9a6700;
+  background: rgba(242, 106, 75, 0.12);
+  color: #9b4c3a;
   border-radius: 999px;
   padding: 0.45rem 0.8rem;
   font-weight: 700;
@@ -1030,32 +1032,31 @@
 .btn.btn-secondary,
 .btn-limpiar-mini,
 .btn-toggle-historial,
-.btn-limpiar-historial,
-.btn-limpiar-mini,
 .btn-limpiar-historial {
   border-radius: 999px;
 }
 
 .btn-ticket-print,
 .btn.btn-primary {
-  background: linear-gradient(135deg, #17313a 0%, #114e60 62%, #0f766e 100%);
-  box-shadow: 0 16px 28px rgba(17, 78, 96, 0.16);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--bg-strong-2) 100%);
+  box-shadow: 0 16px 28px rgba(12, 95, 86, 0.16);
 }
 
 .btn-ticket-print:hover,
 .btn.btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #17313a 0%, #0f766e 100%);
+  background: linear-gradient(135deg, var(--accent-strong) 0%, var(--bg-strong-2) 100%);
 }
 
 .btn.btn-secondary,
 .btn-limpiar-mini {
-  background: rgba(23, 49, 58, 0.12);
+  background: rgba(12, 27, 34, 0.08);
   color: var(--text-main);
 }
 
 .mini-historial-header,
-.historial-completo-header {
-  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
+.historial-completo-header,
+.tabla-historial-header {
+  background: linear-gradient(135deg, var(--bg-strong) 0%, var(--bg-strong-2) 100%);
   color: var(--text-inverse);
   border-radius: 24px 24px 0 0;
 }
@@ -1068,18 +1069,18 @@
 .item-numero,
 .fila-historial {
   border-radius: 18px;
-  border-color: rgba(23, 49, 58, 0.08);
+  border-color: rgba(12, 27, 34, 0.08);
   background: rgba(255, 255, 255, 0.82);
 }
 
 .item-numero:hover,
 .fila-historial:hover {
-  border-color: rgba(17, 78, 96, 0.22);
+  border-color: rgba(15, 138, 124, 0.18);
   transform: translateY(-1px);
 }
 
 .tipo-item {
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(15, 138, 124, 0.1);
   color: var(--accent-strong);
   border-radius: 999px;
 }
@@ -1104,7 +1105,7 @@
 }
 
 .input-resumen {
-  background: rgba(247, 244, 236, 0.9);
+  background: rgba(246, 250, 248, 0.94);
   font-weight: 800;
 }
 
@@ -1119,24 +1120,17 @@
 }
 
 .numero-stats {
-  border-radius: 20px;
-  background: rgba(247, 244, 236, 0.84);
-  border-color: rgba(23, 49, 58, 0.08);
+  border-color: rgba(12, 27, 34, 0.08);
 }
 
 .numero-stats-chip {
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(15, 138, 124, 0.1);
   color: var(--accent-strong);
 }
 
 .numero-stats-chip .chip-monto,
 .numero-stats-total {
   color: var(--success);
-}
-
-.tabla-historial-header,
-.historial-completo-header {
-  background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
 }
 
 @media (max-width: 768px) {
