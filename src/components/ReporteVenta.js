@@ -779,6 +779,53 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     [estadisticas.gananciaNeta, resumenSocio.montoSeleccionado]
   );
 
+  const puntoReporteLabel = useMemo(() => {
+    if (configuracionPuntoActual?.nombre) {
+      return configuracionPuntoActual.nombre;
+    }
+
+    if (puntoVentaFiltro && isAdmin()) {
+      const encontrado = opcionesPuntoVenta.find((opcion) => opcion.value === puntoVentaFiltro);
+      return encontrado?.label || 'Punto filtrado';
+    }
+
+    if (isAdmin()) {
+      return 'Todos los puntos';
+    }
+
+    return user?.puntoVentaNombre || user?.username || 'Punto actual';
+  }, [configuracionPuntoActual, puntoVentaFiltro, isAdmin, opcionesPuntoVenta, user]);
+
+  const resumenTabla = useMemo(() => ([
+    { label: 'Balance actual', value: `$${montoRestante.toFixed(2)}`, tone: montoRestante >= 0 ? 'success' : 'danger' },
+    { label: 'Punto', value: puntoReporteLabel },
+    { label: 'Usuario', value: user?.username || user?.nombre || 'Sin usuario' },
+    { label: 'Tickets vendidos', value: String(estadisticas.totalTickets) },
+    { label: 'Venta bruta', value: `$${estadisticas.totalVenta.toFixed(2)}` },
+    { label: 'Premios', value: `$${estadisticas.totalPremios.toFixed(2)}` },
+    {
+      label: 'Porcentaje socio',
+      value: configuracionPuntoActual
+        ? `${resumenSocio.porcentajeSeleccionado.toFixed(2)}%`
+        : `${resumenSocio.puntosConfigurados} configurados`
+    },
+    { label: 'Monto socio', value: `$${resumenSocio.montoSeleccionado.toFixed(2)}` },
+    { label: 'Venta neta', value: `$${estadisticas.gananciaNeta.toFixed(2)}`, tone: estadisticas.gananciaNeta >= 0 ? 'success' : 'danger' },
+    { label: 'Te queda', value: `$${montoRestante.toFixed(2)}`, tone: montoRestante >= 0 ? 'success' : 'danger' }
+  ]), [
+    configuracionPuntoActual,
+    estadisticas.gananciaNeta,
+    estadisticas.totalPremios,
+    estadisticas.totalTickets,
+    estadisticas.totalVenta,
+    montoRestante,
+    puntoReporteLabel,
+    resumenSocio.montoSeleccionado,
+    resumenSocio.porcentajeSeleccionado,
+    resumenSocio.puntosConfigurados,
+    user
+  ]);
+
   const formatearFecha = (fechaStr) => {
     try {
       const fecha = parsearFecha(fechaStr);
@@ -987,6 +1034,20 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
               <div className="stat-sublabel">
                 {configuracionPuntoActual ? 'Aplicado sobre la neta' : 'Suma estimada por punto'}
               </div>
+            </div>
+          </div>
+
+          <div className="summary-report-card">
+            <div className="summary-report-title">Resumen de reporte</div>
+            <div className="summary-report-table">
+              {resumenTabla.map((fila) => (
+                <div className="summary-report-row" key={fila.label}>
+                  <div className="summary-report-label">{fila.label}</div>
+                  <div className={`summary-report-value ${fila.tone ? `tone-${fila.tone}` : ''}`}>
+                    {fila.value}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
