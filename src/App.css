@@ -20,6 +20,14 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+.app-admin .studio-shell {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-admin .studio-sidebar {
+  display: none !important;
+}
+
 .studio-sidebar {
   position: sticky;
   top: 1rem;

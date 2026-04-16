@@ -439,16 +439,17 @@ function App() {
     );
   }
 
-  const panelesDisponibles = user.rol === 'admin' ? panelesAdmin : panelesPuntoVenta;
+  const esAdmin = user.rol === 'admin';
+  const panelesDisponibles = esAdmin ? panelesAdmin : panelesPuntoVenta;
   const mostrarNavegacion = panelesDisponibles.length > 1;
-  const mostrarResumenSuperior = user.rol === 'admin' && panelActivo === 'resumen';
-  const mostrarSidebar = user.rol !== 'admin';
+  const mostrarResumenSuperior = esAdmin && panelActivo === 'resumen';
+  const mostrarSidebar = !esAdmin;
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
-  const nombrePanel = user.rol === 'admin' ? 'Panel Administrador' : 'Panel Punto de Venta';
-  const descripcionPanel = user.rol === 'admin'
+  const nombrePanel = esAdmin ? 'Panel Administrador' : 'Panel Punto de Venta';
+  const descripcionPanel = esAdmin
     ? 'Control general del sistema, reportes, premios y configuracion.'
     : 'Terminal de venta dedicada para registrar jugadas del local sin mezclar otras areas.';
-  const resumenHero = user.rol === 'admin'
+  const resumenHero = esAdmin
     ? [
         {
           label: 'Venta del dia',
@@ -606,7 +607,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className={`App ${esAdmin ? 'app-admin' : 'app-punto-venta'}`}>
       <Header />
       <div className="container">
         <div className={`studio-shell ${mostrarSidebar ? '' : 'studio-shell-full'}`}>
@@ -752,7 +753,7 @@ function App() {
             )}
 
             <section className="stage-body">
-              {user.rol === 'admin' ? renderPanelAdmin() : renderPanelPuntoVenta()}
+              {esAdmin ? renderPanelAdmin() : renderPanelPuntoVenta()}
             </section>
           </main>
         </div>
