@@ -183,11 +183,11 @@
 }
 
 .header-menu-row .stage-top-nav-bar {
-  display: inline-flex;
-  justify-content: flex-start;
+  display: flex;
+  justify-content: space-between;
   align-items: stretch;
   gap: 0.7rem;
-  width: auto;
+  width: 100%;
   padding: 0.3rem;
   border-radius: 20px;
   background: rgba(12, 27, 34, 0.04);
@@ -202,13 +202,15 @@
 }
 
 .header-menu-row .stage-top-nav-current {
-  min-width: 180px;
+  min-width: 220px;
+  margin-left: auto;
   padding: 0.72rem 0.95rem;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(12, 27, 34, 0.06);
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: center;
+  text-align: right;
 }
 
 .header-menu-row .stage-top-nav-current strong {
@@ -229,7 +231,9 @@
 
 .header-menu-row .stage-top-nav-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: 0.8rem;
   width: 100%;
 }
@@ -251,6 +255,12 @@
 
   .header-menu-row .stage-top-nav-current {
     width: 100%;
+  }
+
+  .header-menu-row .stage-top-nav-list {
+    grid-auto-flow: row;
+    grid-auto-columns: unset;
+    grid-template-columns: 1fr;
   }
 }
 
