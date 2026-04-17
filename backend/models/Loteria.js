@@ -1,5 +1,46 @@
 const mongoose = require('mongoose');
 
+const botSlotSchema = new mongoose.Schema(
+  {
+    state: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: ''
+    },
+    drawName: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    game: {
+      type: String,
+      enum: ['pick3', 'pick4', ''],
+      default: ''
+    }
+  },
+  { _id: false }
+);
+
+const botSyncStatusSchema = new mongoose.Schema(
+  {
+    lastAttemptAt: {
+      type: Date,
+      default: null
+    },
+    lastSuccessAt: {
+      type: Date,
+      default: null
+    },
+    lastError: {
+      type: String,
+      trim: true,
+      default: ''
+    }
+  },
+  { _id: false }
+);
+
 const numeroGanadorSchema = new mongoose.Schema(
   {
     id: {
@@ -23,6 +64,31 @@ const numeroGanadorSchema = new mongoose.Schema(
     premio: {
       type: Number,
       default: 0
+    },
+    fuente: {
+      type: String,
+      enum: ['manual', 'bot'],
+      default: 'manual'
+    },
+    game: {
+      type: String,
+      enum: ['pick3', 'pick4', ''],
+      default: ''
+    },
+    drawId: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    sourceUrl: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    sincronizadoEn: {
+      type: String,
+      trim: true,
+      default: ''
     }
   },
   { _id: false }
@@ -113,6 +179,24 @@ const loteriaSchema = new mongoose.Schema(
     numerosGanadores: {
       type: [numeroGanadorSchema],
       default: []
+    },
+    botSyncEnabled: {
+      type: Boolean,
+      default: false
+    },
+    botSlots: {
+      pick3: {
+        type: botSlotSchema,
+        default: () => ({})
+      },
+      pick4: {
+        type: botSlotSchema,
+        default: () => ({})
+      }
+    },
+    botSyncStatus: {
+      type: botSyncStatusSchema,
+      default: () => ({})
     },
     activa: {
       type: Boolean,

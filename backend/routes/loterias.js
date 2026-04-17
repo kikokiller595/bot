@@ -114,21 +114,83 @@ const normalizarNumerosGanadores = (lista = []) => {
 
   return lista
     .filter(item => item && String(item.numero || '').trim())
-    .map(item => ({
-      id: String(
-        item.id ||
-          item._id ||
-          new mongoose.Types.ObjectId().toString()
-      ),
-      numero: String(item.numero).trim(),
-      fecha: String(item.fecha || '').trim(),
-      fechaRegistro: String(
-        item.fechaRegistro || new Date().toLocaleString('es-ES')
-      ).trim(),
-      premio: numeroSeguro(item.premio, 0)
-    }))
+    .map(item => {
+      const numero = String(item.numero || '').trim();
+      const gameEntrada = String(item.game || '').trim().toLowerCase();
+      const gameInferido =
+        gameEntrada && ['pick3', 'pick4'].includes(gameEntrada)
+          ? gameEntrada
+          : numero.length === 3
+            ? 'pick3'
+            : numero.length === 4
+              ? 'pick4'
+              : '';
+
+      return {
+        id: String(
+          item.id ||
+            item._id ||
+            new mongoose.Types.ObjectId().toString()
+        ),
+        numero,
+        fecha: String(item.fecha || '').trim(),
+        fechaRegistro: String(
+          item.fechaRegistro || new Date().toLocaleString('es-ES')
+        ).trim(),
+        premio: numeroSeguro(item.premio, 0),
+        fuente:
+          String(item.fuente || '').trim().toLowerCase() === 'bot'
+            ? 'bot'
+            : 'manual',
+        game: gameInferido,
+        drawId: String(item.drawId || '').trim(),
+        sourceUrl: String(item.sourceUrl || '').trim(),
+        sincronizadoEn: String(item.sincronizadoEn || '').trim()
+      };
+    })
     .filter(item => item.fecha);
 };
+
+const normalizarBotSlot = (slot = null, game = '') => {
+  if (!slot || typeof slot !== 'object') {
+    return {
+      state: '',
+      drawName: '',
+      game
+    };
+  }
+
+  const state = String(slot.state || '').trim().toLowerCase();
+  const drawName = String(slot.drawName || '').trim();
+  const gameNormalizado = String(slot.game || game || '')
+    .trim()
+    .toLowerCase();
+
+  if (!state || !drawName || !['pick3', 'pick4'].includes(gameNormalizado)) {
+    return {
+      state: '',
+      drawName: '',
+      game
+    };
+  }
+
+  return {
+    state,
+    drawName,
+    game: gameNormalizado
+  };
+};
+
+const normalizarBotSlots = (entrada = null) => ({
+  pick3: normalizarBotSlot(entrada?.pick3, 'pick3'),
+  pick4: normalizarBotSlot(entrada?.pick4, 'pick4')
+});
+
+const normalizarBotSyncStatus = (entrada = null) => ({
+  lastAttemptAt: entrada?.lastAttemptAt || null,
+  lastSuccessAt: entrada?.lastSuccessAt || null,
+  lastError: String(entrada?.lastError || '').trim()
+});
 
 router.get('/', protect, async (req, res) => {
   try {
@@ -190,7 +252,15 @@ router.post(
     }
 
     try {
-      const { nombre, horaCierre, premios, numerosGanadores } = req.body;
+      const {
+        nombre,
+        horaCierre,
+        premios,
+        numerosGanadores,
+        botSyncEnabled,
+        botSlots,
+        botSyncStatus
+      } = req.body;
 
       const loteriaExiste = await Loteria.findOne({ nombre, activa: true });
       if (loteriaExiste) {
@@ -205,6 +275,9 @@ router.post(
         horaCierre: String(horaCierre || '').trim(),
         premios: normalizarPremios(premios),
         numerosGanadores: normalizarNumerosGanadores(numerosGanadores),
+        botSyncEnabled: Boolean(botSyncEnabled),
+        botSlots: normalizarBotSlots(botSlots),
+        botSyncStatus: normalizarBotSyncStatus(botSyncStatus),
         createdBy: req.user.id
       });
 
@@ -224,7 +297,16 @@ router.post(
 
 router.put('/:id', protect, authorize('admin'), async (req, res) => {
   try {
-    const { nombre, horaCierre, premios, activa, numerosGanadores } = req.body;
+    const {
+      nombre,
+      horaCierre,
+      premios,
+      activa,
+      numerosGanadores,
+      botSyncEnabled,
+      botSlots,
+      botSyncStatus
+    } = req.body;
 
     const loteria = await Loteria.findById(req.params.id);
 
@@ -261,6 +343,15 @@ router.put('/:id', protect, authorize('admin'), async (req, res) => {
     }
     if (typeof numerosGanadores !== 'undefined') {
       loteria.numerosGanadores = normalizarNumerosGanadores(numerosGanadores);
+    }
+    if (typeof botSyncEnabled !== 'undefined') {
+      loteria.botSyncEnabled = Boolean(botSyncEnabled);
+    }
+    if (typeof botSlots !== 'undefined') {
+      loteria.botSlots = normalizarBotSlots(botSlots);
+    }
+    if (typeof botSyncStatus !== 'undefined') {
+      loteria.botSyncStatus = normalizarBotSyncStatus(botSyncStatus);
     }
     if (typeof activa !== 'undefined') {
       loteria.activa = activa;

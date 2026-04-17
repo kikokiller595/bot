@@ -29,16 +29,59 @@ export const normalizeNumeroGanador = (numero, index = 0) => {
     return null;
   }
 
+  const numeroTexto = String(numero.numero || '').trim();
+  const game = ['pick3', 'pick4'].includes(
+    String(numero.game || '').trim().toLowerCase()
+  )
+    ? String(numero.game || '').trim().toLowerCase()
+    : numeroTexto.length === 3
+      ? 'pick3'
+      : numeroTexto.length === 4
+        ? 'pick4'
+        : '';
+
   return {
     id: toId(numero.id || numero._id, `numero-${index}`),
-    numero: String(numero.numero || '').trim(),
+    numero: numeroTexto,
     fecha: String(numero.fecha || '').trim(),
     fechaRegistro: numero.fechaRegistro
       ? String(numero.fechaRegistro)
       : new Date().toLocaleString('es-ES'),
-    premio: Number(numero.premio) || 0
+    premio: Number(numero.premio) || 0,
+    fuente:
+      String(numero.fuente || '').trim().toLowerCase() === 'bot'
+        ? 'bot'
+        : 'manual',
+    game,
+    drawId: String(numero.drawId || '').trim(),
+    sourceUrl: String(numero.sourceUrl || '').trim(),
+    sincronizadoEn: String(numero.sincronizadoEn || '').trim()
   };
 };
+
+const normalizeBotSlot = (slot, game = '') => {
+  if (!slot || typeof slot !== 'object') {
+    return {
+      state: '',
+      drawName: '',
+      game
+    };
+  }
+
+  return {
+    state: String(slot.state || '').trim().toLowerCase(),
+    drawName: String(slot.drawName || '').trim(),
+    game: ['pick3', 'pick4'].includes(String(slot.game || game).trim().toLowerCase())
+      ? String(slot.game || game).trim().toLowerCase()
+      : game
+  };
+};
+
+const normalizeBotSyncStatus = (status) => ({
+  lastAttemptAt: status?.lastAttemptAt || null,
+  lastSuccessAt: status?.lastSuccessAt || null,
+  lastError: String(status?.lastError || '').trim()
+});
 
 export const normalizeLoteria = (loteria) => {
   if (!loteria) {
@@ -60,6 +103,12 @@ export const normalizeLoteria = (loteria) => {
     horaCierre: String(loteria.horaCierre || '').trim(),
     premios: normalizarPremios(loteria.premios),
     numerosGanadores,
+    botSyncEnabled: Boolean(loteria.botSyncEnabled),
+    botSlots: {
+      pick3: normalizeBotSlot(loteria.botSlots?.pick3, 'pick3'),
+      pick4: normalizeBotSlot(loteria.botSlots?.pick4, 'pick4')
+    },
+    botSyncStatus: normalizeBotSyncStatus(loteria.botSyncStatus),
     fechaCreacion: formatFechaCreacion(
       loteria.fechaCreacion || loteria.createdAt
     ),

@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { connectDB, getMongoStatus } = require('./config/db');
+const { startBotSyncScheduler } = require('./services/resultadosBotService');
 
 const frontendBuildPath = path.join(__dirname, '..', 'build');
 const frontendIndexPath = path.join(frontendBuildPath, 'index.html');
@@ -79,6 +80,7 @@ const createApp = () => {
   app.use('/api/puntos-venta', require('./routes/puntosVenta'));
   app.use('/api/loterias', require('./routes/loterias'));
   app.use('/api/sorteos', require('./routes/sorteos'));
+  app.use('/api/resultados-bot', require('./routes/resultadosBot'));
 
   app.get('/api', (req, res) => {
     res.json({
@@ -130,6 +132,8 @@ const startServer = async () => {
   const { app, allowedOrigins } = createApp();
   const PORT = process.env.PORT || 8080;
   const HOST = process.env.HOST || '0.0.0.0';
+
+  startBotSyncScheduler();
 
   app.listen(PORT, HOST, () => {
     const frontendInfo =

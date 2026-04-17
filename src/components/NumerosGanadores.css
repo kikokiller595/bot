@@ -240,6 +240,30 @@
   font-weight: 800;
 }
 
+.resultado-chip-fuente,
+.numero-ganador-fuente {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.resultado-chip-fuente.bot,
+.numero-ganador-fuente.bot {
+  background: rgba(17, 78, 96, 0.12);
+  color: var(--accent-strong);
+}
+
+.resultado-chip-fuente.manual,
+.numero-ganador-fuente.manual {
+  background: rgba(138, 90, 26, 0.12);
+  color: #8a5a1a;
+}
+
 .loteria-resultado-empty {
   color: var(--text-soft);
   line-height: 1.55;

@@ -19,6 +19,13 @@
   margin-bottom: 0.2rem;
 }
 
+.gestion-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .gestion-loterias-card .card-title {
   font-family: var(--font-display);
   font-size: 1.8rem;
@@ -29,7 +36,8 @@
 .btn-guardar-loteria,
 .btn-cancelar-edicion,
 .btn-editar-loteria,
-.btn-limpiar-hora {
+.btn-limpiar-hora,
+.btn-sync-bot {
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
@@ -37,7 +45,8 @@
 
 .btn-agregar-loteria,
 .btn-guardar-loteria,
-.btn-editar-loteria {
+.btn-editar-loteria,
+.btn-sync-bot {
   padding: 0.85rem 1.2rem;
   background: linear-gradient(135deg, #17313a 0%, #114e60 100%);
   color: var(--text-inverse);
@@ -60,6 +69,38 @@
   gap: 1.1rem;
 }
 
+.bot-status-banner {
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(23, 49, 58, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bot-status-banner.healthy {
+  background: rgba(34, 119, 85, 0.1);
+}
+
+.bot-status-banner.error {
+  background: rgba(182, 69, 60, 0.08);
+}
+
+.bot-status-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.bot-status-copy strong {
+  color: var(--text-main);
+}
+
+.bot-status-copy span,
+.bot-status-copy small {
+  color: var(--text-soft);
+}
+
 .mensaje-edicion {
   padding: 0.9rem 1rem;
   border-radius: 18px;
@@ -75,6 +116,47 @@
   gap: 0.45rem;
 }
 
+.bot-sync-config {
+  padding: 1rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(23, 49, 58, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bot-sync-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.bot-sync-header h4 {
+  margin: 0 0 0.25rem;
+  color: var(--text-main);
+}
+
+.bot-sync-header p {
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.bot-sync-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.bot-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
 .label-general,
 .toggle-hora span,
 .grid-premios label {
@@ -84,7 +166,8 @@
 
 .input-nombre-loteria,
 .selector-hora select,
-.grid-premios input {
+.grid-premios input,
+.select-bot-slot {
   width: 100%;
   padding: 0.85rem 0.95rem;
   border-radius: 16px;
@@ -196,6 +279,19 @@
   color: var(--text-main);
 }
 
+.bot-mapping-summary {
+  margin-top: 0.55rem;
+  color: var(--text-main);
+}
+
+.bot-mapping-lines {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--text-soft);
+}
+
 .loteria-acciones {
   display: flex;
   flex-direction: column;
@@ -214,6 +310,8 @@
 
 @media (max-width: 768px) {
   .gestion-header,
+  .gestion-header-actions,
+  .bot-sync-header,
   .loteria-item {
     flex-direction: column;
     align-items: stretch;
@@ -230,6 +328,7 @@
 
   .btn-eliminar-loteria,
   .btn-agregar-loteria,
+  .btn-sync-bot,
   .btn-guardar-loteria,
   .btn-cancelar-edicion,
   .btn-editar-loteria {
