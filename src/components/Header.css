@@ -28,8 +28,8 @@
 .header-main-row {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   align-items: center;
   gap: 1rem;
@@ -67,7 +67,7 @@
   align-items: center;
   gap: 0.95rem;
   min-width: 0;
-  grid-column: 1;
+  flex: 1 1 auto;
 }
 
 .header-brand-chip {
@@ -113,8 +113,8 @@
   gap: 0.85rem;
   flex-wrap: wrap;
   justify-content: flex-end;
-  grid-column: 3;
-  justify-self: end;
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .header-user-meta {
@@ -241,14 +241,14 @@
 
 @media (max-width: 980px) {
   .header-main-row {
-    grid-template-columns: 1fr;
-    justify-items: stretch;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .header-user {
     justify-content: flex-start;
-    grid-column: 1;
-    justify-self: stretch;
+    margin-left: 0;
+    flex: 1 1 auto;
   }
 
   .header-menu-row .stage-top-nav-bar {
