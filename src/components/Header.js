@@ -79,15 +79,22 @@ const Header = ({
 
             {menuRapidoAbierto && (
               <div className="stage-top-nav-dropdown">
-                <div className="header-quick-strip">
+                <div className="stage-top-nav-copy">
+                  Navega entre las areas principales sin bajar al contenido.
+                </div>
+
+                <div className="stage-top-nav-list">
                   {panelesDisponibles.map((panel) => (
                     <button
                       key={panel.id}
-                      className={`header-quick-item ${panelActivo === panel.id ? 'is-active' : ''}`}
+                      className={`stage-top-nav-button ${panelActivo === panel.id ? 'is-active' : ''}`}
                       onClick={() => cambiarPanel && cambiarPanel(panel.id)}
                     >
-                      <span className="header-quick-item-code">{panel.code}</span>
-                      <span className="header-quick-item-label">{panel.label}</span>
+                      <span className="stage-top-nav-code">{panel.code}</span>
+                      <span className="stage-top-nav-text">
+                        <strong>{panel.label}</strong>
+                        <small>{panel.summary}</small>
+                      </span>
                     </button>
                   ))}
                 </div>
