@@ -29,6 +29,7 @@
   position: relative;
   z-index: 1;
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
@@ -66,6 +67,7 @@
   align-items: center;
   gap: 0.95rem;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .header-brand-chip {
@@ -111,6 +113,8 @@
   gap: 0.85rem;
   flex-wrap: wrap;
   justify-content: flex-end;
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .header-user-meta {
