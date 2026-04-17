@@ -184,8 +184,8 @@
 
 .header-menu-row .stage-top-nav-bar {
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: space-between;
+  align-items: stretch;
   gap: 0.7rem;
   width: 100%;
   padding: 0.3rem;
@@ -215,66 +215,6 @@
 
 .header-menu-row .stage-top-nav-current strong {
   font-size: 0.96rem;
-}
-
-.header-inline-panels {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  gap: 0.55rem;
-  width: 100%;
-  min-width: 0;
-}
-
-.header-inline-panel {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.65rem;
-  min-height: 46px;
-  padding: 0.72rem 0.9rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(12, 27, 34, 0.08);
-  color: var(--text-main);
-  text-align: left;
-  overflow: hidden;
-}
-
-.header-inline-panel.is-active {
-  background: linear-gradient(135deg, rgba(15, 138, 124, 0.96) 0%, rgba(12, 95, 86, 0.93) 100%);
-  border-color: transparent;
-  color: var(--text-inverse);
-  box-shadow: 0 14px 28px rgba(12, 95, 86, 0.14);
-}
-
-.header-inline-panel-code {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: rgba(242, 106, 75, 0.12);
-  color: var(--accent-warm);
-  font-family: var(--font-code);
-  font-size: 0.78rem;
-  font-weight: 800;
-  flex: 0 0 auto;
-}
-
-.header-inline-panel.is-active .header-inline-panel-code {
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff1eb;
-}
-
-.header-inline-panel-label {
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.92rem;
-  font-weight: 700;
 }
 
 .header-menu-row .stage-top-nav-dropdown {
@@ -311,10 +251,12 @@
   .header-menu-row .stage-top-nav-bar {
     width: 100%;
     flex-direction: column;
-    align-items: stretch;
   }
 
-  .header-inline-panels,
+  .header-menu-row .stage-top-nav-current {
+    width: 100%;
+  }
+
   .header-menu-row .stage-top-nav-list {
     grid-auto-flow: row;
     grid-auto-columns: unset;

@@ -71,18 +71,9 @@ const Header = ({
                 </span>
               </button>
 
-              <div className="header-inline-panels" aria-label="Accesos rapidos">
-                {panelesDisponibles.map((panel) => (
-                  <button
-                    key={panel.id}
-                    type="button"
-                    className={`header-inline-panel ${panelActivo === panel.id ? 'is-active' : ''}`}
-                    onClick={() => cambiarPanel && cambiarPanel(panel.id)}
-                  >
-                    <span className="header-inline-panel-code">{panel.code}</span>
-                    <span className="header-inline-panel-label">{panel.label}</span>
-                  </button>
-                ))}
+              <div className="stage-top-nav-current">
+                <span>Vista actual</span>
+                <strong>{panelActivoData?.label || panelActivo}</strong>
               </div>
             </div>
 
