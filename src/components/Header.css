@@ -28,9 +28,9 @@
 .header-main-row {
   position: relative;
   z-index: 1;
-  display: flex;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
   width: 100%;
-  justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
@@ -67,7 +67,7 @@
   align-items: center;
   gap: 0.95rem;
   min-width: 0;
-  flex: 1 1 auto;
+  grid-column: 1;
 }
 
 .header-brand-chip {
@@ -113,8 +113,8 @@
   gap: 0.85rem;
   flex-wrap: wrap;
   justify-content: flex-end;
-  margin-left: auto;
-  flex: 0 0 auto;
+  grid-column: 3;
+  justify-self: end;
 }
 
 .header-user-meta {
