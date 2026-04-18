@@ -303,3 +303,107 @@
     width: 100%;
   }
 }
+
+@media (min-width: 1200px) {
+  .header {
+    padding: 0.45rem 0.9rem 0;
+  }
+
+  .header-content {
+    min-height: auto;
+    padding: 0.62rem 0.85rem;
+    border-radius: 22px;
+    gap: 0.42rem;
+  }
+
+  .header-content::after {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+  }
+
+  .header-main-row {
+    gap: 0.7rem;
+  }
+
+  .header-brand {
+    gap: 0.7rem;
+  }
+
+  .header-brand-chip {
+    min-width: 82px;
+    min-height: 40px;
+    padding: 0.45rem 0.72rem;
+    border-radius: 14px;
+    font-size: 0.7rem;
+  }
+
+  .header-brand-copy {
+    gap: 0.06rem;
+  }
+
+  .header-brand-copy strong {
+    font-size: 0.9rem;
+  }
+
+  .header-brand-copy span {
+    font-size: 0.8rem;
+    line-height: 1.2;
+  }
+
+  .header-user {
+    gap: 0.6rem;
+  }
+
+  .header-user-meta {
+    gap: 0.55rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .header-user-role {
+    padding: 0.36rem 0.6rem;
+    font-size: 0.64rem;
+  }
+
+  .header-user-copy strong {
+    font-size: 0.88rem;
+  }
+
+  .header-user-copy span {
+    font-size: 0.8rem;
+  }
+
+  .logout-btn {
+    padding: 0.72rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .header-menu-row {
+    padding-top: 0.18rem;
+  }
+
+  .header-menu-row .stage-top-nav-bar {
+    padding: 0.18rem;
+    border-radius: 16px;
+  }
+
+  .header-menu-row .stage-top-nav-trigger {
+    min-height: 38px;
+    padding: 0.52rem 0.85rem;
+    border-radius: 12px;
+  }
+
+  .header-menu-row .stage-top-nav-current {
+    min-width: 180px;
+    padding: 0.48rem 0.7rem;
+    border-radius: 12px;
+  }
+
+  .header-menu-row .stage-top-nav-current small {
+    font-size: 0.62rem;
+  }
+
+  .header-menu-row .stage-top-nav-current strong {
+    font-size: 0.88rem;
+  }
+}

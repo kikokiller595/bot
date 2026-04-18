@@ -1528,3 +1528,276 @@
     justify-content: space-between;
   }
 }
+
+@media (min-width: 1200px) {
+  .generador-container {
+    margin-bottom: 0;
+  }
+
+  .generador-card {
+    padding: 1rem 1.15rem 0.9rem;
+  }
+
+  .generador-card .card-title {
+    margin-bottom: 0.7rem;
+    font-size: 1.55rem;
+  }
+
+  .ticket-form-simple {
+    gap: 0.75rem;
+  }
+
+  .impresion-config {
+    padding: 0.7rem 0.9rem;
+    min-height: auto;
+  }
+
+  .impresion-toggle {
+    font-size: 0.95rem;
+  }
+
+  .impresion-estado {
+    padding: 0.28rem 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .loteria-cerrada-aviso,
+  .loteria-parcial-aviso,
+  .loteria-info-aviso {
+    padding: 0.55rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 14px;
+    margin-bottom: 0;
+  }
+
+  .area-entrada {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0.7rem 0.85rem;
+    align-items: start;
+  }
+
+  .campo-fecha {
+    grid-column: span 3;
+  }
+
+  .campo-terminal {
+    grid-column: span 5;
+  }
+
+  .campo-loteria {
+    grid-column: 1 / -1;
+    gap: 0.35rem;
+  }
+
+  .campo-numero {
+    grid-column: span 7;
+  }
+
+  .campo-monto {
+    grid-column: span 5;
+  }
+
+  .campo-numero,
+  .campo-monto,
+  .campo-fecha,
+  .campo-terminal {
+    gap: 0.35rem;
+  }
+
+  .campo-numero label,
+  .campo-monto label,
+  .campo-fecha label,
+  .campo-terminal label,
+  .campo-loteria label,
+  .resumen-item label {
+    font-size: 0.85rem;
+  }
+
+  .campo-numero small,
+  .campo-monto small,
+  .campo-fecha-ayuda {
+    margin-top: 0.1rem;
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  .lista-loterias {
+    gap: 0.42rem;
+    max-height: 6.1rem;
+    overflow-y: auto;
+    padding-right: 0.2rem;
+  }
+
+  .loteria-opcion {
+    padding: 0.38rem 0.62rem;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    gap: 0.36rem;
+  }
+
+  .loteria-opcion input {
+    width: 14px;
+    height: 14px;
+  }
+
+  .etiqueta-cerrada {
+    font-size: 0.62rem;
+    padding: 0.05rem 0.28rem;
+  }
+
+  .input-numero-grande,
+  .input-monto-grande,
+  .input-fecha-ticket,
+  .input-terminal-ticket,
+  .input-resumen {
+    border-radius: 14px;
+  }
+
+  .input-numero-grande,
+  .input-monto-grande {
+    padding: 0.72rem 0.9rem;
+  }
+
+  .input-numero-grande {
+    font-size: 1.15rem;
+    letter-spacing: 0.08rem;
+  }
+
+  .input-monto-grande {
+    font-size: 1rem;
+  }
+
+  .input-fecha-ticket,
+  .input-terminal-ticket,
+  .input-resumen {
+    padding: 0.62rem 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .tipo-indicador {
+    padding: 0.28rem 0.6rem;
+    font-size: 0.68rem;
+  }
+
+  .ticket-anterior {
+    padding: 0.7rem 0.85rem;
+  }
+
+  .ticket-anterior-content {
+    gap: 0.65rem;
+  }
+
+  .ticket-id,
+  .ticket-monto {
+    font-size: 0.88rem;
+  }
+
+  .ticket-loterias,
+  .ticket-terminal-destino {
+    padding: 0.28rem 0.55rem;
+    font-size: 0.72rem;
+  }
+
+  .ticket-board {
+    border-radius: 18px;
+  }
+
+  .ticket-board__header {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .ticket-board__header h3 {
+    font-size: 0.82rem;
+  }
+
+  .ticket-board__content {
+    padding: 0.72rem 0.78rem 0.8rem;
+  }
+
+  .ticket-board__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .ticket-board__group {
+    border-radius: 15px;
+  }
+
+  .ticket-board__group-header {
+    padding: 0.55rem 0.7rem 0.45rem;
+  }
+
+  .ticket-board__group-header h4 {
+    font-size: 0.78rem;
+  }
+
+  .ticket-board__group-body {
+    padding: 0 0.7rem 0.55rem;
+    gap: 0.45rem;
+    min-height: 6.4rem;
+    max-height: 9rem;
+    overflow-y: auto;
+  }
+
+  .ticket-board__group-empty {
+    min-height: 4.4rem;
+    font-size: 0.8rem;
+  }
+
+  .ticket-board__item {
+    padding: 0.48rem 0.55rem;
+    gap: 0.55rem;
+    border-radius: 12px;
+  }
+
+  .ticket-board__lottery {
+    padding: 0.18rem 0.45rem;
+    font-size: 0.62rem;
+  }
+
+  .ticket-board__meta strong {
+    font-size: 0.92rem;
+    letter-spacing: 0.03rem;
+  }
+
+  .ticket-board__meta small {
+    font-size: 0.67rem;
+  }
+
+  .ticket-board__amount {
+    font-size: 0.88rem;
+  }
+
+  .btn-eliminar-item {
+    width: 22px;
+    height: 22px;
+    font-size: 0.92rem;
+  }
+
+  .ticket-board__group-total {
+    margin: 0 0.7rem 0.7rem;
+    padding: 0.48rem 0.7rem;
+    font-size: 0.76rem;
+    border-radius: 12px;
+  }
+
+  .resumen-area {
+    gap: 0.7rem;
+    margin-top: 0.05rem;
+  }
+
+  .resumen-item {
+    gap: 0.22rem;
+  }
+
+  .button-group {
+    gap: 0.7rem;
+    margin-top: 0.05rem;
+  }
+
+  .btn {
+    min-width: 170px;
+    padding: 0.72rem 1.45rem;
+    font-size: 0.92rem;
+  }
+}
