@@ -429,7 +429,7 @@ const GeneradorNumeros = ({
   const numeroBaseActual = useMemo(() => numero.trim().replace(/[^0-9]/g, ''), [numero]);
 
   const estadisticasNumero = useMemo(() => {
-    if (!numeroBaseActual || loteriasSeleccionadas.length === 0) return null;
+    if (!esAdmin || !numeroBaseActual || loteriasSeleccionadas.length === 0) return null;
 
     const seleccionadas = new Set(loteriasSeleccionadas.map(String));
     let totalConteo = 0;
@@ -474,7 +474,7 @@ const GeneradorNumeros = ({
       totalMonto,
       detalle
     };
-  }, [numeroBaseActual, sorteos, loteriasSeleccionadas, fechaSeleccionada]);
+  }, [esAdmin, numeroBaseActual, sorteos, loteriasSeleccionadas, fechaSeleccionada]);
 
   // Función para generar todas las permutaciones únicas de un número
   const generarPermutaciones = (num) => {
@@ -1357,7 +1357,7 @@ const GeneradorNumeros = ({
                   <span className="tipo-indicador straight">Straight - Orden exacto</span>
                 )}
               </small>
-              {estadisticasNumero && (
+              {esAdmin && estadisticasNumero && (
                 <div className="numero-stats">
                   <div className="numero-stats-title">
                     Historial en las loterías seleccionadas
