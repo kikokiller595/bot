@@ -247,6 +247,30 @@ const GeneradorNumeros = ({
   const montoTotalConLoterias = totalMonto * multiplicadorResumen;
   const jugadasConLoterias = totalJugadas * multiplicadorResumen;
 
+  const loteriasResumenHistorial = useMemo(() => {
+    const loteriasVisibles = loteriasAbiertas.length > 0 ? loteriasAbiertas : loteriasSeleccionadasObjs;
+    const nombres = loteriasVisibles.map((loteria) => loteria.nombre).filter(Boolean);
+
+    if (nombres.length === 0) {
+      return {
+        etiqueta: 'Sin loteria',
+        detalle: 'No hay loterias seleccionadas'
+      };
+    }
+
+    if (nombres.length === 1) {
+      return {
+        etiqueta: nombres[0],
+        detalle: nombres[0]
+      };
+    }
+
+    return {
+      etiqueta: `${nombres.length} loterias`,
+      detalle: nombres.join(', ')
+    };
+  }, [loteriasAbiertas, loteriasSeleccionadasObjs]);
+
   const obtenerEtiquetaTipo = (tipo = '') => {
     const valor = tipo.toLowerCase();
     if (valor === 'bolita1') return 'Bolita 1';
@@ -260,6 +284,57 @@ const GeneradorNumeros = ({
     if (valor === 'straight') return 'Straight';
     return tipo;
   };
+
+  const obtenerGrupoHistorial = useCallback((item) => {
+    const tipo = String(item?.tipo || '').toLowerCase();
+    const largoNumero = String(item?.numero || '').replace(/\D/g, '').length;
+
+    if (tipo === 'pale' || tipo === 'tripleta') {
+      return 'paleTripleta';
+    }
+
+    if (
+      tipo === 'pick4head3' ||
+      tipo === 'pick4head3box' ||
+      tipo === 'pick4tail3' ||
+      tipo === 'pick4tail3box' ||
+      largoNumero >= 4
+    ) {
+      return 'pick45';
+    }
+
+    if (tipo === 'bolita1' || tipo === 'bolita2' || tipo === 'singulation' || largoNumero <= 2) {
+      return 'directo';
+    }
+
+    if (largoNumero === 3) {
+      return 'pick3';
+    }
+
+    return 'directo';
+  }, []);
+
+  const gruposHistorial = useMemo(() => {
+    const gruposBase = [
+      { key: 'directo', titulo: 'Directo', filas: [], total: 0 },
+      { key: 'paleTripleta', titulo: 'Pale & Tripleta', filas: [], total: 0 },
+      { key: 'pick3', titulo: 'Pick 3', filas: [], total: 0 },
+      { key: 'pick45', titulo: 'Pick 4 & Pick 5', filas: [], total: 0 }
+    ];
+
+    const mapaGrupos = new Map(gruposBase.map((grupo) => [grupo.key, grupo]));
+
+    historialTemporal.forEach((item) => {
+      const key = obtenerGrupoHistorial(item);
+      const grupo = mapaGrupos.get(key) || mapaGrupos.get('directo');
+      const monto = Number(item?.monto || 0);
+
+      grupo.filas.push(item);
+      grupo.total += monto * multiplicadorResumen;
+    });
+
+    return gruposBase;
+  }, [historialTemporal, multiplicadorResumen, obtenerGrupoHistorial]);
 
   const validarFechaPermitida = useCallback(() => {
     if (!fechaSeleccionada) {
@@ -1288,6 +1363,62 @@ const GeneradorNumeros = ({
               </div>
             </div>
           )}
+
+          <div className="mini-historial mini-historial-agrupado">
+            <div className="mini-historial-header">
+              <h3>NÃºmeros Ingresados</h3>
+              <button className="btn-limpiar-mini" onClick={limpiarTodo}>Limpiar</button>
+            </div>
+            <div className="mini-historial-content mini-historial-content-agrupado">
+              {historialTemporal.length === 0 ? (
+                <div className="sin-numeros">No hay nÃºmeros ingresados aÃºn</div>
+              ) : (
+                <div className="historial-grupos-grid">
+                  {gruposHistorial.map((grupo) => (
+                    <section key={grupo.key} className={`historial-grupo-card grupo-${grupo.key}`}>
+                      <div className="historial-grupo-header">
+                        <h4>{grupo.titulo}</h4>
+                      </div>
+                      <div className="historial-grupo-columnas">
+                        <span>Loteria</span>
+                        <span>NÃºmero</span>
+                        <span>$</span>
+                        <span className="acciones-columna">X</span>
+                      </div>
+                      <div className="historial-grupo-body">
+                        {grupo.filas.length === 0 ? (
+                          <div className="historial-grupo-vacio">Sin jugadas</div>
+                        ) : (
+                          grupo.filas.map((item) => (
+                            <div key={item.id} className="historial-grupo-fila">
+                              <span className="historial-loteria-cell" title={loteriasResumenHistorial.detalle}>
+                                {loteriasResumenHistorial.etiqueta}
+                              </span>
+                              <div className="historial-numero-cell">
+                                <strong>{item.numero}</strong>
+                                <small>{obtenerEtiquetaTipo(item.tipo)}</small>
+                              </div>
+                              <span className="historial-monto-cell">
+                                ${Number(item.monto || 0).toFixed(2)}
+                              </span>
+                              <button
+                                className="btn-eliminar-item"
+                                onClick={() => eliminarDelHistorial(item.id)}
+                                title="Eliminar"
+                              >
+                                x
+                              </button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                      <div className="historial-grupo-total">TOTAL: ${grupo.total.toFixed(2)}</div>
+                    </section>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Mini historial */}
           <div className="mini-historial">

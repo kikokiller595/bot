@@ -371,6 +371,10 @@
   overflow: hidden;
 }
 
+.mini-historial:not(.mini-historial-agrupado) {
+  display: none;
+}
+
 .mini-historial-header {
   background: #667eea;
   color: white;
@@ -407,6 +411,11 @@
   overflow-y: auto;
 }
 
+.mini-historial-content-agrupado {
+  max-height: none;
+  overflow: visible;
+}
+
 .sin-numeros {
   text-align: center;
   color: #999;
@@ -418,6 +427,130 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.historial-grupos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.historial-grupo-card {
+  background: #ffffff;
+  border: 1px solid #d8dce6;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+
+.historial-grupo-header {
+  background: linear-gradient(135deg, #8e83d6 0%, #b3a6ee 100%);
+  color: #ffffff;
+  padding: 0.8rem 1rem;
+  text-align: center;
+}
+
+.historial-grupo-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.historial-grupo-columnas,
+.historial-grupo-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto 38px;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.historial-grupo-columnas {
+  background: #2f2f32;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.7rem 0.9rem;
+  text-transform: uppercase;
+}
+
+.historial-grupo-columnas .acciones-columna {
+  text-align: center;
+}
+
+.historial-grupo-body {
+  flex: 1;
+  background: #f4f4f6;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 190px;
+}
+
+.historial-grupo-vacio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 150px;
+  color: #8b94a5;
+  font-size: 0.92rem;
+  text-align: center;
+}
+
+.historial-grupo-fila {
+  background: #ffffff;
+  border: 1px solid #e1e5ec;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+}
+
+.historial-loteria-cell {
+  font-size: 0.84rem;
+  color: #445065;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.historial-numero-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.historial-numero-cell strong {
+  font-size: 1rem;
+  color: #1b2230;
+  letter-spacing: 0.08rem;
+}
+
+.historial-numero-cell small {
+  font-size: 0.72rem;
+  color: #6d7890;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.historial-monto-cell {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #14532d;
+  text-align: right;
+}
+
+.historial-grupo-total {
+  background: #b8acee;
+  color: #ffffff;
+  text-align: center;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.03rem;
 }
 
 .item-numero {
@@ -475,6 +608,14 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+}
+
+.historial-grupo-fila .btn-eliminar-item {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  justify-self: center;
 }
 
 .btn-eliminar-item:hover {
