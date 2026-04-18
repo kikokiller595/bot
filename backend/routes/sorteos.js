@@ -27,15 +27,32 @@ const esPuntoVenta = (rol) => {
   return valor === 'punto_venta' || valor === 'vendedor';
 };
 
+const ZONA_HORARIA_OPERATIVA =
+  process.env.APP_TIMEZONE ||
+  process.env.LOTTERY_TIMEZONE ||
+  'America/New_York';
+
 const obtenerClaveLocalFecha = (fecha) => {
   const valor = fecha instanceof Date ? fecha : new Date(fecha);
   if (Number.isNaN(valor.getTime())) {
     return null;
   }
 
-  const anio = valor.getFullYear();
-  const mes = String(valor.getMonth() + 1).padStart(2, '0');
-  const dia = String(valor.getDate()).padStart(2, '0');
+  const partes = new Intl.DateTimeFormat('en-CA', {
+    timeZone: ZONA_HORARIA_OPERATIVA,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(valor);
+
+  const anio = partes.find((parte) => parte.type === 'year')?.value;
+  const mes = partes.find((parte) => parte.type === 'month')?.value;
+  const dia = partes.find((parte) => parte.type === 'day')?.value;
+
+  if (!anio || !mes || !dia) {
+    return null;
+  }
+
   return `${anio}-${mes}-${dia}`;
 };
 
@@ -574,7 +591,9 @@ router.post(
     body('tipoApuesta')
       .custom(value => TIPOS_APUESTA_VALIDOS.has(String(value || '').trim()))
       .withMessage('Tipo de apuesta invalido'),
-    body('loteria').notEmpty().withMessage('La loteria es requerida')
+    body('loteria')
+      .custom((value, { req }) => Boolean(value || req.body?.loteriaId))
+      .withMessage('La loteria es requerida')
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -586,8 +605,8 @@ router.post(
     }
 
     try {
-      const { loteria } = req.body;
-      const loteriaDoc = await Loteria.findById(loteria);
+      const loteriaId = req.body.loteria || req.body.loteriaId;
+      const loteriaDoc = await Loteria.findById(loteriaId);
       const fechaSorteo = parseFechaEntrada(req.body.fecha);
       const puntoVentaDestino = await resolverPuntoVentaDestino(
         req.user,
@@ -617,7 +636,7 @@ router.post(
 
       const sorteo = await Sorteo.create(
         crearDocumentoSorteo({
-          sorteo: req.body,
+          sorteo: { ...req.body, loteria: loteriaId },
           loteriaDoc,
           usuario: req.user,
           fechaEntrada: fechaSorteo,
@@ -663,14 +682,15 @@ router.post('/multiple', protect, async (req, res) => {
         continue;
       }
 
+      const loteriaId = sorteo?.loteria || sorteo?.loteriaId;
       const numero = String(sorteo?.numero || '').trim();
       const monto = numeroSeguro(sorteo?.monto, 0);
       const fechaSorteo = parseFechaEntrada(sorteo?.fecha);
-      if (!numero || monto <= 0 || !sorteo?.loteria) {
+      if (!numero || monto <= 0 || !loteriaId) {
         continue;
       }
 
-      const loteriaDoc = await Loteria.findById(sorteo.loteria);
+      const loteriaDoc = await Loteria.findById(loteriaId);
       if (!loteriaDoc || !loteriaDoc.activa) {
         continue;
       }
@@ -689,7 +709,7 @@ router.post('/multiple', protect, async (req, res) => {
 
       sorteosPreparados.push(
         crearDocumentoSorteo({
-          sorteo: { ...sorteo, tipoApuesta, numero, monto },
+          sorteo: { ...sorteo, loteria: loteriaId, tipoApuesta, numero, monto },
           loteriaDoc,
           usuario: req.user,
           fechaEntrada: fechaSorteo,

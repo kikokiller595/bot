@@ -1421,7 +1421,7 @@ const GeneradorNumeros = ({
           </div>
 
           {/* Mini historial */}
-          <div className="mini-historial">
+          <div className="mini-historial mini-historial-legado" hidden>
             <div className="mini-historial-header">
               <h3>Números Ingresados</h3>
               <button className="btn-limpiar-mini" onClick={limpiarTodo}>Limpiar</button>

@@ -1316,6 +1316,70 @@
   color: var(--success);
 }
 
+.mini-historial-legado {
+  display: none !important;
+}
+
+.mini-historial.mini-historial-agrupado {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 251, 249, 0.98) 100%);
+  border: 1px solid rgba(15, 138, 124, 0.12);
+  box-shadow: 0 20px 44px rgba(18, 39, 58, 0.08);
+}
+
+.mini-historial-agrupado .mini-historial-header {
+  padding: 1rem 1.15rem 0.85rem;
+  border-bottom: 1px solid rgba(15, 138, 124, 0.08);
+}
+
+.mini-historial-agrupado .mini-historial-header h3 {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mini-historial-agrupado .mini-historial-content {
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.historial-grupos-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+}
+
+.historial-grupo-card {
+  border-radius: 18px;
+  border: 1px solid rgba(18, 39, 58, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.historial-grupo-header {
+  padding: 0.95rem 1rem 0.7rem;
+}
+
+.historial-grupo-header h4 {
+  font-size: 0.96rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.historial-grupo-body {
+  padding: 0 0.9rem 0.9rem;
+  gap: 0.6rem;
+}
+
+.historial-grupo-fila {
+  border-radius: 14px;
+  padding: 0.78rem 0.82rem;
+}
+
+.historial-grupo-total {
+  margin: 0 0.9rem 0.9rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(18, 39, 58, 0.96) 0%, rgba(15, 138, 124, 0.92) 100%);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 @media (max-width: 768px) {
   .generador-card {
     padding: 1rem;
@@ -1332,5 +1396,9 @@
 
   .btn {
     width: 100%;
+  }
+
+  .historial-grupos-grid {
+    grid-template-columns: 1fr;
   }
 }
