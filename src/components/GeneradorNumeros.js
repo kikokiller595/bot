@@ -1399,29 +1399,46 @@ const GeneradorNumeros = ({
 
           {/* Ticket anterior */}
           {ticketAnterior && (
-            <div className="ticket-anterior">
+            <aside className="ticket-anterior" aria-live="polite">
               <div className="ticket-anterior-content">
-                <span className="ticket-id">{ticketAnterior.ticketId}</span>
-                <span className="ticket-monto">$ {ticketAnterior.montoTotal.toFixed(2)}</span>
-                {ticketAnterior.loterias && ticketAnterior.loterias.length > 0 && (
-                  <span className="ticket-loterias">
-                    {ticketAnterior.loterias.join(', ')}
-                  </span>
-                )}
-                {ticketAnterior.puntoVentaDestinoNombre && (
-                  <span className="ticket-terminal-destino">
-                    {ticketAnterior.puntoVentaDestinoNombre}
-                  </span>
-                )}
-                <button
-                  className="btn-ticket-print"
-                  onClick={() => imprimirTicket(ticketAnterior)}
-                >
-                  Imprimir ticket
-                </button>
-                <button className="btn-icon" onClick={() => setTicketAnterior(null)}>🗑️</button>
+                <div className="ticket-anterior-info">
+                  <span className="ticket-anterior-label">Ultimo ticket generado</span>
+                  <strong className="ticket-id">#{ticketAnterior.ticketId}</strong>
+                  <div className="ticket-anterior-chips">
+                    {ticketAnterior.loterias && ticketAnterior.loterias.length > 0 && (
+                      <span className="ticket-loterias">
+                        {ticketAnterior.loterias.join(', ')}
+                      </span>
+                    )}
+                    {ticketAnterior.puntoVentaDestinoNombre && (
+                      <span className="ticket-terminal-destino">
+                        {ticketAnterior.puntoVentaDestinoNombre}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="ticket-anterior-total">
+                  <span>Total</span>
+                  <strong className="ticket-monto">$ {Number(ticketAnterior.montoTotal || 0).toFixed(2)}</strong>
+                  <small>{Number(ticketAnterior.jugadas || 0)} jugadas</small>
+                </div>
+                <div className="ticket-anterior-actions">
+                  <button
+                    className="btn-ticket-print"
+                    onClick={() => imprimirTicket(ticketAnterior)}
+                  >
+                    Imprimir
+                  </button>
+                  <button
+                    className="btn-ticket-dismiss"
+                    onClick={() => setTicketAnterior(null)}
+                    title="Ocultar ultimo ticket"
+                  >
+                    Ocultar
+                  </button>
+                </div>
               </div>
-            </div>
+            </aside>
           )}
 
           <section className="ticket-board">
