@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './HistorialSorteos.css';
 import { calcularPremio, numeroCoincide } from '../utils/calcularPremios';
 import { normalizarPremios } from '../utils/premiosDefault';
@@ -151,8 +151,9 @@ const extenderNumerosGanadores = (numeros = []) => {
 const normalizarId = (ticket) => ticket.ticketId || ticket.id;
 const obtenerClavePuntoVenta = (ticket) =>
   String(ticket?.puntoVentaId || ticket?.puntoVentaNombre || '').trim();
+const LIMITE_ELIMINACION_PUNTO_VENTA_MS = 5 * 60 * 1000;
 
-const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiarHistorial }) => {
+const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
   const { isAdmin } = useAuth();
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
@@ -162,6 +163,15 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
   const [tipoFiltro, setTipoFiltro] = useState('');
   const [resultadoFiltro, setResultadoFiltro] = useState('');
   const [gruposExpandido, setGruposExpandido] = useState({});
+  const [ahora, setAhora] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setAhora(Date.now());
+    }, 30000);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   const loteriasPorId = useMemo(() => {
     const mapa = new Map();
@@ -539,16 +549,21 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
     return tipoApuesta || 'Straight';
   };
 
+  const puedeEliminarGrupo = (grupo) => {
+    if (isAdmin()) return true;
+
+    const primerTicket = grupo?.tickets?.[0];
+    const fechaGrupo = parsearFecha(primerTicket?.fechaISO || primerTicket?.fecha);
+    if (!fechaGrupo) return false;
+
+    return ahora - fechaGrupo.getTime() <= LIMITE_ELIMINACION_PUNTO_VENTA_MS;
+  };
+
   return (
     <div className="historial-container">
       <div className="historial-card">
         <div className="historial-header">
           <h2 className="card-title">Historial de Tickets</h2>
-          {sorteos.length > 0 && (
-            <button className="btn-limpiar" onClick={limpiarHistorial}>
-              Limpiar Todo
-            </button>
-          )}
         </div>
 
         <div className="historial-filtros">
@@ -737,6 +752,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
               const estadoGrupoLabel = estadoGrupo === 'gano' ? 'Ganó' : estadoGrupo === 'perdio' ? 'Perdió' : 'Pendiente';
 
               const grupoKey = grupo.id || `grupo-${grupoIndex}`;
+              const grupoPuedeEliminarse = puedeEliminarGrupo(grupo);
 
               return (
                 <div key={grupoKey} className="sorteo-item">
@@ -764,11 +780,21 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, limpiar
                       </button>
                       <button
                         className="btn-eliminar"
+                        disabled={!grupoPuedeEliminarse}
                         onClick={() => {
+                          if (!grupoPuedeEliminarse) {
+                            alert('Este ticket ya paso de 5 minutos. Solo administracion puede eliminarlo.');
+                            return;
+                          }
+
                           const idsGrupo = grupo.tickets.map(ticket => ticket.id);
-                          eliminarSorteo(idsGrupo);
+                          eliminarSorteo(idsGrupo, grupo.tickets[0]?.grupoId || '');
                         }}
-                        title="Eliminar todos los tickets del grupo"
+                        title={
+                          grupoPuedeEliminarse
+                            ? 'Eliminar todos los tickets del grupo'
+                            : 'Solo administracion puede eliminar tickets despues de 5 minutos'
+                        }
                       >
                         ×
                       </button>

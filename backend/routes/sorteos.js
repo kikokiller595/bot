@@ -27,6 +27,17 @@ const esPuntoVenta = (rol) => {
   return valor === 'punto_venta' || valor === 'vendedor';
 };
 
+const LIMITE_ELIMINACION_PUNTO_VENTA_MS = 5 * 60 * 1000;
+
+const estaDentroVentanaEliminacion = (sorteo) => {
+  const fechaTicket = sorteo?.fecha instanceof Date ? sorteo.fecha : new Date(sorteo?.fecha);
+  if (Number.isNaN(fechaTicket.getTime())) {
+    return false;
+  }
+
+  return Date.now() - fechaTicket.getTime() <= LIMITE_ELIMINACION_PUNTO_VENTA_MS;
+};
+
 const ZONA_HORARIA_OPERATIVA =
   process.env.APP_TIMEZONE ||
   process.env.LOTTERY_TIMEZONE ||
@@ -849,6 +860,13 @@ router.delete('/:id', protect, async (req, res) => {
           message: 'No autorizado para eliminar este sorteo'
         });
       }
+
+      if (!estaDentroVentanaEliminacion(sorteo)) {
+        return res.status(403).json({
+          success: false,
+          message: 'Los puntos de venta solo pueden eliminar tickets durante los primeros 5 minutos'
+        });
+      }
     }
 
     await sorteo.deleteOne();
@@ -874,7 +892,28 @@ router.delete('/grupo/:grupoId', protect, async (req, res) => {
       aplicarRestriccionOperativa(query, req.user);
     }
 
-    const result = await Sorteo.deleteMany(query);
+    const sorteosGrupo = await Sorteo.find(query);
+
+    if (!sorteosGrupo || sorteosGrupo.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No se encontraron sorteos para eliminar'
+      });
+    }
+
+    if (
+      esPuntoVenta(req.user.rol) &&
+      sorteosGrupo.some((sorteo) => !estaDentroVentanaEliminacion(sorteo))
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'Los puntos de venta solo pueden eliminar tickets durante los primeros 5 minutos'
+      });
+    }
+
+    const result = await Sorteo.deleteMany({
+      _id: { $in: sorteosGrupo.map((sorteo) => sorteo._id) }
+    });
 
     res.json({
       success: true,

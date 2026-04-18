@@ -331,12 +331,15 @@ function App() {
     }
   };
 
-  const eliminarSorteo = async (ids) => {
+  const eliminarSorteo = async (ids, grupoId = '') => {
     try {
       const idsAEliminar = Array.isArray(ids) ? ids : [ids];
       
-      // Eliminar del servidor
-      await Promise.all(idsAEliminar.map(id => sorteosService.eliminarSorteo(id)));
+      if (grupoId && idsAEliminar.length > 1) {
+        await sorteosService.eliminarGrupoSorteos(grupoId);
+      } else {
+        await Promise.all(idsAEliminar.map(id => sorteosService.eliminarSorteo(id)));
+      }
       
       // Actualizar estado local
       setSorteos(prevSorteos =>
@@ -344,7 +347,8 @@ function App() {
       );
     } catch (error) {
       console.error('Error al eliminar sorteo:', error);
-      alert('Error al eliminar el ticket. Por favor, intenta de nuevo.');
+      const mensajeServidor = error?.response?.data?.message;
+      alert(mensajeServidor || 'Error al eliminar el ticket. Por favor, intenta de nuevo.');
     }
   };
 
@@ -388,21 +392,6 @@ function App() {
       console.error('Error al marcar pago del ticket:', error);
       alert('Error al actualizar el pago del ticket. Intenta de nuevo.');
       throw error;
-    }
-  };
-
-  const limpiarHistorial = async () => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar todo el historial de tickets?')) {
-      try {
-        // Eliminar todos los sorteos del servidor
-        await Promise.all(sorteos.map(sorteo => sorteosService.eliminarSorteo(sorteo.id)));
-        
-        // Limpiar estado local
-        setSorteos([]);
-      } catch (error) {
-        console.error('Error al limpiar historial:', error);
-        alert('Error al limpiar el historial. Por favor, intenta de nuevo.');
-      }
     }
   };
 
@@ -526,7 +515,6 @@ function App() {
             sorteos={sorteos}
             loterias={loterias}
             eliminarSorteo={eliminarSorteo}
-            limpiarHistorial={limpiarHistorial}
           />
         </div>
       );
@@ -572,7 +560,6 @@ function App() {
             sorteos={sorteos}
             loterias={loterias}
             eliminarSorteo={eliminarSorteo}
-            limpiarHistorial={limpiarHistorial}
           />
         </div>
       );

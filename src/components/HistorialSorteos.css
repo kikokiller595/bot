@@ -27,7 +27,6 @@
   color: var(--text-main);
 }
 
-.btn-limpiar,
 .btn-limpiar-filtro,
 .btn-toggle,
 .btn-eliminar {
@@ -36,13 +35,6 @@
   cursor: pointer;
 }
 
-.btn-limpiar {
-  padding: 0.75rem 1.1rem;
-  background: rgba(182, 69, 60, 0.1);
-  color: var(--danger);
-}
-
-.btn-limpiar:hover,
 .btn-eliminar:hover {
   background: rgba(182, 69, 60, 0.18);
 }
@@ -257,6 +249,17 @@
   font-size: 1.2rem;
 }
 
+.btn-eliminar:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  background: rgba(23, 49, 58, 0.08);
+  color: var(--text-soft);
+}
+
+.btn-eliminar:disabled:hover {
+  background: rgba(23, 49, 58, 0.08);
+}
+
 .sorteo-resumen {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -372,7 +375,4 @@
     align-items: stretch;
   }
 
-  .btn-limpiar {
-    width: 100%;
-  }
 }
