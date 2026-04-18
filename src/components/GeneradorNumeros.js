@@ -1370,10 +1370,8 @@ const GeneradorNumeros = ({
               <button className="btn-limpiar-mini" onClick={limpiarTodo}>Limpiar</button>
             </div>
             <div className="ticket-board__content">
-              {historialTemporal.length === 0 ? (
+              <div className="ticket-board__grid">
                 <div className="sin-numeros">No hay nÃºmeros ingresados aÃºn</div>
-              ) : (
-                <div className="ticket-board__grid">
                   {gruposHistorial.map((grupo) => (
                     <section key={grupo.key} className={`ticket-board__group grupo-${grupo.key}`}>
                       <div className="ticket-board__group-header">
@@ -1416,7 +1414,6 @@ const GeneradorNumeros = ({
                     </section>
                   ))}
                 </div>
-              )}
             </div>
           </section>
 

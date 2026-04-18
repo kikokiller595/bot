@@ -1370,6 +1370,10 @@
   gap: 0.9rem;
 }
 
+.ticket-board__grid > .sin-numeros {
+  display: none;
+}
+
 .ticket-board__group {
   border-radius: 18px;
   border: 1px solid rgba(18, 39, 58, 0.08);
