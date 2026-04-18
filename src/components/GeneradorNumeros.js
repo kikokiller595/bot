@@ -205,6 +205,23 @@ const GeneradorNumeros = ({
     return totalMinutosActual >= totalMinutosCierre;
   }, [horaActual, obtenerMinutosCierre]);
 
+  useEffect(() => {
+    if (esAdmin || loteriasSeleccionadas.length === 0) {
+      return;
+    }
+
+    const loteriasDisponibles = new Set(
+      loterias
+        .filter((loteria) => !loteriaEstaCerrada(loteria))
+        .map((loteria) => String(loteria.id))
+    );
+
+    setLoteriasSeleccionadas((prev) => {
+      const filtradas = prev.filter((id) => loteriasDisponibles.has(String(id)));
+      return filtradas.length === prev.length ? prev : filtradas;
+    });
+  }, [esAdmin, loterias, loteriasSeleccionadas.length, loteriaEstaCerrada]);
+
   const loteriasOrdenadas = useMemo(() => {
     return [...loterias].sort((loteriaA, loteriaB) => {
       const cerradaA = loteriaEstaCerrada(loteriaA);
@@ -1257,16 +1274,22 @@ const GeneradorNumeros = ({
                     const idStr = loteria.id.toString();
                     const seleccionada = loteriasSeleccionadas.includes(idStr);
                     const cerrada = loteriaEstaCerrada(loteria);
+                    const bloqueadaParaVenta = !esAdmin && cerrada;
                     return (
                       <label
                         key={loteria.id}
-                        className={`loteria-opcion ${cerrada ? 'cerrada' : ''}`}
+                        className={`loteria-opcion ${cerrada ? 'cerrada' : ''} ${bloqueadaParaVenta ? 'bloqueada' : ''}`}
                       >
                         <input
                           type="checkbox"
                           value={idStr}
                           checked={seleccionada}
+                          disabled={bloqueadaParaVenta}
                           onChange={(e) => {
+                            if (bloqueadaParaVenta) {
+                              return;
+                            }
+
                             const value = e.target.value;
                             setLoteriasSeleccionadas(prev => {
                               if (prev.includes(value)) {
