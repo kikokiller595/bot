@@ -1364,41 +1364,41 @@ const GeneradorNumeros = ({
             </div>
           )}
 
-          <div className="mini-historial mini-historial-agrupado">
-            <div className="mini-historial-header">
+          <section className="ticket-board">
+            <div className="ticket-board__header">
               <h3>NÃºmeros Ingresados</h3>
               <button className="btn-limpiar-mini" onClick={limpiarTodo}>Limpiar</button>
             </div>
-            <div className="mini-historial-content mini-historial-content-agrupado">
+            <div className="ticket-board__content">
               {historialTemporal.length === 0 ? (
                 <div className="sin-numeros">No hay nÃºmeros ingresados aÃºn</div>
               ) : (
-                <div className="historial-grupos-grid">
+                <div className="ticket-board__grid">
                   {gruposHistorial.map((grupo) => (
-                    <section key={grupo.key} className={`historial-grupo-card grupo-${grupo.key}`}>
-                      <div className="historial-grupo-header">
+                    <section key={grupo.key} className={`ticket-board__group grupo-${grupo.key}`}>
+                      <div className="ticket-board__group-header">
                         <h4>{grupo.titulo}</h4>
                       </div>
-                      <div className="historial-grupo-columnas">
+                      <div className="ticket-board__group-columns">
                         <span>Loteria</span>
                         <span>NÃºmero</span>
                         <span>$</span>
                         <span className="acciones-columna">X</span>
                       </div>
-                      <div className="historial-grupo-body">
+                      <div className="ticket-board__group-body">
                         {grupo.filas.length === 0 ? (
-                          <div className="historial-grupo-vacio">Sin jugadas</div>
+                          <div className="ticket-board__group-empty">Sin jugadas</div>
                         ) : (
                           grupo.filas.map((item) => (
-                            <div key={item.id} className="historial-grupo-fila">
-                              <span className="historial-loteria-cell" title={loteriasResumenHistorial.detalle}>
+                            <div key={item.id} className="ticket-board__item">
+                              <span className="ticket-board__lottery" title={loteriasResumenHistorial.detalle}>
                                 {loteriasResumenHistorial.etiqueta}
                               </span>
-                              <div className="historial-numero-cell">
+                              <div className="ticket-board__meta">
                                 <strong>{item.numero}</strong>
                                 <small>{obtenerEtiquetaTipo(item.tipo)}</small>
                               </div>
-                              <span className="historial-monto-cell">
+                              <span className="ticket-board__amount">
                                 ${Number(item.monto || 0).toFixed(2)}
                               </span>
                               <button
@@ -1412,13 +1412,13 @@ const GeneradorNumeros = ({
                           ))
                         )}
                       </div>
-                      <div className="historial-grupo-total">TOTAL: ${grupo.total.toFixed(2)}</div>
+                      <div className="ticket-board__group-total">TOTAL: ${grupo.total.toFixed(2)}</div>
                     </section>
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          </section>
 
           {/* Mini historial */}
           <div className="mini-historial mini-historial-legado" hidden>
