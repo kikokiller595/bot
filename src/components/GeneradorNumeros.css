@@ -28,17 +28,19 @@
   }
 
   .ticket-board__group-body {
-    min-height: 9.25rem;
-    max-height: 14.75rem;
+    height: 23rem;
+    min-height: 23rem;
+    max-height: 23rem;
     padding: 0 0.7rem 0.72rem;
+    overflow-y: auto;
   }
 
   .ticket-board__group-empty {
-    min-height: 7.25rem;
+    min-height: 20.4rem;
   }
 
   .ticket-board__item {
-    padding: 0.54rem 0.6rem;
+    padding: 0.44rem 0.52rem;
   }
 }
 
