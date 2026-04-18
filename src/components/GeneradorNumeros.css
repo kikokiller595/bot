@@ -184,21 +184,6 @@
   opacity: 0.6;
 }
 
-.loteria-opcion.bloqueada {
-  cursor: not-allowed;
-  opacity: 0.48;
-}
-
-.loteria-opcion.bloqueada:hover {
-  border-color: #e0e0e0;
-  box-shadow: none;
-}
-
-.loteria-opcion.bloqueada input,
-.loteria-opcion.bloqueada span {
-  cursor: not-allowed;
-}
-
 .etiqueta-cerrada {
   background: #ffe2e5;
   color: #b71c1c;
@@ -1198,11 +1183,6 @@
 .loteria-opcion:hover {
   border-color: rgba(15, 138, 124, 0.18);
   box-shadow: 0 12px 26px rgba(12, 27, 34, 0.08);
-}
-
-.loteria-opcion.bloqueada:hover {
-  border-color: rgba(12, 27, 34, 0.08);
-  box-shadow: none;
 }
 
 .input-numero-grande,

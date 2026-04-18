@@ -240,6 +240,14 @@ const GeneradorNumeros = ({
     });
   }, [loterias, loteriaEstaCerrada, obtenerMinutosCierre]);
 
+  const loteriasVisiblesSeleccion = useMemo(
+    () =>
+      esAdmin
+        ? loteriasOrdenadas
+        : loteriasOrdenadas.filter((loteria) => !loteriaEstaCerrada(loteria)),
+    [esAdmin, loteriasOrdenadas, loteriaEstaCerrada]
+  );
+
   const loteriasSeleccionadasObjs = useMemo(
     () => loterias.filter(l => loteriasSeleccionadas.includes(l.id.toString())),
     [loteriasSeleccionadas, loterias]
@@ -269,6 +277,7 @@ const GeneradorNumeros = ({
   const loteriasOperables = esAdmin ? loteriasSeleccionadasObjs : loteriasAbiertas;
   const todasCerradas = !noHaySeleccion && !esAdmin && loteriasAbiertas.length === 0;
   const deshabilitarAcciones = noHaySeleccion || (!esAdmin && todasCerradas);
+  const sinLoteriasAbiertasParaVenta = !esAdmin && loterias.length > 0 && loteriasVisiblesSeleccion.length === 0;
 
   const obtenerResumenLoterias = useCallback((listaLoterias = []) => {
     const nombres = listaLoterias.map((loteria) => loteria.nombre).filter(Boolean);
@@ -1211,7 +1220,11 @@ const GeneradorNumeros = ({
             </span>
           </div>
 
-          {noHaySeleccion && (
+          {sinLoteriasAbiertasParaVenta ? (
+            <div className="loteria-cerrada-aviso">
+              No hay loterias abiertas en este momento. Las loterias volveran a aparecer cuando esten disponibles.
+            </div>
+          ) : noHaySeleccion && (
             <div className="loteria-info-aviso">
               Selecciona al menos una lotería para registrar tus jugadas.
             </div>
@@ -1266,30 +1279,24 @@ const GeneradorNumeros = ({
               </div>
             )}
 
-            {loteriasOrdenadas.length > 0 && (
+            {loteriasVisiblesSeleccion.length > 0 && (
               <div className="campo-loteria">
                 <label>Loterías</label>
                 <div className="lista-loterias">
-                  {loteriasOrdenadas.map(loteria => {
+                  {loteriasVisiblesSeleccion.map(loteria => {
                     const idStr = loteria.id.toString();
                     const seleccionada = loteriasSeleccionadas.includes(idStr);
                     const cerrada = loteriaEstaCerrada(loteria);
-                    const bloqueadaParaVenta = !esAdmin && cerrada;
                     return (
                       <label
                         key={loteria.id}
-                        className={`loteria-opcion ${cerrada ? 'cerrada' : ''} ${bloqueadaParaVenta ? 'bloqueada' : ''}`}
+                        className={`loteria-opcion ${cerrada ? 'cerrada' : ''}`}
                       >
                         <input
                           type="checkbox"
                           value={idStr}
                           checked={seleccionada}
-                          disabled={bloqueadaParaVenta}
                           onChange={(e) => {
-                            if (bloqueadaParaVenta) {
-                              return;
-                            }
-
                             const value = e.target.value;
                             setLoteriasSeleccionadas(prev => {
                               if (prev.includes(value)) {
