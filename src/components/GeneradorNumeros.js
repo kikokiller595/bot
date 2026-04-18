@@ -905,6 +905,31 @@ const GeneradorNumeros = ({
     }
     // Caso 2: Box (termina en +)
     else if (esBox) {
+      if (montoDobleValido) {
+        const montoStraight = parseFloat(partesMonto[0].trim()) || 0;
+        const montoBox = parseFloat(partesMonto[1].trim()) || 0;
+
+        setHistorialTemporal(prev => [
+          ...prev,
+          crearItemHistorial({
+            id: Date.now(),
+            numero: numeroLimpio,
+            monto: montoStraight,
+            tipo: 'Straight'
+          }),
+          crearItemHistorial({
+            id: Date.now() + 1,
+            numero: numeroLimpio,
+            monto: montoBox,
+            tipo: 'Box'
+          })
+        ]);
+
+        setNumero('');
+        volverAlNumero();
+        return;
+      }
+
       setHistorialTemporal(prev => [
         ...prev,
         crearItemHistorial({
