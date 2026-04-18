@@ -330,7 +330,7 @@ const GeneradorNumeros = ({
       const grupo = mapaGrupos.get(key) || mapaGrupos.get('directo');
       const monto = Number(item?.monto || 0);
 
-      grupo.filas.push(item);
+      grupo.filas.unshift(item);
       grupo.total += monto * multiplicadorResumen;
     });
 
