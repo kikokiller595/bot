@@ -716,6 +716,10 @@ const GeneradorNumeros = ({
     const pick4Tail3Match = numeroInput.match(/^(\d{3})b$/);
     const esBox = numeroInput.endsWith('+');
     const generarCombinaciones = numeroInput.endsWith('q');
+    const partesMonto = monto.split('+');
+    const montoDobleValido = partesMonto.length === 2
+      && /^\d+(\.\d+)?$/.test(partesMonto[0].trim())
+      && /^\d+(\.\d+)?$/.test(partesMonto[1].trim());
     
     // Caso especial: Bolita (formato NN+1 o NN+2)
     if (bolitaMatch) {
@@ -742,6 +746,31 @@ const GeneradorNumeros = ({
       const numeroPick4Tail3 = (pick4Tail3BoxMatch || pick4Tail3Match)[1];
       const montoPick4Tail3 = monto.trim() ? parseFloat(monto) || 1 : 1;
 
+      if (montoDobleValido) {
+        const montoStraight = parseFloat(partesMonto[0].trim()) || 0;
+        const montoBox = parseFloat(partesMonto[1].trim()) || 0;
+
+        setHistorialTemporal(prev => [
+          ...prev,
+          crearItemHistorial({
+            id: Date.now(),
+            numero: numeroPick4Tail3,
+            monto: montoStraight,
+            tipo: 'Pick4Tail3'
+          }),
+          crearItemHistorial({
+            id: Date.now() + 1,
+            numero: numeroPick4Tail3,
+            monto: montoBox,
+            tipo: 'Pick4Tail3Box'
+          })
+        ]);
+
+        setNumero('');
+        volverAlNumero();
+        return;
+      }
+
       setHistorialTemporal(prev => [
         ...prev,
         crearItemHistorial({
@@ -760,6 +789,31 @@ const GeneradorNumeros = ({
     if (pick4Head3BoxMatch || pick4Head3Match) {
       const numeroPick4Head3 = (pick4Head3BoxMatch || pick4Head3Match)[1];
       const montoPick4Head3 = monto.trim() ? parseFloat(monto) || 1 : 1;
+
+      if (montoDobleValido) {
+        const montoStraight = parseFloat(partesMonto[0].trim()) || 0;
+        const montoBox = parseFloat(partesMonto[1].trim()) || 0;
+
+        setHistorialTemporal(prev => [
+          ...prev,
+          crearItemHistorial({
+            id: Date.now(),
+            numero: numeroPick4Head3,
+            monto: montoStraight,
+            tipo: 'Pick4Head3'
+          }),
+          crearItemHistorial({
+            id: Date.now() + 1,
+            numero: numeroPick4Head3,
+            monto: montoBox,
+            tipo: 'Pick4Head3Box'
+          })
+        ]);
+
+        setNumero('');
+        volverAlNumero();
+        return;
+      }
 
       setHistorialTemporal(prev => [
         ...prev,
@@ -868,10 +922,9 @@ const GeneradorNumeros = ({
       return; // Salir aquí
     }
     // Caso 3: Verificar si el monto es formato doble (número+número o decimal+decimal)
-    else if (monto.includes('+') && monto.split('+').length === 2) {
-      const partes = monto.split('+');
-      const parte1 = partes[0].trim();
-      const parte2 = partes[1].trim();
+    else if (montoDobleValido) {
+      const parte1 = partesMonto[0].trim();
+      const parte2 = partesMonto[1].trim();
       
       // Verificar que ambas partes sean números válidos (enteros o decimales)
       const esNumero1 = /^\d+(\.\d+)?$/.test(parte1);
