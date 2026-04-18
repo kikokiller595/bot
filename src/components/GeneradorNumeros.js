@@ -67,8 +67,6 @@ const GeneradorNumeros = ({
       return false;
     }
   });
-  const [totalMonto, setTotalMonto] = useState(0);
-  const [totalJugadas, setTotalJugadas] = useState(0);
   const inputNumeroRef = useRef(null);
   const inputMontoRef = useRef(null);
   const [horaActual, setHoraActual] = useState(new Date());
@@ -230,6 +228,16 @@ const GeneradorNumeros = ({
     [loteriasSeleccionadas, loterias]
   );
 
+  const loteriasPorId = useMemo(() => {
+    const mapa = new Map();
+    loterias.forEach((loteria) => {
+      if (loteria?.id != null) {
+        mapa.set(String(loteria.id), loteria);
+      }
+    });
+    return mapa;
+  }, [loterias]);
+
   const loteriasAbiertas = useMemo(
     () => loteriasSeleccionadasObjs.filter(l => !loteriaEstaCerrada(l)),
     [loteriasSeleccionadasObjs, loteriaEstaCerrada]
@@ -244,13 +252,9 @@ const GeneradorNumeros = ({
   const loteriasOperables = esAdmin ? loteriasSeleccionadasObjs : loteriasAbiertas;
   const todasCerradas = !noHaySeleccion && !esAdmin && loteriasAbiertas.length === 0;
   const deshabilitarAcciones = noHaySeleccion || (!esAdmin && todasCerradas);
-  const multiplicadorResumen = loteriasOperables.length > 0 ? loteriasOperables.length : 1;
-  const montoTotalConLoterias = totalMonto * multiplicadorResumen;
-  const jugadasConLoterias = totalJugadas * multiplicadorResumen;
 
-  const loteriasResumenHistorial = useMemo(() => {
-    const loteriasVisibles = loteriasOperables.length > 0 ? loteriasOperables : loteriasSeleccionadasObjs;
-    const nombres = loteriasVisibles.map((loteria) => loteria.nombre).filter(Boolean);
+  const obtenerResumenLoterias = useCallback((listaLoterias = []) => {
+    const nombres = listaLoterias.map((loteria) => loteria.nombre).filter(Boolean);
 
     if (nombres.length === 0) {
       return {
@@ -270,7 +274,47 @@ const GeneradorNumeros = ({
       etiqueta: `${nombres.length} loterias`,
       detalle: nombres.join(', ')
     };
-  }, [loteriasOperables, loteriasSeleccionadasObjs]);
+  }, []);
+
+  const obtenerLoteriasOperablesDeItem = useCallback((item) => {
+    const loteriasGuardadas = Array.isArray(item?.loterias) && item.loterias.length > 0
+      ? item.loterias
+      : loteriasOperables.map((loteria) => ({
+          id: String(loteria.id),
+          nombre: loteria.nombre
+        }));
+
+    return loteriasGuardadas
+      .map((loteriaGuardada) => loteriasPorId.get(String(loteriaGuardada.id)))
+      .filter((loteria) => loteria && (esAdmin || !loteriaEstaCerrada(loteria)));
+  }, [esAdmin, loteriasOperables, loteriasPorId, loteriaEstaCerrada]);
+
+  const resumenTicketTemporal = useMemo(() => {
+    const loteriasResumen = new Map();
+    let montoTotal = 0;
+    let jugadas = 0;
+
+    historialTemporal.forEach((item) => {
+      const loteriasItem = obtenerLoteriasOperablesDeItem(item);
+      const montoItem = Number(item?.monto || 0);
+
+      montoTotal += montoItem * loteriasItem.length;
+      jugadas += loteriasItem.length;
+
+      loteriasItem.forEach((loteria) => {
+        loteriasResumen.set(String(loteria.id), loteria);
+      });
+    });
+
+    return {
+      montoTotal,
+      jugadas,
+      loterias: Array.from(loteriasResumen.values())
+    };
+  }, [historialTemporal, obtenerLoteriasOperablesDeItem]);
+
+  const montoTotalConLoterias = resumenTicketTemporal.montoTotal;
+  const jugadasConLoterias = resumenTicketTemporal.jugadas;
 
   const obtenerEtiquetaTipo = (tipo = '') => {
     const valor = tipo.toLowerCase();
@@ -329,13 +373,14 @@ const GeneradorNumeros = ({
       const key = obtenerGrupoHistorial(item);
       const grupo = mapaGrupos.get(key) || mapaGrupos.get('directo');
       const monto = Number(item?.monto || 0);
+      const multiplicadorItem = obtenerLoteriasOperablesDeItem(item).length;
 
       grupo.filas.unshift(item);
-      grupo.total += monto * multiplicadorResumen;
+      grupo.total += monto * multiplicadorItem;
     });
 
     return gruposBase;
-  }, [historialTemporal, multiplicadorResumen, obtenerGrupoHistorial]);
+  }, [historialTemporal, obtenerGrupoHistorial, obtenerLoteriasOperablesDeItem]);
 
   const validarFechaPermitida = useCallback(() => {
     if (!fechaSeleccionada) {
@@ -628,6 +673,15 @@ const GeneradorNumeros = ({
       return;
     }
 
+    const loteriasSnapshot = loteriasOperables.map((loteria) => ({
+      id: String(loteria.id),
+      nombre: loteria.nombre
+    }));
+    const crearItemHistorial = (item) => ({
+      ...item,
+      loterias: loteriasSnapshot
+    });
+
     const numeroInput = numero.trim().toLowerCase();
     const bolitaMatch = numeroInput.match(/^(\d{2})\+(1|2)$/);
     const pick4Head3BoxMatch = numeroInput.match(/^(\d{3})f\+$/);
@@ -645,16 +699,13 @@ const GeneradorNumeros = ({
 
       setHistorialTemporal(prev => [
         ...prev,
-        {
+        crearItemHistorial({
           id: Date.now(),
           numero: numeroBolita,
           monto: montoBolita,
           tipo: posicionBolita === '1' ? 'Bolita1' : 'Bolita2'
-        }
+        })
       ]);
-
-      setTotalMonto(prev => prev + montoBolita);
-      setTotalJugadas(prev => prev + 1);
 
       setNumero('');
       volverAlNumero();
@@ -667,16 +718,13 @@ const GeneradorNumeros = ({
 
       setHistorialTemporal(prev => [
         ...prev,
-        {
+        crearItemHistorial({
           id: Date.now(),
           numero: numeroPick4Tail3,
           monto: montoPick4Tail3,
           tipo: pick4Tail3BoxMatch ? 'Pick4Tail3Box' : 'Pick4Tail3'
-        }
+        })
       ]);
-
-      setTotalMonto(prev => prev + montoPick4Tail3);
-      setTotalJugadas(prev => prev + 1);
 
       setNumero('');
       volverAlNumero();
@@ -689,16 +737,13 @@ const GeneradorNumeros = ({
 
       setHistorialTemporal(prev => [
         ...prev,
-        {
+        crearItemHistorial({
           id: Date.now(),
           numero: numeroPick4Head3,
           monto: montoPick4Head3,
           tipo: pick4Head3BoxMatch ? 'Pick4Head3Box' : 'Pick4Head3'
-        }
+        })
       ]);
-
-      setTotalMonto(prev => prev + montoPick4Head3);
-      setTotalJugadas(prev => prev + 1);
 
       setNumero('');
       volverAlNumero();
@@ -739,16 +784,13 @@ const GeneradorNumeros = ({
     if (esSingulation) {
       setHistorialTemporal(prev => [
         ...prev,
-        {
+        crearItemHistorial({
           id: Date.now(),
           numero: numeroLimpio,
           monto: montoNum,
           tipo: 'Singulation'
-        }
+        })
       ]);
-
-      setTotalMonto(prev => prev + montoNum);
-      setTotalJugadas(prev => prev + 1);
 
       setNumero('');
       volverAlNumero();
@@ -766,18 +808,15 @@ const GeneradorNumeros = ({
       combinaciones.forEach((combinacion, index) => {
         setHistorialTemporal(prev => [
           ...prev,
-          {
+          crearItemHistorial({
             id: Date.now() + index,
             numero: combinacion,
             monto: montoNum,
             tipo: 'Straight'
-          }
+          })
         ]);
       });
 
-      setTotalMonto(prev => prev + (montoNum * combinaciones.length));
-      setTotalJugadas(prev => prev + combinaciones.length);
-      
       // Limpiar solo el campo de número, mantener el monto
       setNumero('');
       // Volver al campo de número
@@ -788,17 +827,14 @@ const GeneradorNumeros = ({
     else if (esBox) {
       setHistorialTemporal(prev => [
         ...prev,
-        {
+        crearItemHistorial({
           id: Date.now(),
           numero: numeroLimpio,
           monto: montoNum,
           tipo: 'Box'
-        }
+        })
       ]);
 
-      setTotalMonto(prev => prev + montoNum);
-      setTotalJugadas(prev => prev + 1);
-      
       // Limpiar solo el campo de número, mantener el monto
       setNumero('');
       // Volver al campo de número
@@ -823,23 +859,20 @@ const GeneradorNumeros = ({
         // Agregar dos entradas al historial
         setHistorialTemporal(prev => [
           ...prev,
-          {
+          crearItemHistorial({
             id: Date.now(),
             numero: numeroLimpio,
             monto: montoStraight,
             tipo: 'Straight'
-          },
-          {
+          }),
+          crearItemHistorial({
             id: Date.now() + 1,
             numero: numeroLimpio,
             monto: montoBox,
             tipo: 'Box'
-          }
+          })
         ]);
 
-        setTotalMonto(prev => prev + montoStraight + montoBox);
-        setTotalJugadas(prev => prev + 2);
-        
         // Limpiar solo el campo de número, mantener el monto
         setNumero('');
         // Volver al campo de número
@@ -852,16 +885,14 @@ const GeneradorNumeros = ({
     else {
       setHistorialTemporal(prev => [
         ...prev,
-        {
+        crearItemHistorial({
           id: Date.now(),
           numero: numeroLimpio,
           monto: montoNum,
           tipo: 'Straight'
-        }
+        })
       ]);
 
-      setTotalMonto(prev => prev + montoNum);
-      setTotalJugadas(prev => prev + 1);
     }
 
     // Limpiar solo el campo de número, mantener el monto
@@ -871,21 +902,16 @@ const GeneradorNumeros = ({
   };
 
   const eliminarDelHistorial = (id) => {
-    const item = historialTemporal.find(h => h.id === id);
-    if (item) {
-      setTotalMonto(prev => prev - item.monto);
-      setTotalJugadas(prev => prev - 1);
-    }
     setHistorialTemporal(prev => prev.filter(h => h.id !== id));
   };
 
   const generarTicket = () => {
-    if (noHaySeleccion) {
+    if (noHaySeleccion && historialTemporal.length === 0) {
       alert('Selecciona al menos una lotería para generar el ticket.');
       return;
     }
 
-    if (todasCerradas) {
+    if (todasCerradas && jugadasConLoterias === 0) {
       alert('Todas las loterías seleccionadas están cerradas. Podrás generar tickets nuevamente mañana.');
       return;
     }
@@ -896,6 +922,11 @@ const GeneradorNumeros = ({
 
     if (historialTemporal.length === 0) {
       alert('No hay números en el historial. Agrega números primero.');
+      return;
+    }
+
+    if (jugadasConLoterias === 0) {
+      alert('No se pudieron generar tickets porque las loterias de las jugadas ingresadas ya no estan disponibles.');
       return;
     }
 
@@ -915,8 +946,10 @@ const GeneradorNumeros = ({
 
     const tickets = [];
 
-    loteriasAbiertas.forEach(loteria => {
-      historialTemporal.forEach(item => {
+    historialTemporal.forEach(item => {
+      const loteriasItem = obtenerLoteriasOperablesDeItem(item);
+
+      loteriasItem.forEach(loteria => {
         const idTicket = timestampBase + correlativo;
         correlativo += 1;
 
@@ -970,7 +1003,7 @@ const GeneradorNumeros = ({
       montoTotal: montoTotalConLoterias,
       jugadas: jugadasConLoterias,
       tickets: tickets,
-      loterias: loteriasAbiertas.map(l => l.nombre),
+      loterias: resumenTicketTemporal.loterias.map(l => l.nombre),
       puntoVentaDestinoNombre: esAdmin
         ? puntoVentaDestinoSeleccionado?.nombre || 'Administracion Central'
         : user?.puntoVentaNombre || ''
@@ -984,8 +1017,6 @@ const GeneradorNumeros = ({
 
     // Limpiar todo
     setHistorialTemporal([]);
-    setTotalMonto(0);
-    setTotalJugadas(0);
     setNumero('');
     setMonto('');
   };
@@ -1128,8 +1159,6 @@ const GeneradorNumeros = ({
   const limpiarTodo = () => {
     if (window.confirm('¿Limpiar todo el historial temporal?')) {
       setHistorialTemporal([]);
-      setTotalMonto(0);
-      setTotalJugadas(0);
       setNumero('');
       setMonto('');
     }
@@ -1387,27 +1416,31 @@ const GeneradorNumeros = ({
                         {grupo.filas.length === 0 ? (
                           <div className="ticket-board__group-empty">Sin jugadas</div>
                         ) : (
-                          grupo.filas.map((item) => (
-                            <div key={item.id} className="ticket-board__item">
-                              <span className="ticket-board__lottery" title={loteriasResumenHistorial.detalle}>
-                                {loteriasResumenHistorial.etiqueta}
-                              </span>
-                              <div className="ticket-board__meta">
-                                <strong>{item.numero}</strong>
-                                <small>{obtenerEtiquetaTipo(item.tipo)}</small>
+                          grupo.filas.map((item) => {
+                            const resumenItem = obtenerResumenLoterias(obtenerLoteriasOperablesDeItem(item));
+
+                            return (
+                              <div key={item.id} className="ticket-board__item">
+                                <span className="ticket-board__lottery" title={resumenItem.detalle}>
+                                  {resumenItem.etiqueta}
+                                </span>
+                                <div className="ticket-board__meta">
+                                  <strong>{item.numero}</strong>
+                                  <small>{obtenerEtiquetaTipo(item.tipo)}</small>
+                                </div>
+                                <span className="ticket-board__amount">
+                                  ${Number(item.monto || 0).toFixed(2)}
+                                </span>
+                                <button
+                                  className="btn-eliminar-item"
+                                  onClick={() => eliminarDelHistorial(item.id)}
+                                  title="Eliminar"
+                                >
+                                  x
+                                </button>
                               </div>
-                              <span className="ticket-board__amount">
-                                ${Number(item.monto || 0).toFixed(2)}
-                              </span>
-                              <button
-                                className="btn-eliminar-item"
-                                onClick={() => eliminarDelHistorial(item.id)}
-                                title="Eliminar"
-                              >
-                                x
-                              </button>
-                            </div>
-                          ))
+                            );
+                          })
                         )}
                       </div>
                       <div className="ticket-board__group-total">TOTAL: ${grupo.total.toFixed(2)}</div>
@@ -1438,7 +1471,7 @@ const GeneradorNumeros = ({
             <button
               className="btn btn-primary btn-large"
               onClick={generarTicket}
-            disabled={historialTemporal.length === 0 || deshabilitarAcciones}
+              disabled={historialTemporal.length === 0 || jugadasConLoterias === 0}
             >
               Generar Ticket (*)
             </button>
