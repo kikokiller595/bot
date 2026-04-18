@@ -241,14 +241,15 @@ const GeneradorNumeros = ({
   );
 
   const noHaySeleccion = loteriasSeleccionadasObjs.length === 0;
-  const todasCerradas = !noHaySeleccion && loteriasAbiertas.length === 0;
-  const deshabilitarAcciones = noHaySeleccion || todasCerradas;
-  const multiplicadorResumen = loteriasAbiertas.length > 0 ? loteriasAbiertas.length : 1;
+  const loteriasOperables = esAdmin ? loteriasSeleccionadasObjs : loteriasAbiertas;
+  const todasCerradas = !noHaySeleccion && !esAdmin && loteriasAbiertas.length === 0;
+  const deshabilitarAcciones = noHaySeleccion || (!esAdmin && todasCerradas);
+  const multiplicadorResumen = loteriasOperables.length > 0 ? loteriasOperables.length : 1;
   const montoTotalConLoterias = totalMonto * multiplicadorResumen;
   const jugadasConLoterias = totalJugadas * multiplicadorResumen;
 
   const loteriasResumenHistorial = useMemo(() => {
-    const loteriasVisibles = loteriasAbiertas.length > 0 ? loteriasAbiertas : loteriasSeleccionadasObjs;
+    const loteriasVisibles = loteriasOperables.length > 0 ? loteriasOperables : loteriasSeleccionadasObjs;
     const nombres = loteriasVisibles.map((loteria) => loteria.nombre).filter(Boolean);
 
     if (nombres.length === 0) {
@@ -269,7 +270,7 @@ const GeneradorNumeros = ({
       etiqueta: `${nombres.length} loterias`,
       detalle: nombres.join(', ')
     };
-  }, [loteriasAbiertas, loteriasSeleccionadasObjs]);
+  }, [loteriasOperables, loteriasSeleccionadasObjs]);
 
   const obtenerEtiquetaTipo = (tipo = '') => {
     const valor = tipo.toLowerCase();
@@ -1371,7 +1372,6 @@ const GeneradorNumeros = ({
             </div>
             <div className="ticket-board__content">
               <div className="ticket-board__grid">
-                <div className="sin-numeros">No hay nÃºmeros ingresados aÃºn</div>
                   {gruposHistorial.map((grupo) => (
                     <section key={grupo.key} className={`ticket-board__group grupo-${grupo.key}`}>
                       <div className="ticket-board__group-header">
@@ -1416,36 +1416,6 @@ const GeneradorNumeros = ({
                 </div>
             </div>
           </section>
-
-          {/* Mini historial */}
-          <div className="mini-historial mini-historial-legado" hidden>
-            <div className="mini-historial-header">
-              <h3>Números Ingresados</h3>
-              <button className="btn-limpiar-mini" onClick={limpiarTodo}>Limpiar</button>
-            </div>
-            <div className="mini-historial-content">
-              {historialTemporal.length === 0 ? (
-                <div className="sin-numeros">No hay números ingresados aún</div>
-              ) : (
-                <div className="lista-numeros">
-                  {historialTemporal.map(item => (
-                    <div key={item.id} className="item-numero">
-                      <span className="numero-item">{item.numero}</span>
-                       <span className="tipo-item">{obtenerEtiquetaTipo(item.tipo)}</span>
-                      <span className="monto-item">${item.monto.toFixed(2)}</span>
-                      <button 
-                        className="btn-eliminar-item" 
-                        onClick={() => eliminarDelHistorial(item.id)}
-                        title="Eliminar"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
 
           {/* Resumen */}
           <div className="resumen-area">
