@@ -716,10 +716,22 @@ const GeneradorNumeros = ({
     const pick4Tail3Match = numeroInput.match(/^(\d{3})b$/);
     const esBox = numeroInput.endsWith('+');
     const generarCombinaciones = numeroInput.endsWith('q');
+    const normalizarMontoDividido = (valor) => valor.trim().replace(',', '.');
+    const parsearMontoDividido = (valor) => {
+      const montoNormalizado = normalizarMontoDividido(valor);
+
+      if (!/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(montoNormalizado)) {
+        return null;
+      }
+
+      const montoParseado = parseFloat(montoNormalizado);
+      return Number.isFinite(montoParseado) ? montoParseado : null;
+    };
     const partesMonto = monto.split('+');
-    const montoDobleValido = partesMonto.length === 2
-      && /^\d+(\.\d+)?$/.test(partesMonto[0].trim())
-      && /^\d+(\.\d+)?$/.test(partesMonto[1].trim());
+    const montosDobles = partesMonto.length === 2
+      ? partesMonto.map((parte) => parsearMontoDividido(parte))
+      : null;
+    const montoDobleValido = Boolean(montosDobles) && montosDobles.every((valor) => valor !== null);
     
     // Caso especial: Bolita (formato NN+1 o NN+2)
     if (bolitaMatch) {
@@ -747,8 +759,7 @@ const GeneradorNumeros = ({
       const montoPick4Tail3 = monto.trim() ? parseFloat(monto) || 1 : 1;
 
       if (montoDobleValido) {
-        const montoStraight = parseFloat(partesMonto[0].trim()) || 0;
-        const montoBox = parseFloat(partesMonto[1].trim()) || 0;
+        const [montoStraight, montoBox] = montosDobles;
 
         setHistorialTemporal(prev => [
           ...prev,
@@ -791,8 +802,7 @@ const GeneradorNumeros = ({
       const montoPick4Head3 = monto.trim() ? parseFloat(monto) || 1 : 1;
 
       if (montoDobleValido) {
-        const montoStraight = parseFloat(partesMonto[0].trim()) || 0;
-        const montoBox = parseFloat(partesMonto[1].trim()) || 0;
+        const [montoStraight, montoBox] = montosDobles;
 
         setHistorialTemporal(prev => [
           ...prev,
@@ -906,8 +916,7 @@ const GeneradorNumeros = ({
     // Caso 2: Box (termina en +)
     else if (esBox) {
       if (montoDobleValido) {
-        const montoStraight = parseFloat(partesMonto[0].trim()) || 0;
-        const montoBox = parseFloat(partesMonto[1].trim()) || 0;
+        const [montoStraight, montoBox] = montosDobles;
 
         setHistorialTemporal(prev => [
           ...prev,
@@ -946,45 +955,34 @@ const GeneradorNumeros = ({
       volverAlNumero();
       return; // Salir aquí
     }
-    // Caso 3: Verificar si el monto es formato doble (número+número o decimal+decimal)
+    // Caso 3: Verificar si el monto es formato doble (cualquier combinación de montos válida)
     else if (montoDobleValido) {
-      const parte1 = partesMonto[0].trim();
-      const parte2 = partesMonto[1].trim();
-      
-      // Verificar que ambas partes sean números válidos (enteros o decimales)
-      const esNumero1 = /^\d+(\.\d+)?$/.test(parte1);
-      const esNumero2 = /^\d+(\.\d+)?$/.test(parte2);
-      
-      if (esNumero1 && esNumero2) {
-        const montos = [parseFloat(parte1) || 0, parseFloat(parte2) || 0];
-        const montoStraight = montos[0];
-        const montoBox = montos[1];
+      const [montoStraight, montoBox] = montosDobles;
 
-        // Agregar dos entradas al historial
-        setHistorialTemporal(prev => [
-          ...prev,
-          crearItemHistorial({
-            id: Date.now(),
-            numero: numeroLimpio,
-            monto: montoStraight,
-            tipo: 'Straight'
-          }),
-          crearItemHistorial({
-            id: Date.now() + 1,
-            numero: numeroLimpio,
-            monto: montoBox,
-            tipo: 'Box'
-          })
-        ]);
+      // Agregar dos entradas al historial
+      setHistorialTemporal(prev => [
+        ...prev,
+        crearItemHistorial({
+          id: Date.now(),
+          numero: numeroLimpio,
+          monto: montoStraight,
+          tipo: 'Straight'
+        }),
+        crearItemHistorial({
+          id: Date.now() + 1,
+          numero: numeroLimpio,
+          monto: montoBox,
+          tipo: 'Box'
+        })
+      ]);
 
-        // Limpiar solo el campo de número, mantener el monto
-        setNumero('');
-        // Volver al campo de número
-        volverAlNumero();
-        return; // Salir aquí para no ejecutar el caso 4
-      }
+      // Limpiar solo el campo de número, mantener el monto
+      setNumero('');
+      // Volver al campo de número
+      volverAlNumero();
+      return; // Salir aquí para no ejecutar el caso 4
     }
-    
+
     // Caso 4: Straight normal
     else {
       setHistorialTemporal(prev => [
