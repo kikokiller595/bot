@@ -506,7 +506,13 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             }
           } else {
             // Si el número ganador NO es derivado, las longitudes deben coincidir exactamente
-            if (numeroTicketLimpio.length !== numeroGanadorStr.length) {
+            const esLongitudCompatible =
+              tipoApuesta === 'bolita1' || tipoApuesta === 'bolita2'
+                ? numeroTicketLimpio.length === 2 && numeroGanadorStr.length === 3
+                : tipoApuesta === 'singulation'
+                  ? numeroTicketLimpio.length === 1 && numeroGanadorStr.length >= 1
+                  : numeroTicketLimpio.length === numeroGanadorStr.length;
+            if (!esLongitudCompatible) {
               return; // Las longitudes no coinciden
             }
           }
