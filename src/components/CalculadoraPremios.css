@@ -910,6 +910,7 @@
   }
 
   .select-loteria-historial,
+  .select-juego-historial,
   .select-tipo-historial,
   .select-apuesta-historial,
   .select-orden-historial,
@@ -1026,6 +1027,11 @@
   color: var(--text-main);
 }
 
+.historial-completo-header .historial-title {
+  color: #f4fffb;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
 .calculadora-premios-card .card-title {
   font-size: 2rem;
 }
@@ -1075,6 +1081,7 @@
 .form-fecha-filtro input[type="date"],
 .filtro-fecha-general input[type="date"],
 .select-loteria-historial,
+.select-juego-historial,
 .select-tipo-historial,
 .select-apuesta-historial,
 .select-orden-historial,
@@ -1085,11 +1092,50 @@
   color: var(--text-main);
 }
 
+.historial-completo-header .select-loteria-historial,
+.historial-completo-header .select-juego-historial,
+.historial-completo-header .select-tipo-historial,
+.historial-completo-header .select-apuesta-historial,
+.historial-completo-header .select-orden-historial,
+.historial-completo-header .input-fecha-historial {
+  background: rgba(255, 255, 255, 0.96);
+  color: #102a31;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 20px rgba(7, 27, 31, 0.14);
+}
+
+.historial-completo-header .input-fecha-historial::placeholder,
+.historial-completo-header .input-fecha-historial::-webkit-datetime-edit,
+.historial-completo-header .input-fecha-historial::-webkit-datetime-edit-text,
+.historial-completo-header .input-fecha-historial::-webkit-datetime-edit-month-field,
+.historial-completo-header .input-fecha-historial::-webkit-datetime-edit-day-field,
+.historial-completo-header .input-fecha-historial::-webkit-datetime-edit-year-field {
+  color: #4d6770;
+}
+
+.historial-completo-header .input-fecha-historial::-webkit-calendar-picker-indicator {
+  filter: none;
+  opacity: 0.9;
+}
+
 .btn-limpiar-fecha,
 .btn-toggle-historial {
   border-radius: 999px;
   background: rgba(12, 27, 34, 0.08);
   color: var(--text-main);
+}
+
+.historial-completo-header .btn-toggle-historial {
+  background: rgba(9, 27, 31, 0.22);
+  color: #f4fffb;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 24px rgba(5, 20, 24, 0.18);
+}
+
+.historial-completo-header .btn-toggle-historial:hover {
+  background: rgba(9, 27, 31, 0.34);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .resumen-premios,
