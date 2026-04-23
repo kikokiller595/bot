@@ -115,6 +115,47 @@ function obtenerPosicionLabel(posicion = '', tipoApuesta = '') {
   return posicion || '';
 }
 
+const TIPOS_PICK4_HISTORIAL = new Set([
+  'pick4tail3',
+  'pick4tail3box',
+  'pick4head3',
+  'pick4head3box'
+]);
+
+function obtenerFamiliaJuegoHistorial(tipoApuesta = '', numeroBase = '', numeroOriginal = '') {
+  const tipo = String(tipoApuesta || '').toLowerCase().trim();
+  const numero = String(numeroBase || '').trim();
+  const original = String(numeroOriginal || '').toLowerCase().trim();
+
+  if (TIPOS_PICK4_HISTORIAL.has(tipo) || /^\d{3}[bf]\+?$/.test(original) || numero.length === 4) {
+    return 'pick4';
+  }
+
+  if (numero.length === 3) {
+    return 'pick3';
+  }
+
+  return '';
+}
+
+function obtenerEtiquetaJuegoHistorial(juegos = [], longitud = 0) {
+  const juegosActivos = Array.from(juegos || []).filter(Boolean);
+
+  if (juegosActivos.length > 1) {
+    return 'Mixto';
+  }
+
+  if (juegosActivos[0] === 'pick4') {
+    return 'Pick 4';
+  }
+
+  if (juegosActivos[0] === 'pick3') {
+    return 'Pick 3';
+  }
+
+  return longitud ? `Pick ${longitud}` : 'Sin tipo';
+}
+
 const agruparNumerosEnFilas = (numeros = [], maxPorFila = 6) => {
   if (!Array.isArray(numeros) || numeros.length === 0) return [];
   const grupos = [];
@@ -363,6 +404,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
   const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
   const [mostrarHistorialCompleto, setMostrarHistorialCompleto] = useState(false);
   const [loteriaFiltroHistorial, setLoteriaFiltroHistorial] = useState('');
+  const [juegoFiltroHistorial, setJuegoFiltroHistorial] = useState(''); // '', 'pick3', 'pick4'
   const [tipoFiltroHistorial, setTipoFiltroHistorial] = useState(''); // '', '2', '3', '4', etc.
   const [ordenHistorial, setOrdenHistorial] = useState('monto'); // 'monto' o 'conteo'
   const [tipoApuestaFiltro, setTipoApuestaFiltro] = useState(''); // '', 'straight', 'box'
@@ -910,6 +952,10 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         tipoPorFormato = 'bolita1';
       } else if (numeroLower.match(/^\d{2}\+2$/)) {
         tipoPorFormato = 'bolita2';
+      } else if (numeroLower.match(/^\d{3}f\+$/)) {
+        tipoPorFormato = 'pick4head3box';
+      } else if (numeroLower.match(/^\d{3}f$/)) {
+        tipoPorFormato = 'pick4head3';
       } else if (numeroLower.match(/^\d{3}b\+$/)) {
         tipoPorFormato = 'pick4tail3box';
       } else if (numeroLower.match(/^\d{3}b$/)) {
@@ -927,7 +973,8 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
       
       // Usar tipo del ticket si existe y es válido, sino usar el detectado por formato
       if (tipoTicket && (tipoTicket === 'box' || tipoTicket === 'straight' || tipoTicket === 'singulation' || 
-          tipoTicket === 'bolita1' || tipoTicket === 'bolita2' || tipoTicket === 'pick4tail3' || tipoTicket === 'pick4tail3box')) {
+          tipoTicket === 'bolita1' || tipoTicket === 'bolita2' || tipoTicket === 'pick4tail3' || tipoTicket === 'pick4tail3box' ||
+          tipoTicket === 'pick4head3' || tipoTicket === 'pick4head3box')) {
         tipoDetectado = tipoTicket;
       } else {
         tipoDetectado = tipoPorFormato;
@@ -941,6 +988,12 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
       // Limpiar el número base (sin sufijos como +, q, +1, +2)
       const numeroBase = numeroTicket.replace(/[^0-9]/g, '');
       if (!numeroBase) return;
+
+      const familiaJuegoTicket = obtenerFamiliaJuegoHistorial(tipoTicket || tipoDetectado || tipoPorFormato, numeroBase, numeroLower);
+
+      if (juegoFiltroHistorial && familiaJuegoTicket !== juegoFiltroHistorial) {
+        return;
+      }
 
       // Filtrar por tipo (longitud del número): Pick 2, Pick 3, Pick 4, etc.
       if (tipoFiltroHistorial) {
@@ -957,6 +1010,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         numerosMap[numeroBase] = {
           numero: numeroBase,
           longitud: numeroBase.length,
+          juegos: new Set(),
           straight: { conteo: 0, monto: 0 },
           box: { conteo: 0, monto: 0 },
           pick4tail3: { conteo: 0, monto: 0 },
@@ -968,21 +1022,21 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         };
       }
 
+      if (familiaJuegoTicket) {
+        numerosMap[numeroBase].juegos.add(familiaJuegoTicket);
+      }
+
       // Mapear el tipo detectado a la clave correcta
       let tipoKey = 'straight'; // Valor por defecto
-      if (tipoDetectado === 'box') {
+      if (tipoDetectado === 'box' || tipoDetectado === 'pick4tail3box' || tipoDetectado === 'pick4head3box') {
         tipoKey = 'box';
-      } else if (tipoDetectado === 'pick4tail3') {
-        tipoKey = 'pick4tail3';
-      } else if (tipoDetectado === 'pick4tail3box') {
-        tipoKey = 'pick4tail3box';
       } else if (tipoDetectado === 'singulation') {
         tipoKey = 'singulation';
       } else if (tipoDetectado === 'bolita1') {
         tipoKey = 'bolita1';
       } else if (tipoDetectado === 'bolita2') {
         tipoKey = 'bolita2';
-      } else if (tipoDetectado === 'straight') {
+      } else if (tipoDetectado === 'straight' || tipoDetectado === 'pick4tail3' || tipoDetectado === 'pick4head3') {
         tipoKey = 'straight';
       }
 
@@ -998,7 +1052,10 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
     });
 
     // Convertir a array y filtrar por tipo de apuesta si es necesario
-    let resultados = Object.values(numerosMap);
+    let resultados = Object.values(numerosMap).map(item => ({
+      ...item,
+      juegos: Array.from(item.juegos || []).filter(Boolean)
+    }));
 
     // Filtrar por tipo de apuesta (straight, box)
     if (tipoApuestaFiltro && tipoApuestaFiltro.trim() !== '') {
@@ -1071,7 +1128,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
     });
 
     return resultados;
-  }, [sorteos, loteriaFiltroHistorial, tipoFiltroHistorial, ordenHistorial, tipoApuestaFiltro, fechaFiltroHistorial]);
+  }, [sorteos, loteriaFiltroHistorial, juegoFiltroHistorial, tipoFiltroHistorial, ordenHistorial, tipoApuestaFiltro, fechaFiltroHistorial]);
 
   const obtenerEtiquetaTipo = (tipo = '') => {
     const valor = tipo.toLowerCase();
@@ -1577,11 +1634,20 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                 </select>
               )}
               <select
+                value={juegoFiltroHistorial}
+                onChange={(e) => setJuegoFiltroHistorial(e.target.value)}
+                className="select-juego-historial"
+              >
+                <option value="">Todos los juegos</option>
+                <option value="pick3">Solo Pick 3</option>
+                <option value="pick4">Solo Pick 4</option>
+              </select>
+              <select
                 value={tipoFiltroHistorial}
                 onChange={(e) => setTipoFiltroHistorial(e.target.value)}
                 className="select-tipo-historial"
               >
-                <option value="">Todos los tipos</option>
+                <option value="">Todas las longitudes</option>
                 <option value="1">Pick 1 (Singulation)</option>
                 <option value="2">Pick 2</option>
                 <option value="3">Pick 3</option>
@@ -1627,6 +1693,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                 <div className="sin-historial">
                   No hay números jugados
                   {loteriaFiltroHistorial ? ' en la lotería seleccionada' : ''}
+                  {juegoFiltroHistorial ? ` en ${juegoFiltroHistorial === 'pick3' ? 'Pick 3' : 'Pick 4'}` : ''}
                   {tipoFiltroHistorial ? ` para Pick ${tipoFiltroHistorial}` : ''}
                   {tipoApuestaFiltro ? ` con tipo ${tipoApuestaFiltro === 'straight' ? 'Straight' : 'Box'}` : ''}
                   {fechaFiltroHistorial ? ` en la fecha ${new Date(fechaFiltroHistorial + 'T00:00:00').toLocaleDateString('es-ES')}` : ''}
@@ -1636,6 +1703,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                   <div className="historial-resumen-filtros">
                     <span className="contador-resultados">
                       Mostrando {historialCompleto.length} número{historialCompleto.length !== 1 ? 's' : ''}
+                      {juegoFiltroHistorial ? ` (${juegoFiltroHistorial === 'pick3' ? 'Pick 3' : 'Pick 4'})` : ''}
                       {tipoFiltroHistorial ? ` (Pick ${tipoFiltroHistorial})` : ''}
                       {tipoApuestaFiltro && (
                         <span className="filtro-activo-badge">
@@ -1674,7 +1742,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                       <div key={`${item.numero}-${index}`} className="fila-historial">
                         <div className="col-numero-hist">
                           <span className="numero-historial">{item.numero}</span>
-                          <span className="numero-tipo-badge">Pick {item.longitud}</span>
+                          <span className="numero-tipo-badge">{obtenerEtiquetaJuegoHistorial(item.juegos, item.longitud)}</span>
                         </div>
                         <div className={`col-straight-hist ${tipoApuestaFiltro === 'box' ? 'col-filtrada' : tipoApuestaFiltro === 'straight' ? 'col-destacada' : ''}`}>
                           {item.straight.conteo > 0 && (

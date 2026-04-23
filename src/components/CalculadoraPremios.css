@@ -540,6 +540,7 @@
   padding: 0.5rem;
 }
 
+.select-juego-historial,
 .select-tipo-historial,
 .select-apuesta-historial,
 .select-orden-historial,
@@ -585,6 +586,7 @@
   color: white;
 }
 
+.select-juego-historial:hover,
 .select-tipo-historial:hover,
 .select-apuesta-historial:hover,
 .select-orden-historial:hover,
@@ -599,6 +601,7 @@
   outline: none;
 }
 
+.select-juego-historial option,
 .select-tipo-historial option,
 .select-apuesta-historial option,
 .select-orden-historial option {
