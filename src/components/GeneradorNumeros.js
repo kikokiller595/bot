@@ -46,6 +46,55 @@ const obtenerFechaActualLocal = () => {
   return `${anio}-${mes}-${dia}`;
 };
 
+const AYUDA_INGRESO_SECCIONES = [
+  {
+    titulo: 'Jugadas basicas',
+    descripcion: 'Escribe el numero tal como lo quieres jugar en straight.',
+    ejemplos: [
+      { codigo: '12', detalle: 'Pick 2 straight' },
+      { codigo: '123', detalle: 'Pick 3 straight' },
+      { codigo: '1234', detalle: 'Pick 4 straight' }
+    ]
+  },
+  {
+    titulo: 'Box y monto dividido',
+    descripcion: 'Usa + al final para box o divide el monto para crear straight y box juntos.',
+    ejemplos: [
+      { codigo: '123+', detalle: 'Pick 3 box' },
+      { codigo: '1234+', detalle: 'Pick 4 box' },
+      { codigo: '123 con monto 1+2', detalle: 'Crea Straight $1 y Box $2' },
+      { codigo: '1234 con monto 0.50+0.75', detalle: 'Crea Straight $0.50 y Box $0.75' }
+    ]
+  },
+  {
+    titulo: 'Pick 4 especiales',
+    descripcion: 'f usa los primeros 3 del Pick 4 y b usa los ultimos 3. Tambien aceptan monto dividido.',
+    ejemplos: [
+      { codigo: '123f', detalle: 'Primeros 3 Pick 4 straight' },
+      { codigo: '123f+', detalle: 'Primeros 3 Pick 4 box' },
+      { codigo: '123b', detalle: 'Ultimos 3 Pick 4 straight' },
+      { codigo: '123b+', detalle: 'Ultimos 3 Pick 4 box' }
+    ]
+  },
+  {
+    titulo: 'Formatos especiales',
+    descripcion: 'Tambien puedes entrar bolitas, singulation y combinaciones.',
+    ejemplos: [
+      { codigo: '22+1', detalle: 'Bolita 1' },
+      { codigo: '22+2', detalle: 'Bolita 2' },
+      { codigo: '7', detalle: 'Singulation' },
+      { codigo: '123q', detalle: 'Genera todas las combinaciones como straight' }
+    ]
+  }
+];
+
+const AYUDA_INGRESO_NOTAS = [
+  'El monto dividido acepta combinaciones como 0.50+0.50, 1+2 o 2.25+3.75.',
+  'Ese monto dividido tambien funciona con 123f, 123f+, 123b y 123b+.',
+  'Pick 2 no admite box, q ni monto dividido.',
+  'Enter agrega la jugada y * genera el ticket.'
+];
+
 const GeneradorNumeros = ({
   guardarSorteo,
   guardarMultiplesSorteos,
@@ -82,6 +131,7 @@ const GeneradorNumeros = ({
   };
   
   const [fechaSeleccionada, setFechaSeleccionada] = useState(obtenerFechaLocal());
+  const [mostrarAyudaIngreso, setMostrarAyudaIngreso] = useState(false);
   const puntosVentaActivos = useMemo(
     () =>
       esAdmin
@@ -1317,6 +1367,51 @@ const GeneradorNumeros = ({
           )}
           {/* Área de entrada */}
           <div className="area-entrada">
+            <div className="ayuda-ingreso">
+              <button
+                type="button"
+                className="btn-ayuda-ingreso"
+                onClick={() => setMostrarAyudaIngreso((prev) => !prev)}
+                aria-expanded={mostrarAyudaIngreso}
+              >
+                {mostrarAyudaIngreso ? 'Ocultar ayuda de ingreso' : 'Ayuda: como ingresar numeros'}
+              </button>
+
+              {mostrarAyudaIngreso && (
+                <div className="ayuda-ingreso-panel">
+                  <div className="ayuda-ingreso-panel-header">
+                    <h3>Formas de ingresar numeros</h3>
+                    <p>Usa esta guia rapida para ver todos los formatos soportados por el generador.</p>
+                  </div>
+
+                  <div className="ayuda-ingreso-grid">
+                    {AYUDA_INGRESO_SECCIONES.map((seccion) => (
+                      <section key={seccion.titulo} className="ayuda-ingreso-card">
+                        <h4>{seccion.titulo}</h4>
+                        <p>{seccion.descripcion}</p>
+                        <ul>
+                          {seccion.ejemplos.map((ejemplo) => (
+                            <li key={`${seccion.titulo}-${ejemplo.codigo}`}>
+                              <code>{ejemplo.codigo}</code>
+                              <span>{ejemplo.detalle}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    ))}
+                  </div>
+
+                  <div className="ayuda-ingreso-notas">
+                    {AYUDA_INGRESO_NOTAS.map((nota) => (
+                      <span key={nota} className="ayuda-ingreso-nota">
+                        {nota}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {esAdmin && (
               <div className="campo-fecha">
                 <label>Fecha del Ticket</label>

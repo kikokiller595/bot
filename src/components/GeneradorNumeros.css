@@ -137,6 +137,140 @@
   gap: 1.5rem;
 }
 
+.ayuda-ingreso {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.btn-ayuda-ingreso {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(12, 27, 34, 0.1);
+  border-radius: 999px;
+  background: rgba(12, 27, 34, 0.06);
+  color: #17313a;
+  padding: 0.72rem 1.05rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.btn-ayuda-ingreso:hover {
+  background: rgba(15, 138, 124, 0.12);
+  box-shadow: 0 10px 22px rgba(12, 27, 34, 0.08);
+  transform: translateY(-1px);
+}
+
+.ayuda-ingreso-panel {
+  border: 1px solid rgba(12, 27, 34, 0.08);
+  border-radius: 24px;
+  padding: 1rem 1.1rem 1.15rem;
+  background: linear-gradient(180deg, rgba(247, 251, 249, 0.98) 0%, rgba(240, 248, 246, 0.98) 100%);
+  box-shadow: 0 18px 34px rgba(18, 39, 58, 0.07);
+}
+
+.ayuda-ingreso-panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.ayuda-ingreso-panel-header h3 {
+  margin: 0;
+  color: #17313a;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.ayuda-ingreso-panel-header p {
+  margin: 0;
+  color: #5b6c72;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.ayuda-ingreso-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.85rem;
+}
+
+.ayuda-ingreso-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(12, 27, 34, 0.08);
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+  box-shadow: 0 8px 18px rgba(18, 39, 58, 0.05);
+}
+
+.ayuda-ingreso-card h4 {
+  margin: 0 0 0.35rem;
+  color: #17313a;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.ayuda-ingreso-card p {
+  margin: 0 0 0.75rem;
+  color: #667980;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.ayuda-ingreso-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ayuda-ingreso-card li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 14px;
+  background: rgba(244, 248, 250, 0.95);
+}
+
+.ayuda-ingreso-card code {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f766e;
+}
+
+.ayuda-ingreso-card li span {
+  color: #51636a;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.ayuda-ingreso-notas {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.ayuda-ingreso-nota {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(15, 138, 124, 0.1);
+  color: #0f766e;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .campo-loteria {
   grid-column: 1 / -1;
   display: flex;
@@ -1037,6 +1171,19 @@
     grid-template-columns: 1fr;
   }
 
+  .btn-ayuda-ingreso {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ayuda-ingreso-panel {
+    padding: 0.95rem;
+  }
+
+  .ayuda-ingreso-grid {
+    grid-template-columns: 1fr;
+  }
+
   .lista-loterias {
     flex-direction: column;
   }
@@ -1774,6 +1921,24 @@
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 0.7rem 0.85rem;
     align-items: start;
+  }
+
+  .ayuda-ingreso {
+    grid-column: 1 / -1;
+    gap: 0.65rem;
+  }
+
+  .btn-ayuda-ingreso {
+    padding: 0.6rem 0.95rem;
+    font-size: 0.84rem;
+  }
+
+  .ayuda-ingreso-panel {
+    padding: 0.85rem 0.9rem 0.95rem;
+  }
+
+  .ayuda-ingreso-grid {
+    gap: 0.7rem;
   }
 
   .campo-fecha {
