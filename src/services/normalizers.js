@@ -228,6 +228,7 @@ export const normalizeSorteo = (sorteo) => {
     grupoId: sorteo.grupoId ? String(sorteo.grupoId) : null,
     fecha: sorteo.fechaTexto || sorteo.fecha || '',
     fechaISO: sorteo.fecha || null,
+    createdAt: sorteo.createdAt || null,
     ganador: Boolean(sorteo.ganador),
     numeroGanador: sorteo.numeroGanador || null,
     premio: Number(sorteo.premio) || 0,

@@ -129,6 +129,8 @@ const sorteoSchema = new mongoose.Schema({
     trim: true,
     default: ''
   }
+}, {
+  timestamps: true
 });
 
 sorteoSchema.index({ usuario: 1, fecha: -1 });

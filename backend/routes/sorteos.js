@@ -29,9 +29,22 @@ const esPuntoVenta = (rol) => {
 
 const LIMITE_ELIMINACION_PUNTO_VENTA_MS = 5 * 60 * 1000;
 
+const obtenerFechaReferenciaEliminacion = (sorteo) => {
+  const candidatos = [sorteo?.createdAt, sorteo?.fecha];
+
+  for (const valor of candidatos) {
+    const fecha = valor instanceof Date ? valor : new Date(valor);
+    if (!Number.isNaN(fecha.getTime())) {
+      return fecha;
+    }
+  }
+
+  return null;
+};
+
 const estaDentroVentanaEliminacion = (sorteo) => {
-  const fechaTicket = sorteo?.fecha instanceof Date ? sorteo.fecha : new Date(sorteo?.fecha);
-  if (Number.isNaN(fechaTicket.getTime())) {
+  const fechaTicket = obtenerFechaReferenciaEliminacion(sorteo);
+  if (!fechaTicket) {
     return false;
   }
 

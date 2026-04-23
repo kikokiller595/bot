@@ -153,6 +153,28 @@ const obtenerClavePuntoVenta = (ticket) =>
   String(ticket?.puntoVentaId || ticket?.puntoVentaNombre || '').trim();
 const LIMITE_ELIMINACION_PUNTO_VENTA_MS = 5 * 60 * 1000;
 
+const obtenerFechaReferenciaEliminacion = (ticket) => {
+  const candidatos = [ticket?.createdAt, ticket?.fechaISO, ticket?.fecha];
+
+  for (const valor of candidatos) {
+    if (!valor) continue;
+
+    if (typeof valor === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(valor)) {
+      const fechaIso = new Date(valor);
+      if (!isNaN(fechaIso.getTime())) {
+        return fechaIso;
+      }
+    }
+
+    const fecha = parsearFecha(valor);
+    if (fecha && !isNaN(fecha.getTime())) {
+      return fecha;
+    }
+  }
+
+  return null;
+};
+
 const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
   const { isAdmin } = useAuth();
   const [fechaDesde, setFechaDesde] = useState('');
@@ -553,7 +575,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
     if (isAdmin()) return true;
 
     const primerTicket = grupo?.tickets?.[0];
-    const fechaGrupo = parsearFecha(primerTicket?.fechaISO || primerTicket?.fecha);
+    const fechaGrupo = obtenerFechaReferenciaEliminacion(primerTicket);
     if (!fechaGrupo) return false;
 
     return ahora - fechaGrupo.getTime() <= LIMITE_ELIMINACION_PUNTO_VENTA_MS;
