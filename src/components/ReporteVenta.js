@@ -266,6 +266,11 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
   const obtenerMontoPremioTicket = (ticket = {}) =>
     Number(ticket.totalPremio ?? ticket.premio) || 0;
 
+  const obtenerClaveTicketAgrupado = (ticket = {}) =>
+    String(ticket.grupoId || ticket.ticketId || ticket.id || '').trim();
+
+  const asegurarNoNegativo = (valor) => Math.max(Number(valor) || 0, 0);
+
   const agruparPremiosPorTicket = (resultados = []) => {
     const mapa = new Map();
 
@@ -312,6 +317,110 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
         agrupado.numero = item.numero;
       }
     });
+
+    return Array.from(mapa.values()).sort((a, b) => {
+      const fechaA = parsearFecha(a.fechaTicket || a.fecha || a.fechaSorteo || 0);
+      const fechaB = parsearFecha(b.fechaTicket || b.fecha || b.fechaSorteo || 0);
+      return (fechaB?.getTime() || 0) - (fechaA?.getTime() || 0);
+    });
+  };
+
+  const agruparPremiosPersistidos = (tickets = []) => {
+    const mapa = new Map();
+
+    tickets.forEach((ticket) => {
+      const clave = obtenerClaveTicketAgrupado(ticket);
+      const premio = Number(ticket.premio) || 0;
+
+      if (!clave || premio <= 0) {
+        return;
+      }
+
+      if (!mapa.has(clave)) {
+        mapa.set(clave, {
+          id: ticket.id || clave,
+          ticketId: ticket.ticketId || clave,
+          grupoId: ticket.grupoId || null,
+          referenciaPago: clave,
+          numero: ticket.numero || '',
+          fechaTicket: obtenerFechaReferenciaTicket(ticket),
+          fechaSorteo: ticket.fechaPago || null,
+          loteriaNombre: ticket.loteriaNombre || '',
+          puntoVentaId: ticket.puntoVentaId || '',
+          puntoVentaNombre: ticket.puntoVentaNombre || '',
+          usuarioNombre: ticket.usuarioNombre || ticket.vendedorNombre || '',
+          pagado: Boolean(ticket.pagado),
+          totalPremio: 0,
+          totalMonto: 0,
+          cantidadAciertos: 0
+        });
+      }
+
+      const agrupado = mapa.get(clave);
+      agrupado.pagado = Boolean(agrupado.pagado || ticket.pagado);
+      agrupado.totalPremio += premio;
+      agrupado.totalMonto += Number(ticket.monto) || 0;
+      agrupado.cantidadAciertos += 1;
+
+      if (!agrupado.numero && ticket.numero) {
+        agrupado.numero = ticket.numero;
+      }
+      if (!agrupado.loteriaNombre && ticket.loteriaNombre) {
+        agrupado.loteriaNombre = ticket.loteriaNombre;
+      }
+      if (!agrupado.puntoVentaId && ticket.puntoVentaId) {
+        agrupado.puntoVentaId = ticket.puntoVentaId;
+      }
+      if (!agrupado.puntoVentaNombre && ticket.puntoVentaNombre) {
+        agrupado.puntoVentaNombre = ticket.puntoVentaNombre;
+      }
+      if (!agrupado.usuarioNombre && (ticket.usuarioNombre || ticket.vendedorNombre)) {
+        agrupado.usuarioNombre = ticket.usuarioNombre || ticket.vendedorNombre || '';
+      }
+    });
+
+    return Array.from(mapa.values());
+  };
+
+  const combinarPremiosAgrupados = (calculados = [], persistidos = []) => {
+    const mapa = new Map();
+
+    const aplicar = (item = {}) => {
+      const clave = obtenerClaveTicketAgrupado(item);
+      if (!clave) return;
+
+      if (!mapa.has(clave)) {
+        mapa.set(clave, { ...item });
+        return;
+      }
+
+      const actual = mapa.get(clave);
+      const premioActual = obtenerMontoPremioTicket(actual);
+      const premioNuevo = obtenerMontoPremioTicket(item);
+
+      mapa.set(clave, {
+        ...actual,
+        ...item,
+        id: actual.id || item.id || clave,
+        ticketId: actual.ticketId || item.ticketId || clave,
+        grupoId: actual.grupoId || item.grupoId || null,
+        referenciaPago: actual.referenciaPago || item.referenciaPago || clave,
+        numero: actual.numero || item.numero || '',
+        fechaTicket: actual.fechaTicket || item.fechaTicket || null,
+        fechaSorteo: actual.fechaSorteo || item.fechaSorteo || null,
+        loteriaNombre: actual.loteriaNombre || item.loteriaNombre || '',
+        puntoVentaId: actual.puntoVentaId || item.puntoVentaId || '',
+        puntoVentaNombre: actual.puntoVentaNombre || item.puntoVentaNombre || '',
+        usuarioNombre: actual.usuarioNombre || item.usuarioNombre || '',
+        pagado: Boolean(actual.pagado || item.pagado),
+        totalPremio: Math.max(premioActual, premioNuevo),
+        totalMonto: Math.max(Number(actual.totalMonto) || 0, Number(item.totalMonto) || 0),
+        cantidadAciertos: Math.max(Number(actual.cantidadAciertos) || 0, Number(item.cantidadAciertos) || 0)
+      });
+    };
+
+    calculados.forEach(aplicar);
+    persistidos.forEach(aplicar);
 
     return Array.from(mapa.values()).sort((a, b) => {
       const fechaA = parsearFecha(a.fechaTicket || a.fecha || a.fechaSorteo || 0);
@@ -626,7 +735,10 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
 
     // Agrupar resultados por ticketId y tomar solo el premio más alto para cada ticket
     // Esto evita que un ticket que gana múltiples veces se sume múltiples veces
-    const agrupados = agruparPremiosPorTicket(resultados);
+    const agrupados = combinarPremiosAgrupados(
+      agruparPremiosPorTicket(resultados),
+      agruparPremiosPersistidos(ticketsEnRango)
+    );
     console.log('Total de tickets ganadores agrupados:', agrupados.length);
     console.log('Premios totales:', agrupados.reduce((sum, t) => sum + obtenerMontoPremioTicket(t), 0));
     
@@ -734,7 +846,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     stats.totalPremios = totalPremiosDetectados;
     stats.totalPremiosPagados = premiosPagados;
     stats.ticketsGanadores = ticketsGanadoresEnRango.length;
-    stats.gananciaNeta = stats.totalVenta - totalPremiosDetectados;
+    stats.gananciaNeta = asegurarNoNegativo(stats.totalVenta - totalPremiosDetectados);
 
     return stats;
   }, [ticketsEnRango, premiosPagados, ticketsGanadoresEnRango.length, totalPremiosDetectados]);
@@ -778,7 +890,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     const lista = Array.from(mapa.values()).map((item) => {
       const configuracion = resolverPuntoVenta(item.clave, item.nombre);
       const porcentajeSocio = Number(configuracion?.porcentajeSocio) || 0;
-      const gananciaNeta = item.total - item.premios;
+      const gananciaNeta = asegurarNoNegativo(item.total - item.premios);
       return {
         ...item,
         porcentajeSocio,
