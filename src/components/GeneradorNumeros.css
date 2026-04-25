@@ -144,6 +144,12 @@
   gap: 0.85rem;
 }
 
+.ayuda-ingreso-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
 .btn-ayuda-ingreso {
   align-self: flex-start;
   display: inline-flex;
@@ -1169,6 +1175,10 @@
 @media (max-width: 768px) {
   .area-entrada {
     grid-template-columns: 1fr;
+  }
+
+  .ayuda-ingreso-botones {
+    flex-direction: column;
   }
 
   .btn-ayuda-ingreso {

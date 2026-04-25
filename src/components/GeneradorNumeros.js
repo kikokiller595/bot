@@ -95,6 +95,55 @@ const AYUDA_INGRESO_NOTAS = [
   'Enter agrega la jugada y * genera el ticket.'
 ];
 
+const AYUDA_GANADORES_SECCIONES = [
+  {
+    titulo: 'Straight y combinaciones',
+    descripcion: 'La jugada debe salir exacta en el mismo orden.',
+    ejemplos: [
+      { codigo: '12', detalle: 'Pick 2 straight gana si sale exactamente 12 en la posicion correspondiente.' },
+      { codigo: '123', detalle: 'Pick 3 straight gana si sale exactamente 123.' },
+      { codigo: '1234', detalle: 'Pick 4 straight gana si sale exactamente 1234.' },
+      { codigo: '123q', detalle: 'Genera todas las combinaciones en straight; gana cualquiera de esas permutaciones.' }
+    ]
+  },
+  {
+    titulo: 'Box',
+    descripcion: 'Gana si salen los mismos digitos, aunque cambie el orden.',
+    ejemplos: [
+      { codigo: '123+', detalle: 'Gana con 123, 132, 213, 231, 312 o 321.' },
+      { codigo: '112+', detalle: 'Gana con cualquier orden de 112.' },
+      { codigo: '1234+', detalle: 'Gana con cualquier orden de 1234.' },
+      { codigo: '111+', detalle: 'Los triples de Pick 3 no se juegan box; se pagan como straight triple.' }
+    ]
+  },
+  {
+    titulo: 'Pick 4 especiales',
+    descripcion: 'Comparan solo una parte del Pick 4 ganador.',
+    ejemplos: [
+      { codigo: '123f', detalle: 'Gana si los primeros 3 del Pick 4 ganador son exactamente 123.' },
+      { codigo: '123f+', detalle: 'Gana si los primeros 3 del Pick 4 ganador tienen esos mismos digitos en cualquier orden.' },
+      { codigo: '123b', detalle: 'Gana si los ultimos 3 del Pick 4 ganador son exactamente 123.' },
+      { codigo: '123b+', detalle: 'Gana si los ultimos 3 del Pick 4 ganador tienen esos mismos digitos en cualquier orden.' }
+    ]
+  },
+  {
+    titulo: 'Bolita y singulation',
+    descripcion: 'Usan una parte del numero ganador como referencia.',
+    ejemplos: [
+      { codigo: '22+1', detalle: 'Bolita 1 gana con los primeros 2 digitos del Pick 3 ganador.' },
+      { codigo: '22+2', detalle: 'Bolita 2 gana con los ultimos 2 digitos del Pick 3 ganador.' },
+      { codigo: '7', detalle: 'Singulation gana con el ultimo digito del numero ganador.' }
+    ]
+  }
+];
+
+const AYUDA_GANADORES_NOTAS = [
+  'Pick 2 se compara como straight exacto segun la posicion premiada.',
+  'Pick 3 triple se paga solo como straight triple.',
+  'Pick 4 box cambia el premio segun si es cuadruple, tres iguales, dos pares, un par o todos diferentes.',
+  'Cuando una jugada crea straight y box juntos, cada parte gana o pierde por separado.'
+];
+
 const GeneradorNumeros = ({
   guardarSorteo,
   guardarMultiplesSorteos,
@@ -132,6 +181,7 @@ const GeneradorNumeros = ({
   
   const [fechaSeleccionada, setFechaSeleccionada] = useState(obtenerFechaLocal());
   const [mostrarAyudaIngreso, setMostrarAyudaIngreso] = useState(false);
+  const [mostrarAyudaGanadores, setMostrarAyudaGanadores] = useState(false);
   const puntosVentaActivos = useMemo(
     () =>
       esAdmin
@@ -1368,14 +1418,25 @@ const GeneradorNumeros = ({
           {/* Área de entrada */}
           <div className="area-entrada">
             <div className="ayuda-ingreso">
-              <button
-                type="button"
-                className="btn-ayuda-ingreso"
-                onClick={() => setMostrarAyudaIngreso((prev) => !prev)}
-                aria-expanded={mostrarAyudaIngreso}
-              >
-                {mostrarAyudaIngreso ? 'Ocultar ayuda de ingreso' : 'Ayuda: como ingresar numeros'}
-              </button>
+              <div className="ayuda-ingreso-botones">
+                <button
+                  type="button"
+                  className="btn-ayuda-ingreso"
+                  onClick={() => setMostrarAyudaIngreso((prev) => !prev)}
+                  aria-expanded={mostrarAyudaIngreso}
+                >
+                  {mostrarAyudaIngreso ? 'Ocultar ayuda de ingreso' : 'Ayuda: como ingresar numeros'}
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-ayuda-ingreso"
+                  onClick={() => setMostrarAyudaGanadores((prev) => !prev)}
+                  aria-expanded={mostrarAyudaGanadores}
+                >
+                  {mostrarAyudaGanadores ? 'Ocultar ayuda de ganadores' : 'Ayuda: como gana cada jugada'}
+                </button>
+              </div>
 
               {mostrarAyudaIngreso && (
                 <div className="ayuda-ingreso-panel">
@@ -1403,6 +1464,40 @@ const GeneradorNumeros = ({
 
                   <div className="ayuda-ingreso-notas">
                     {AYUDA_INGRESO_NOTAS.map((nota) => (
+                      <span key={nota} className="ayuda-ingreso-nota">
+                        {nota}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {mostrarAyudaGanadores && (
+                <div className="ayuda-ingreso-panel">
+                  <div className="ayuda-ingreso-panel-header">
+                    <h3>Como gana cada jugada</h3>
+                    <p>Usa esta guia para explicar de forma rapida que necesita acertar cada tipo de jugada.</p>
+                  </div>
+
+                  <div className="ayuda-ingreso-grid">
+                    {AYUDA_GANADORES_SECCIONES.map((seccion) => (
+                      <section key={seccion.titulo} className="ayuda-ingreso-card">
+                        <h4>{seccion.titulo}</h4>
+                        <p>{seccion.descripcion}</p>
+                        <ul>
+                          {seccion.ejemplos.map((ejemplo) => (
+                            <li key={`${seccion.titulo}-${ejemplo.codigo}`}>
+                              <code>{ejemplo.codigo}</code>
+                              <span>{ejemplo.detalle}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    ))}
+                  </div>
+
+                  <div className="ayuda-ingreso-notas">
+                    {AYUDA_GANADORES_NOTAS.map((nota) => (
                       <span key={nota} className="ayuda-ingreso-nota">
                         {nota}
                       </span>
