@@ -59,6 +59,8 @@ const obtenerClaveFecha = (valor) => {
   return `${año}-${mes}-${dia}`;
 };
 
+const obtenerFechaLocalHoy = () => obtenerClaveFecha(new Date()) || '';
+
 const extenderNumerosGanadores = (numeros = []) => {
   const lista = [];
 
@@ -177,8 +179,8 @@ const obtenerFechaReferenciaEliminacion = (ticket) => {
 
 const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
   const { isAdmin } = useAuth();
-  const [fechaDesde, setFechaDesde] = useState('');
-  const [fechaHasta, setFechaHasta] = useState('');
+  const [fechaDesde, setFechaDesde] = useState(() => obtenerFechaLocalHoy());
+  const [fechaHasta, setFechaHasta] = useState(() => obtenerFechaLocalHoy());
   const [textoBusqueda, setTextoBusqueda] = useState('');
   const [loteriaFiltro, setLoteriaFiltro] = useState('');
   const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
