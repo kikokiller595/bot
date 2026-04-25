@@ -979,7 +979,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     },
     { label: 'Monto socio', value: `$${resumenSocio.montoSeleccionado.toFixed(2)}` },
     { label: 'Venta neta', value: `$${ventaNeta.toFixed(2)}`, tone: ventaNeta >= 0 ? 'success' : 'danger' },
-    { label: 'Te queda', value: `$${montoRestante.toFixed(2)}`, tone: montoRestante >= 0 ? 'success' : 'danger' }
+    { label: 'Final', value: `$${montoRestante.toFixed(2)}`, tone: montoRestante >= 0 ? 'success' : 'danger' }
   ]), [
     configuracionPuntoActual,
     estadisticas.totalPremios,
@@ -1195,7 +1195,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             </div>
 
             <div className={`stat-card ${montoRestante >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
-              <div className="stat-label">Te queda</div>
+              <div className="stat-label">Final</div>
               <div className="stat-value">${montoRestante.toFixed(2)}</div>
               <div className="stat-sublabel">Neta - premios</div>
             </div>
@@ -1238,7 +1238,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                     <div className="punto-venta-meta">
                       Socio {punto.porcentajeSocio.toFixed(2)}%: ${punto.montoSocio.toFixed(2)}
                     </div>
-                    <div className="punto-venta-meta">Te queda: ${punto.teQueda.toFixed(2)}</div>
+                    <div className="punto-venta-meta">Final: ${punto.teQueda.toFixed(2)}</div>
                   </div>
                 ))}
               </div>
