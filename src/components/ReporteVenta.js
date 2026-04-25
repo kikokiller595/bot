@@ -1234,7 +1234,6 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                     <div className="punto-venta-tickets">{punto.tickets} tickets</div>
                     <div className="punto-venta-meta">Premios: ${punto.premios.toFixed(2)}</div>
                     <div className="punto-venta-meta">Pagados: ${punto.premiosPagados.toFixed(2)}</div>
-                    <div className="punto-venta-meta">Neta: ${punto.gananciaNeta.toFixed(2)}</div>
                     <div className="punto-venta-meta">
                       Socio {punto.porcentajeSocio.toFixed(2)}%: ${punto.montoSocio.toFixed(2)}
                     </div>
