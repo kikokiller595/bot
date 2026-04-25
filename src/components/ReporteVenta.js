@@ -269,7 +269,8 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
   const obtenerClaveTicketAgrupado = (ticket = {}) =>
     String(ticket.grupoId || ticket.ticketId || ticket.id || '').trim();
 
-  const asegurarNoNegativo = (valor) => Math.max(Number(valor) || 0, 0);
+  const calcularMontoSocio = (venta = 0, porcentaje = 0) =>
+    ((Number(venta) || 0) * (Number(porcentaje) || 0)) / 100;
 
   const agruparPremiosPorTicket = (resultados = []) => {
     const mapa = new Map();
@@ -846,7 +847,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     stats.totalPremios = totalPremiosDetectados;
     stats.totalPremiosPagados = premiosPagados;
     stats.ticketsGanadores = ticketsGanadoresEnRango.length;
-    stats.gananciaNeta = asegurarNoNegativo(stats.totalVenta - totalPremiosDetectados);
+    stats.gananciaNeta = stats.totalVenta - totalPremiosDetectados;
 
     return stats;
   }, [ticketsEnRango, premiosPagados, ticketsGanadoresEnRango.length, totalPremiosDetectados]);
@@ -890,12 +891,14 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     const lista = Array.from(mapa.values()).map((item) => {
       const configuracion = resolverPuntoVenta(item.clave, item.nombre);
       const porcentajeSocio = Number(configuracion?.porcentajeSocio) || 0;
-      const gananciaNeta = asegurarNoNegativo(item.total - item.premios);
+      const montoSocio = calcularMontoSocio(item.total, porcentajeSocio);
+      const gananciaNeta = item.total - montoSocio;
       return {
         ...item,
         porcentajeSocio,
         gananciaNeta,
-        montoSocio: (gananciaNeta * porcentajeSocio) / 100
+        montoSocio,
+        teQueda: gananciaNeta - item.premios
       };
     });
 
@@ -922,9 +925,9 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     const porcentajeSeleccionado = Number(configuracionPuntoActual?.porcentajeSocio) || 0;
     const montoSeleccionado =
       configuracionPuntoActual && puntoVentaFiltro
-        ? ((estadisticas.gananciaNeta * porcentajeSeleccionado) / 100)
+        ? calcularMontoSocio(estadisticas.totalVenta, porcentajeSeleccionado)
         : (!isAdmin() && configuracionPuntoActual)
-        ? ((estadisticas.gananciaNeta * porcentajeSeleccionado) / 100)
+        ? calcularMontoSocio(estadisticas.totalVenta, porcentajeSeleccionado)
         : ventasPorPuntoVenta.reduce((sum, item) => sum + item.montoSocio, 0);
 
     return {
@@ -932,11 +935,16 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
       montoSeleccionado,
       puntosConfigurados: ventasPorPuntoVenta.filter((item) => item.porcentajeSocio > 0).length
     };
-  }, [configuracionPuntoActual, puntoVentaFiltro, estadisticas.gananciaNeta, isAdmin, ventasPorPuntoVenta]);
+  }, [configuracionPuntoActual, puntoVentaFiltro, estadisticas.totalVenta, isAdmin, ventasPorPuntoVenta]);
+
+  const ventaNeta = useMemo(
+    () => estadisticas.totalVenta - resumenSocio.montoSeleccionado,
+    [estadisticas.totalVenta, resumenSocio.montoSeleccionado]
+  );
 
   const montoRestante = useMemo(
-    () => estadisticas.gananciaNeta - resumenSocio.montoSeleccionado,
-    [estadisticas.gananciaNeta, resumenSocio.montoSeleccionado]
+    () => ventaNeta - estadisticas.totalPremios,
+    [ventaNeta, estadisticas.totalPremios]
   );
 
   const puntoReporteLabel = useMemo(() => {
@@ -970,11 +978,10 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
         : `${resumenSocio.puntosConfigurados} configurados`
     },
     { label: 'Monto socio', value: `$${resumenSocio.montoSeleccionado.toFixed(2)}` },
-    { label: 'Venta neta', value: `$${estadisticas.gananciaNeta.toFixed(2)}`, tone: estadisticas.gananciaNeta >= 0 ? 'success' : 'danger' },
+    { label: 'Venta neta', value: `$${ventaNeta.toFixed(2)}`, tone: ventaNeta >= 0 ? 'success' : 'danger' },
     { label: 'Te queda', value: `$${montoRestante.toFixed(2)}`, tone: montoRestante >= 0 ? 'success' : 'danger' }
   ]), [
     configuracionPuntoActual,
-    estadisticas.gananciaNeta,
     estadisticas.totalPremios,
     estadisticas.totalTickets,
     estadisticas.totalVenta,
@@ -983,6 +990,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     resumenSocio.montoSeleccionado,
     resumenSocio.porcentajeSeleccionado,
     resumenSocio.puntosConfigurados,
+    ventaNeta,
     user
   ]);
 
@@ -1125,14 +1133,14 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                 <span className="premios-value">${estadisticas.totalPremiosPagados.toFixed(2)}</span>
               </div>
               <div className="ganancia-neta-item">
-                <span className="ganancia-label">Ganancia Neta:</span>
-                <span className={`ganancia-value ${estadisticas.gananciaNeta >= 0 ? 'positiva' : 'negativa'}`}>
-                  ${estadisticas.gananciaNeta.toFixed(2)}
+                <span className="ganancia-label">Venta neta:</span>
+                <span className={`ganancia-value ${ventaNeta >= 0 ? 'positiva' : 'negativa'}`}>
+                  ${ventaNeta.toFixed(2)}
                 </span>
               </div>
               <div className="socio-item">
                 <span className="ganancia-label">
-                  {configuracionPuntoActual ? 'Socio sobre neta:' : 'Socio estimado:'}
+                  {configuracionPuntoActual ? 'Socio sobre venta:' : 'Socio estimado:'}
                 </span>
                 <span className={`ganancia-value ${resumenSocio.montoSeleccionado >= 0 ? 'positiva' : 'negativa'}`}>
                   ${resumenSocio.montoSeleccionado.toFixed(2)}
@@ -1166,10 +1174,10 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
               <div className="stat-sublabel">{estadisticas.ticketsGanadores} tickets ganadores</div>
             </div>
 
-            <div className={`stat-card ${estadisticas.gananciaNeta >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
+            <div className={`stat-card ${ventaNeta >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
               <div className="stat-label">Venta neta</div>
-              <div className="stat-value">${estadisticas.gananciaNeta.toFixed(2)}</div>
-              <div className="stat-sublabel">Ventas - Premios</div>
+              <div className="stat-value">${ventaNeta.toFixed(2)}</div>
+              <div className="stat-sublabel">Venta - socio</div>
             </div>
 
             <div className="stat-card stat-socio-porcentaje">
@@ -1189,14 +1197,14 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             <div className={`stat-card ${montoRestante >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
               <div className="stat-label">Te queda</div>
               <div className="stat-value">${montoRestante.toFixed(2)}</div>
-              <div className="stat-sublabel">Neta - porcentaje del socio</div>
+              <div className="stat-sublabel">Neta - premios</div>
             </div>
 
             <div className={`stat-card ${resumenSocio.montoSeleccionado >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
               <div className="stat-label">Monto para socio</div>
               <div className="stat-value">${resumenSocio.montoSeleccionado.toFixed(2)}</div>
               <div className="stat-sublabel">
-                {configuracionPuntoActual ? 'Aplicado sobre la neta' : 'Suma estimada por punto'}
+                {configuracionPuntoActual ? 'Aplicado sobre la venta' : 'Suma estimada por punto'}
               </div>
             </div>
           </div>
@@ -1230,6 +1238,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                     <div className="punto-venta-meta">
                       Socio {punto.porcentajeSocio.toFixed(2)}%: ${punto.montoSocio.toFixed(2)}
                     </div>
+                    <div className="punto-venta-meta">Te queda: ${punto.teQueda.toFixed(2)}</div>
                   </div>
                 ))}
               </div>
