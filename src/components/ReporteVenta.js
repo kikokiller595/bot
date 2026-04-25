@@ -260,6 +260,66 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     return `${año}-${mes}-${dia}`;
   };
 
+  const obtenerFechaReferenciaTicket = (ticket = {}) =>
+    ticket?.fechaISO || ticket?.fecha || ticket?.createdAt || null;
+
+  const obtenerMontoPremioTicket = (ticket = {}) =>
+    Number(ticket.totalPremio ?? ticket.premio) || 0;
+
+  const agruparPremiosPorTicket = (resultados = []) => {
+    const mapa = new Map();
+
+    resultados.forEach((item) => {
+      const clave = String(item.grupoId || item.ticketId || item.id || '').trim();
+      if (!clave) return;
+
+      if (!mapa.has(clave)) {
+        mapa.set(clave, {
+          ...item,
+          ticketId: item.ticketId || clave,
+          referenciaPago: clave,
+          totalPremio: 0,
+          totalMonto: 0,
+          cantidadAciertos: 0
+        });
+      }
+
+      const agrupado = mapa.get(clave);
+      agrupado.pagado = Boolean(agrupado.pagado || item.pagado);
+      agrupado.totalPremio += Number(item.premio) || 0;
+      agrupado.totalMonto += Number(item.monto) || 0;
+      agrupado.cantidadAciertos += 1;
+
+      if (!agrupado.fechaTicket && item.fechaTicket) {
+        agrupado.fechaTicket = item.fechaTicket;
+      }
+      if (!agrupado.fechaSorteo && item.fechaSorteo) {
+        agrupado.fechaSorteo = item.fechaSorteo;
+      }
+      if (!agrupado.loteriaNombre && item.loteriaNombre) {
+        agrupado.loteriaNombre = item.loteriaNombre;
+      }
+      if (!agrupado.puntoVentaId && item.puntoVentaId) {
+        agrupado.puntoVentaId = item.puntoVentaId;
+      }
+      if (!agrupado.puntoVentaNombre && item.puntoVentaNombre) {
+        agrupado.puntoVentaNombre = item.puntoVentaNombre;
+      }
+      if (!agrupado.usuarioNombre && item.usuarioNombre) {
+        agrupado.usuarioNombre = item.usuarioNombre;
+      }
+      if (!agrupado.numero && item.numero) {
+        agrupado.numero = item.numero;
+      }
+    });
+
+    return Array.from(mapa.values()).sort((a, b) => {
+      const fechaA = parsearFecha(a.fechaTicket || a.fecha || a.fechaSorteo || 0);
+      const fechaB = parsearFecha(b.fechaTicket || b.fecha || b.fechaSorteo || 0);
+      return (fechaB?.getTime() || 0) - (fechaA?.getTime() || 0);
+    });
+  };
+
   const opcionesPuntoVenta = useMemo(() => {
     const mapa = new Map();
 
@@ -326,7 +386,9 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     const fechaFinDate = new Date(`${fechaFin}T23:59:59.999`);
 
     const filtrados = sorteos.filter(ticket => {
-      if (!ticket.fecha) {
+      const fechaReferenciaTicket = obtenerFechaReferenciaTicket(ticket);
+
+      if (!fechaReferenciaTicket) {
         console.log('ReporteVenta: Ticket sin fecha:', ticket.id);
         return false;
       }
@@ -335,9 +397,14 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
         return false;
       }
       
-      const ticketFecha = parsearFecha(ticket.fecha);
+      const ticketFecha = parsearFecha(fechaReferenciaTicket);
       if (!ticketFecha) {
-        console.log('ReporteVenta: No se pudo parsear fecha:', ticket.fecha, 'del ticket:', ticket.id);
+        console.log(
+          'ReporteVenta: No se pudo parsear fecha:',
+          fechaReferenciaTicket,
+          'del ticket:',
+          ticket.id
+        );
         return false;
       }
       
@@ -361,7 +428,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     console.log('📊 REPORTE DE VENTAS - Calculando tickets ganadores');
     console.log('Rango de fechas:', fechaInicio, 'a', fechaFin);
     
-    if (!loterias || loterias.length === 0 || !sorteos || sorteos.length === 0) {
+    if (!loterias || loterias.length === 0 || !ticketsEnRango || ticketsEnRango.length === 0) {
       console.log('❌ No hay loterías o sorteos');
       return [];
     }
@@ -371,7 +438,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     const resultados = [];
 
     console.log('Total de loterías:', loterias.length);
-    console.log('Total de sorteos:', sorteos.length);
+    console.log('Total de sorteos en rango:', ticketsEnRango.length);
 
     loterias.forEach(loteria => {
       if (!loteria || !loteria.numerosGanadores || loteria.numerosGanadores.length === 0) return;
@@ -401,22 +468,9 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
         let ticketsProcesados = 0;
         let ticketsCoinciden = 0;
 
-        sorteos.forEach(ticket => {
+        ticketsEnRango.forEach(ticket => {
           ticketsProcesados++;
           if (!ticket.loteriaId || ticket.loteriaId.toString() !== loteria.id.toString()) return;
-
-          if (puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) {
-            return;
-          }
-
-          const fechaTicket = parsearFecha(ticket.fecha);
-          if (!fechaTicket) {
-            return;
-          }
-
-          if (fechaTicket < fechaInicioDate || fechaTicket > fechaFinDate) {
-            return;
-          }
 
           // Detectar tipo de apuesta - usar tipoApuesta si existe, sino detectar del formato
           let tipoApuestaDetectado = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase().trim();
@@ -461,12 +515,12 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
           if (!numeroGanadorStr) return;
 
           // VALIDACIÓN CRÍTICA: El ticket y el número ganador deben ser del mismo día
-          const claveFechaTicket = obtenerClaveFecha(ticket.fecha);
+          const claveFechaTicket = obtenerClaveFecha(obtenerFechaReferenciaTicket(ticket));
           
           if (ticketsProcesados <= 3) {
             console.log(`    Ticket ${ticketsProcesados}:`, {
               numero: numeroTicketLimpio,
-              fechaTicket: ticket.fecha,
+              fechaTicket: obtenerFechaReferenciaTicket(ticket),
               claveTicket: claveFechaTicket,
               claveGanador: claveFechaGanador,
               coincideFecha: claveFechaTicket === claveFechaGanador
@@ -545,14 +599,14 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                 numero: numeroTicketLimpio,
                 tipoApuesta,
                 monto,
-              premio,
-              fechaTicket: ticket.fecha,
-              fechaSorteo: numeroGanador.fecha,
-              loteriaNombre: loteria.nombre,
-              puntoVentaId: ticket.puntoVentaId || '',
-              puntoVentaNombre: ticket.puntoVentaNombre || '',
-              usuarioNombre: ticket.usuarioNombre || ticket.vendedorNombre || '',
-              pagado: Boolean(ticket.pagado),
+                premio,
+                fechaTicket: obtenerFechaReferenciaTicket(ticket),
+                fechaSorteo: numeroGanador.fecha,
+                loteriaNombre: loteria.nombre,
+                puntoVentaId: ticket.puntoVentaId || '',
+                puntoVentaNombre: ticket.puntoVentaNombre || '',
+                usuarioNombre: ticket.usuarioNombre || ticket.vendedorNombre || '',
+                pagado: Boolean(ticket.pagado),
                 posicion: obtenerPosicionLabel(numeroGanador.posicion, tipoApuesta)
               });
             } else {
@@ -572,51 +626,29 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
 
     // Agrupar resultados por ticketId y tomar solo el premio más alto para cada ticket
     // Esto evita que un ticket que gana múltiples veces se sume múltiples veces
-    const ticketsAgrupados = new Map();
-    
-    resultados.forEach(resultado => {
-      const ticketId = String(resultado.grupoId || resultado.ticketId || resultado.id || '');
-      if (!ticketId) return;
-      
-      if (!ticketsAgrupados.has(ticketId)) {
-        ticketsAgrupados.set(ticketId, {
-          ...resultado,
-          referenciaPago: ticketId
-        });
-      } else {
-        const existente = ticketsAgrupados.get(ticketId);
-        // Si el premio actual es mayor, reemplazar
-        if (resultado.premio > existente.premio) {
-          ticketsAgrupados.set(ticketId, {
-            ...resultado,
-            referenciaPago: ticketId,
-            pagado: Boolean(existente.pagado || resultado.pagado)
-          });
-        } else {
-          ticketsAgrupados.set(ticketId, {
-            ...existente,
-            pagado: Boolean(existente.pagado || resultado.pagado)
-          });
-        }
-      }
-    });
-    
-    const agrupados = Array.from(ticketsAgrupados.values());
+    const agrupados = agruparPremiosPorTicket(resultados);
     console.log('Total de tickets ganadores agrupados:', agrupados.length);
-    console.log('Premios totales:', agrupados.reduce((sum, t) => sum + (t.premio || 0), 0));
+    console.log('Premios totales:', agrupados.reduce((sum, t) => sum + obtenerMontoPremioTicket(t), 0));
     
     return agrupados;
-  }, [sorteos, loterias, fechaInicio, fechaFin, puntoVentaFiltro]);
+  }, [ticketsEnRango, loterias, fechaInicio, fechaFin]);
 
   // Calcular premios pagados en el rango de fechas
   // Ya están agrupados por ticket, cada uno con su premio más alto
+  const totalPremiosDetectados = useMemo(() => (
+    ticketsGanadoresEnRango.reduce(
+      (total, ticket) => total + obtenerMontoPremioTicket(ticket),
+      0
+    )
+  ), [ticketsGanadoresEnRango]);
+
   const premiosPagados = useMemo(() => {
     if (!ticketsGanadoresEnRango || ticketsGanadoresEnRango.length === 0) {
       return 0;
     }
 
     return ticketsGanadoresEnRango.reduce((total, ticket) => (
-      ticket.pagado ? total + (ticket.premio || 0) : total
+      ticket.pagado ? total + obtenerMontoPremioTicket(ticket) : total
     ), 0);
   }, [ticketsGanadoresEnRango]);
 
@@ -634,6 +666,8 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
         ticketMasAlto: null,
         ticketMasBajo: null,
         totalPremios: 0,
+        totalPremiosPagados: 0,
+        ticketsGanadores: 0,
         gananciaNeta: 0
       };
     }
@@ -647,7 +681,10 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
       ventaBox: 0,
       promedioTicket: 0,
       ticketMasAlto: null,
-      ticketMasBajo: null
+      ticketMasBajo: null,
+      totalPremios: 0,
+      totalPremiosPagados: 0,
+      ticketsGanadores: 0
     };
 
     let montoMaximo = -1;
@@ -694,11 +731,13 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     });
 
     stats.promedioTicket = stats.totalTickets > 0 ? stats.totalVenta / stats.totalTickets : 0;
-    stats.totalPremios = premiosPagados;
-    stats.gananciaNeta = stats.totalVenta - premiosPagados;
+    stats.totalPremios = totalPremiosDetectados;
+    stats.totalPremiosPagados = premiosPagados;
+    stats.ticketsGanadores = ticketsGanadoresEnRango.length;
+    stats.gananciaNeta = stats.totalVenta - totalPremiosDetectados;
 
     return stats;
-  }, [ticketsEnRango, premiosPagados]);
+  }, [ticketsEnRango, premiosPagados, ticketsGanadoresEnRango.length, totalPremiosDetectados]);
 
   const ventasPorPuntoVenta = useMemo(() => {
     const mapa = new Map();
@@ -712,6 +751,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
           nombre,
           tickets: 0,
           total: 0,
+          premios: 0,
           premiosPagados: 0
         });
       }
@@ -722,21 +762,23 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     });
 
     ticketsGanadoresEnRango.forEach((ticket) => {
-      if (!ticket.pagado) return;
-
       const clave = ticket.puntoVentaId
         ? `id:${String(ticket.puntoVentaId).trim()}`
         : `nombre:${String(ticket.puntoVentaNombre || '').trim().toLowerCase()}`;
       if (!mapa.has(clave)) return;
 
       const item = mapa.get(clave);
-      item.premiosPagados += Number(ticket.premio) || 0;
+      const montoPremio = obtenerMontoPremioTicket(ticket);
+      item.premios += montoPremio;
+      if (ticket.pagado) {
+        item.premiosPagados += montoPremio;
+      }
     });
 
     const lista = Array.from(mapa.values()).map((item) => {
       const configuracion = resolverPuntoVenta(item.clave, item.nombre);
       const porcentajeSocio = Number(configuracion?.porcentajeSocio) || 0;
-      const gananciaNeta = item.total - item.premiosPagados;
+      const gananciaNeta = item.total - item.premios;
       return {
         ...item,
         porcentajeSocio,
@@ -963,8 +1005,12 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             </div>
             <div className="stat-premios-section">
               <div className="premios-item">
-                <span className="premios-label">Premios Pagados:</span>
+                <span className="premios-label">Premios Detectados:</span>
                 <span className="premios-value">${estadisticas.totalPremios.toFixed(2)}</span>
+              </div>
+              <div className="premios-item">
+                <span className="premios-label">Pagados:</span>
+                <span className="premios-value">${estadisticas.totalPremiosPagados.toFixed(2)}</span>
               </div>
               <div className="ganancia-neta-item">
                 <span className="ganancia-label">Ganancia Neta:</span>
@@ -1003,9 +1049,15 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             </div>
 
             <div className="stat-card stat-premios">
-              <div className="stat-label">Premios Pagados</div>
+              <div className="stat-label">Premios Detectados</div>
               <div className="stat-value stat-premio-value">${estadisticas.totalPremios.toFixed(2)}</div>
-              <div className="stat-sublabel">Total en premios</div>
+              <div className="stat-sublabel">{estadisticas.ticketsGanadores} tickets ganadores</div>
+            </div>
+
+            <div className="stat-card stat-premios">
+              <div className="stat-label">Premios Pagados</div>
+              <div className="stat-value stat-premio-value">${estadisticas.totalPremiosPagados.toFixed(2)}</div>
+              <div className="stat-sublabel">Ya marcados como pagados</div>
             </div>
 
             <div className={`stat-card ${estadisticas.gananciaNeta >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
@@ -1066,6 +1118,8 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                     <div className="punto-venta-nombre">{punto.nombre}</div>
                     <div className="punto-venta-total">${punto.total.toFixed(2)}</div>
                     <div className="punto-venta-tickets">{punto.tickets} tickets</div>
+                    <div className="punto-venta-meta">Premios: ${punto.premios.toFixed(2)}</div>
+                    <div className="punto-venta-meta">Pagados: ${punto.premiosPagados.toFixed(2)}</div>
                     <div className="punto-venta-meta">Neta: ${punto.gananciaNeta.toFixed(2)}</div>
                     <div className="punto-venta-meta">
                       Socio {punto.porcentajeSocio.toFixed(2)}%: ${punto.montoSocio.toFixed(2)}
