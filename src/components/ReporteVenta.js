@@ -978,7 +978,6 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
         : `${resumenSocio.puntosConfigurados} configurados`
     },
     { label: 'Monto socio', value: `$${resumenSocio.montoSeleccionado.toFixed(2)}` },
-    { label: 'Venta neta', value: `$${ventaNeta.toFixed(2)}`, tone: ventaNeta >= 0 ? 'success' : 'danger' },
     { label: 'Final', value: `$${montoRestante.toFixed(2)}`, tone: montoRestante >= 0 ? 'success' : 'danger' }
   ]), [
     configuracionPuntoActual,
@@ -990,7 +989,6 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     resumenSocio.montoSeleccionado,
     resumenSocio.porcentajeSeleccionado,
     resumenSocio.puntosConfigurados,
-    ventaNeta,
     user
   ]);
 
