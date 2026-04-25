@@ -1054,12 +1054,6 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
               <div className="stat-sublabel">{estadisticas.ticketsGanadores} tickets ganadores</div>
             </div>
 
-            <div className="stat-card stat-premios">
-              <div className="stat-label">Premios Pagados</div>
-              <div className="stat-value stat-premio-value">${estadisticas.totalPremiosPagados.toFixed(2)}</div>
-              <div className="stat-sublabel">Ya marcados como pagados</div>
-            </div>
-
             <div className={`stat-card ${estadisticas.gananciaNeta >= 0 ? 'stat-ganancia-positiva' : 'stat-ganancia-negativa'}`}>
               <div className="stat-label">Venta neta</div>
               <div className="stat-value">${estadisticas.gananciaNeta.toFixed(2)}</div>
