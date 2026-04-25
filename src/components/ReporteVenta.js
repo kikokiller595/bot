@@ -1049,7 +1049,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             </div>
 
             <div className="stat-card stat-premios">
-              <div className="stat-label">Premios Detectados</div>
+              <div className="stat-label">Premios</div>
               <div className="stat-value stat-premio-value">${estadisticas.totalPremios.toFixed(2)}</div>
               <div className="stat-sublabel">{estadisticas.ticketsGanadores} tickets ganadores</div>
             </div>
