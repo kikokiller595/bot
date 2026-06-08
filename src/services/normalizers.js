@@ -243,7 +243,8 @@ export const normalizeSorteo = (sorteo) => {
     ),
     puntoVentaPagoNombre: String(
       sorteo.puntoVentaPagoNombre || sorteo.puntoVentaPago?.nombre || ''
-    ).trim()
+    ).trim(),
+    pagoPremioId: toId(sorteo.pagoPremioId || sorteo.pagoPremio)
   };
 };
 

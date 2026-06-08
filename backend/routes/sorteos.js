@@ -12,9 +12,12 @@ const {
   parseHoraCierreMinutos
 } = require('../utils/operacion');
 const {
-  calcularPremio,
-  evaluarSorteoGanador
+  calcularPremio
 } = require('../utils/premios');
+const { crearReferenciaPago } = require('../utils/pagos');
+const {
+  actualizarPagoTicketAtomico
+} = require('../services/pagosPremiosService');
 
 const TIPOS_APUESTA_VALIDOS = new Set([
   'straight',
@@ -618,74 +621,18 @@ router.post('/multiple', protect, async (req, res) => {
         aplicarRestriccionOperativa(query, req.user);
       }
 
-      const sorteos = await Sorteo.find(query).populate(
-        'loteria',
-        'nombre premios numerosGanadores'
-      );
-
-      if (!sorteos || sorteos.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: 'No se encontraron tickets para actualizar'
-        });
-      }
-
-      const marcarComoPagado = pagado;
-      const evaluaciones = sorteos.map((sorteo) => ({
-        sorteo,
-        resultado: evaluarSorteoGanador(sorteo, sorteo.loteria, {
-          zonaHoraria: ZONA_HORARIA_OPERATIVA
-        })
-      }));
-      const sorteosGanadores = evaluaciones.filter(
-        ({ resultado }) => resultado.ganador
-      );
-
-      if (marcarComoPagado && sorteosGanadores.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'Este ticket no tiene premios ganadores registrados para pagar'
-        });
-      }
-
-      const sorteosAActualizar = marcarComoPagado
-        ? sorteosGanadores
-        : evaluaciones;
-
-      const puntoVentaPagoId =
-        req.user?.puntoVenta?._id || req.user?.puntoVenta || null;
-      const puntoVentaPagoNombre =
-        req.user?.puntoVenta?.nombre ||
-        (req.user?.rol === 'admin' ? 'Administracion Central' : '');
-      const fechaPago = marcarComoPagado ? new Date() : null;
-
-      sorteosAActualizar.forEach(({ sorteo, resultado }) => {
-        if (marcarComoPagado) {
-          sorteo.ganador = true;
-          sorteo.premio = resultado.premioTotal;
-          sorteo.numeroGanador = resultado.coincidencias
-            .map((coincidencia) => coincidencia.numeroGanador)
-            .filter(Boolean)
-            .join(', ');
-        }
-
-        sorteo.pagado = marcarComoPagado;
-        sorteo.pagadoPor = marcarComoPagado ? req.user.id : null;
-        sorteo.pagadoPorNombre = marcarComoPagado ? req.user.nombre : '';
-        sorteo.fechaPago = fechaPago;
-        sorteo.puntoVentaPago = marcarComoPagado ? puntoVentaPagoId : null;
-        sorteo.puntoVentaPagoNombre =
-          marcarComoPagado ? puntoVentaPagoNombre : '';
+      const sorteosAActualizar = await actualizarPagoTicketAtomico({
+        query,
+        referencia: crearReferenciaPago({ ticketId, grupoId, id }),
+        usuario: req.user,
+        pagado,
+        zonaHoraria: ZONA_HORARIA_OPERATIVA
       });
-
-      await Promise.all(
-        sorteosAActualizar.map(({ sorteo }) => sorteo.save())
-      );
 
       res.json({
         success: true,
         count: sorteosAActualizar.length,
-        data: sorteosAActualizar.map(({ sorteo }) => ({
+        data: sorteosAActualizar.map((sorteo) => ({
           id: sorteo._id,
           ticketId: sorteo.ticketId,
           grupoId: sorteo.grupoId,
@@ -697,14 +644,15 @@ router.post('/multiple', protect, async (req, res) => {
           pagadoPorNombre: sorteo.pagadoPorNombre,
           fechaPago: sorteo.fechaPago,
           puntoVentaPago: sorteo.puntoVentaPago,
-          puntoVentaPagoNombre: sorteo.puntoVentaPagoNombre
+          puntoVentaPagoNombre: sorteo.puntoVentaPagoNombre,
+          pagoPremio: sorteo.pagoPremio
         }))
       });
     } catch (error) {
       console.error('Error al actualizar pago del ticket:', error);
-      res.status(500).json({
+      res.status(error.statusCode || 500).json({
         success: false,
-        message: 'Error al actualizar el pago del ticket'
+        message: error.message || 'Error al actualizar el pago del ticket'
       });
     }
   });
@@ -717,6 +665,13 @@ router.delete('/:id', protect, async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Sorteo no encontrado'
+      });
+    }
+
+    if (sorteo.pagado) {
+      return res.status(409).json({
+        success: false,
+        message: 'Anule el pago del premio antes de eliminar este ticket'
       });
     }
 
@@ -778,6 +733,13 @@ router.delete('/grupo/:grupoId', protect, async (req, res) => {
       });
     }
 
+    if (sorteosGrupo.some((sorteo) => sorteo.pagado)) {
+      return res.status(409).json({
+        success: false,
+        message: 'Anule los pagos de premios antes de eliminar este grupo'
+      });
+    }
+
     if (
       esPuntoVenta(req.user.rol) &&
       sorteosGrupo.some((sorteo) => !estaDentroVentanaEliminacion(sorteo))
@@ -814,6 +776,13 @@ router.put('/:id/ganador', protect, authorize('admin'), async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Sorteo no encontrado'
+      });
+    }
+
+    if (sorteo.pagado) {
+      return res.status(409).json({
+        success: false,
+        message: 'Anule el pago antes de modificar el premio ganador'
       });
     }
 

@@ -100,5 +100,7 @@ npm --prefix backend audit --omit=dev
 - cambia `JWT_SECRET` y las credenciales de MongoDB antes de uso real
 - deja `ALLOW_RESET_ADMIN=false` salvo durante una recuperacion autorizada
 - el flujo de login y la inicializacion administrativa tienen limite de intentos
+- los pagos de premios usan transacciones; MongoDB debe ejecutarse como replica set o servicio compatible como Atlas
+- un pago repetido devuelve conflicto y solo el administrador puede anularlo
 - las alertas restantes de `npm audit` en la raiz pertenecen al toolchain heredado de Create React App; no uses `npm audit fix --force`
 - cuando confirmes Railway, puedes eliminar los despliegues viejos de Render y Netlify

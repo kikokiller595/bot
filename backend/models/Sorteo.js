@@ -128,6 +128,11 @@ const sorteoSchema = new mongoose.Schema({
     type: String,
     trim: true,
     default: ''
+  },
+  pagoPremio: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PagoPremio',
+    default: null
   }
 }, {
   timestamps: true
@@ -140,5 +145,6 @@ sorteoSchema.index({ loteria: 1, fecha: -1 });
 sorteoSchema.index({ ganador: 1 });
 sorteoSchema.index({ grupoId: 1 });
 sorteoSchema.index({ ticketId: 1 });
+sorteoSchema.index({ pagoPremio: 1 });
 
 module.exports = mongoose.model('Sorteo', sorteoSchema);

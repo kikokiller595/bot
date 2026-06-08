@@ -391,7 +391,8 @@ function App() {
                   pagadoPorNombre: mapaActualizados.get(String(sorteo.id))?.pagadoPorNombre || '',
                   fechaPago: mapaActualizados.get(String(sorteo.id))?.fechaPago || null,
                   puntoVentaPagoId: mapaActualizados.get(String(sorteo.id))?.puntoVentaPago || null,
-                  puntoVentaPagoNombre: mapaActualizados.get(String(sorteo.id))?.puntoVentaPagoNombre || ''
+                  puntoVentaPagoNombre: mapaActualizados.get(String(sorteo.id))?.puntoVentaPagoNombre || '',
+                  pagoPremioId: mapaActualizados.get(String(sorteo.id))?.pagoPremio || null
                 }
               : sorteo
           )
