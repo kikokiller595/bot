@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './NumerosGanadores.css';
 import loteriasService from '../services/loteriasService';
+import { formatearFechaLocalInput } from '../utils/fechas';
 
 const DRAW_SUFFIXES = new Set(['am', 'pm', 'eve', 'midday', 'mid-day', 'night']);
 
@@ -34,8 +35,12 @@ const NumerosGanadores = ({
   const [loteriaSeleccionada, setLoteriaSeleccionada] = useState('');
   const [numeroGanador, setNumeroGanador] = useState('');
   const [premio, setPremio] = useState('');
-  const [fechaSorteo, setFechaSorteo] = useState(new Date().toISOString().split('T')[0]);
-  const [fechaFiltro, setFechaFiltro] = useState('');
+  const [fechaSorteo, setFechaSorteo] = useState(() =>
+    formatearFechaLocalInput()
+  );
+  const [fechaFiltro, setFechaFiltro] = useState(() =>
+    formatearFechaLocalInput()
+  );
   const [guardando, setGuardando] = useState(false);
 
   const normalizarFecha = (valor) => {
