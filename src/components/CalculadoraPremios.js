@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import './CalculadoraPremios.css';
 import { calcularPremio, numeroCoincide } from '../utils/calcularPremios';
 import { normalizarPremios } from '../utils/premiosDefault';
+import { formatearFechaLocalInput } from '../utils/fechas';
 import { useAuth } from '../context/AuthContext';
 
 function extenderNumerosGanadores(numeros = []) {
@@ -400,7 +401,9 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
   const [procesandoPagos, setProcesandoPagos] = useState({});
   const [pagosMarcados, setPagosMarcados] = useState({});
   const [pagosCargados] = useState(true);
-  const [fechaFiltro, setFechaFiltro] = useState('');
+  const [fechaFiltro, setFechaFiltro] = useState(() =>
+    formatearFechaLocalInput()
+  );
   const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
   const [mostrarHistorialCompleto, setMostrarHistorialCompleto] = useState(false);
   const [loteriaFiltroHistorial, setLoteriaFiltroHistorial] = useState('');
@@ -1281,7 +1284,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                 <div className="resumen-premios">
                   <div className="resumen-item-premio">
                     <span className="resumen-label">Total de Tickets Ganadores:</span>
-                    <span className="resumen-value">{premiosCalculados.length}</span>
+                    <span className="resumen-value">{totalGanadoresCalcular}</span>
                   </div>
                   <div className="resumen-item-premio">
                     <span className="resumen-label">Total a Pagar:</span>
@@ -1434,7 +1437,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                 <div className="resumen-premios">
                   <div className="resumen-item-premio">
                     <span className="resumen-label">Total de Tickets Ganadores:</span>
-                    <span className="resumen-value">{todosTicketsGanadores.length}</span>
+                    <span className="resumen-value">{totalGanadoresGeneral}</span>
                   </div>
                   <div className="resumen-item-premio">
                     <span className="resumen-label">Total a Pagar:</span>
@@ -1488,6 +1491,14 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                       </div>
                     </div>
                   )}
+                  {todosTicketsFiltrados.length === 0 ? (
+                    <div className="sin-premios">
+                      <p>No hay tickets ganadores para la fecha seleccionada</p>
+                      <p className="texto-secundario">
+                        Selecciona otro dia o usa Mostrar todo.
+                      </p>
+                    </div>
+                  ) : (
                   <div className="premios-table">
                     <div className="premios-table-header">
                       <div className="col-loteria">Lotería</div>
@@ -1606,6 +1617,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                       ))}
                     </div>
                   </div>
+                  )}
                 </div>
               </>
             )}
