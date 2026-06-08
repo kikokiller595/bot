@@ -35,9 +35,31 @@ Backend local:
 Produccion en Railway:
 
 - `MONGODB_URI`
-- `JWT_SECRET`
+- `JWT_SECRET` con al menos 32 caracteres
 - `JWT_EXPIRE=30d`
+- `APP_TIMEZONE=America/New_York`
+- `INITIAL_ADMIN_PASSWORD`
+- `INITIAL_ADMIN_SETUP_TOKEN`
 - `FRONTEND_URL` opcional si usas dominios extra
+
+## Primer administrador
+
+Antes de inicializar una base de datos nueva, define en el backend:
+
+- `INITIAL_ADMIN_USERNAME`
+- `INITIAL_ADMIN_PASSWORD` con al menos 12 caracteres
+- `INITIAL_ADMIN_SETUP_TOKEN` con al menos 16 caracteres
+
+Con el backend encendido, crea la cuenta una sola vez:
+
+```powershell
+curl.exe -X POST http://localhost:5000/api/init/admin `
+  -H "x-setup-token: TU_TOKEN_DE_INSTALACION"
+```
+
+Despues de crear el administrador, elimina del entorno
+`INITIAL_ADMIN_PASSWORD` y `INITIAL_ADMIN_SETUP_TOKEN`. Solo vuelve a
+configurarlas temporalmente para una recuperacion controlada.
 
 ## Despliegue en Railway
 
@@ -56,12 +78,27 @@ Pasos:
    - `MONGODB_URI`
    - `JWT_SECRET`
    - `JWT_EXPIRE`
+   - `APP_TIMEZONE`
+   - `INITIAL_ADMIN_PASSWORD`
+   - `INITIAL_ADMIN_SETUP_TOKEN`
 4. Despliega y abre la URL publica de Railway.
 
 En produccion el frontend usa rutas relativas (`/api`), por lo que todo funciona bajo el mismo dominio.
+Railway comprueba `/ready`, que solo responde correctamente cuando MongoDB esta conectado.
+
+## Verificacion
+
+```powershell
+npm run test:all
+npm run build
+npm --prefix backend audit --omit=dev
+```
 
 ## Notas
 
 - no subas `.env` al repositorio
 - cambia `JWT_SECRET` y las credenciales de MongoDB antes de uso real
+- deja `ALLOW_RESET_ADMIN=false` salvo durante una recuperacion autorizada
+- el flujo de login y la inicializacion administrativa tienen limite de intentos
+- las alertas restantes de `npm audit` en la raiz pertenecen al toolchain heredado de Create React App; no uses `npm audit fix --force`
 - cuando confirmes Railway, puedes eliminar los despliegues viejos de Render y Netlify

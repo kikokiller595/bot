@@ -3,7 +3,7 @@ services:
     name: tby-loteria-backend
     runtime: node
     plan: free
-    healthCheckPath: /api/init/status
+    healthCheckPath: /ready
     rootDir: backend
     buildCommand: npm install
     startCommand: npm start
@@ -16,5 +16,13 @@ services:
         sync: false
       - key: JWT_EXPIRE
         value: 30d
+      - key: APP_TIMEZONE
+        value: America/New_York
+      - key: INITIAL_ADMIN_PASSWORD
+        sync: false
+      - key: INITIAL_ADMIN_SETUP_TOKEN
+        sync: false
+      - key: ALLOW_RESET_ADMIN
+        value: "false"
       - key: FRONTEND_URL
         sync: false

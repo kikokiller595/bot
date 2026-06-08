@@ -1,11 +1,23 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const { rateLimit } = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 const Usuario = require('../models/Usuario');
 const PuntoVenta = require('../models/PuntoVenta');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: {
+    success: false,
+    message: 'Demasiados intentos de inicio de sesion. Intenta nuevamente mas tarde.'
+  }
+});
 
 const normalizarRol = (rol) => {
   const valor = String(rol || '').trim().toLowerCase();
@@ -151,6 +163,7 @@ router.post(
 
 router.post(
   '/login',
+  loginLimiter,
   [
     body('username').trim().notEmpty().withMessage('El usuario es requerido'),
     body('password').notEmpty().withMessage('La contrasena es requerida')

@@ -376,6 +376,17 @@ function App() {
               ? {
                   ...sorteo,
                   pagado: Boolean(pagado),
+                  ganador: Boolean(
+                    mapaActualizados.get(String(sorteo.id))?.ganador ??
+                    sorteo.ganador
+                  ),
+                  numeroGanador:
+                    mapaActualizados.get(String(sorteo.id))?.numeroGanador ??
+                    sorteo.numeroGanador,
+                  premio:
+                    Number(mapaActualizados.get(String(sorteo.id))?.premio) ||
+                    Number(sorteo.premio) ||
+                    0,
                   pagadoPorId: mapaActualizados.get(String(sorteo.id))?.pagadoPor || null,
                   pagadoPorNombre: mapaActualizados.get(String(sorteo.id))?.pagadoPorNombre || '',
                   fechaPago: mapaActualizados.get(String(sorteo.id))?.fechaPago || null,
@@ -390,7 +401,7 @@ function App() {
       return actualizados;
     } catch (error) {
       console.error('Error al marcar pago del ticket:', error);
-      alert('Error al actualizar el pago del ticket. Intenta de nuevo.');
+      alert(error.message || 'Error al actualizar el pago del ticket. Intenta de nuevo.');
       throw error;
     }
   };

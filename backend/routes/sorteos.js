@@ -5,6 +5,16 @@ const Sorteo = require('../models/Sorteo');
 const Loteria = require('../models/Loteria');
 const PuntoVenta = require('../models/PuntoVenta');
 const { protect, authorize } = require('../middleware/auth');
+const {
+  estaLoteriaCerrada,
+  obtenerClaveFechaOperativa,
+  obtenerZonaHorariaOperativa,
+  parseHoraCierreMinutos
+} = require('../utils/operacion');
+const {
+  calcularPremio,
+  evaluarSorteoGanador
+} = require('../utils/premios');
 
 const TIPOS_APUESTA_VALIDOS = new Set([
   'straight',
@@ -51,41 +61,20 @@ const estaDentroVentanaEliminacion = (sorteo) => {
   return Date.now() - fechaTicket.getTime() <= LIMITE_ELIMINACION_PUNTO_VENTA_MS;
 };
 
-const ZONA_HORARIA_OPERATIVA =
-  process.env.APP_TIMEZONE ||
-  process.env.LOTTERY_TIMEZONE ||
-  'America/New_York';
-
-const obtenerClaveLocalFecha = (fecha) => {
-  const valor = fecha instanceof Date ? fecha : new Date(fecha);
-  if (Number.isNaN(valor.getTime())) {
-    return null;
-  }
-
-  const partes = new Intl.DateTimeFormat('en-CA', {
-    timeZone: ZONA_HORARIA_OPERATIVA,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).formatToParts(valor);
-
-  const anio = partes.find((parte) => parte.type === 'year')?.value;
-  const mes = partes.find((parte) => parte.type === 'month')?.value;
-  const dia = partes.find((parte) => parte.type === 'day')?.value;
-
-  if (!anio || !mes || !dia) {
-    return null;
-  }
-
-  return `${anio}-${mes}-${dia}`;
-};
+const ZONA_HORARIA_OPERATIVA = obtenerZonaHorariaOperativa();
 
 const fechaPermitidaParaUsuario = (usuario, fecha) => {
   if (String(usuario?.rol || '').trim().toLowerCase() === 'admin') {
     return true;
   }
 
-  return obtenerClaveLocalFecha(fecha) === obtenerClaveLocalFecha(new Date());
+  return obtenerClaveFechaOperativa(fecha, ZONA_HORARIA_OPERATIVA) ===
+    obtenerClaveFechaOperativa(new Date(), ZONA_HORARIA_OPERATIVA);
+};
+
+const numeroSeguro = (valor, fallback) => {
+  const numero = Number(valor);
+  return Number.isFinite(numero) ? numero : fallback;
 };
 
 const obtenerPuntoVentaUsuarioId = (usuario) =>
@@ -136,107 +125,32 @@ const resolverPuntoVentaDestino = async (usuario, puntoVentaDestinoId) => {
   return puntoVenta;
 };
 
-const premiosPorDefecto = {
-  pick2: {
-    straightPrimera: 55,
-    straightSegunda: 15,
-    straightTercera: 10
-  },
-  singulation: {
-    straight: 9
-  },
-  pick3: {
-    straight: 700,
-    triple: 500,
-    boxPar: 232,
-    boxTodosDiferentes: 116
-  },
-  pick4: {
-    straight: 5000,
-    cuadrupleStraight: 3000,
-    boxCuadruple: 3000,
-    boxTresIguales: 1200,
-    boxDosPares: 800,
-    boxUnPar: 400,
-    boxTodosDiferentes: 200
+const asegurarLoteriaAbiertaParaVenta = (usuario, loteria) => {
+  if (String(usuario?.rol || '').trim().toLowerCase() === 'admin') {
+    return;
   }
-};
 
-const numeroSeguro = (valor, fallback) => {
-  const numero = Number(valor);
-  return Number.isFinite(numero) ? numero : fallback;
-};
-
-const normalizarPremios = (entrada = null) => ({
-  pick2: {
-    straightPrimera: numeroSeguro(
-      entrada?.pick2?.straightPrimera,
-      premiosPorDefecto.pick2.straightPrimera
-    ),
-    straightSegunda: numeroSeguro(
-      entrada?.pick2?.straightSegunda,
-      premiosPorDefecto.pick2.straightSegunda
-    ),
-    straightTercera: numeroSeguro(
-      entrada?.pick2?.straightTercera,
-      premiosPorDefecto.pick2.straightTercera
-    )
-  },
-  singulation: {
-    straight: numeroSeguro(
-      entrada?.singulation?.straight,
-      premiosPorDefecto.singulation.straight
-    )
-  },
-  pick3: {
-    straight: numeroSeguro(
-      entrada?.pick3?.straight,
-      premiosPorDefecto.pick3.straight
-    ),
-    triple: numeroSeguro(
-      entrada?.pick3?.triple,
-      premiosPorDefecto.pick3.triple
-    ),
-    boxPar: numeroSeguro(
-      entrada?.pick3?.boxPar,
-      premiosPorDefecto.pick3.boxPar
-    ),
-    boxTodosDiferentes: numeroSeguro(
-      entrada?.pick3?.boxTodosDiferentes,
-      premiosPorDefecto.pick3.boxTodosDiferentes
-    )
-  },
-  pick4: {
-    straight: numeroSeguro(
-      entrada?.pick4?.straight,
-      premiosPorDefecto.pick4.straight
-    ),
-    cuadrupleStraight: numeroSeguro(
-      entrada?.pick4?.cuadrupleStraight,
-      premiosPorDefecto.pick4.cuadrupleStraight
-    ),
-    boxCuadruple: numeroSeguro(
-      entrada?.pick4?.boxCuadruple,
-      premiosPorDefecto.pick4.boxCuadruple
-    ),
-    boxTresIguales: numeroSeguro(
-      entrada?.pick4?.boxTresIguales,
-      premiosPorDefecto.pick4.boxTresIguales
-    ),
-    boxDosPares: numeroSeguro(
-      entrada?.pick4?.boxDosPares,
-      premiosPorDefecto.pick4.boxDosPares
-    ),
-    boxUnPar: numeroSeguro(
-      entrada?.pick4?.boxUnPar,
-      premiosPorDefecto.pick4.boxUnPar
-    ),
-    boxTodosDiferentes: numeroSeguro(
-      entrada?.pick4?.boxTodosDiferentes,
-      premiosPorDefecto.pick4.boxTodosDiferentes
-    )
+  const horaCierre = String(loteria?.horaCierre || '').trim();
+  if (!horaCierre) {
+    return;
   }
-});
+
+  if (parseHoraCierreMinutos(horaCierre) === null) {
+    throw crearErrorHttp(
+      503,
+      `La loteria ${loteria.nombre} tiene una hora de cierre invalida`
+    );
+  }
+
+  if (!estaLoteriaCerrada(loteria, new Date(), ZONA_HORARIA_OPERATIVA)) {
+    return;
+  }
+
+  throw crearErrorHttp(
+    403,
+    `La loteria ${loteria.nombre} ya cerro para ventas`
+  );
+};
 
 const parseFechaEntrada = (valor) => {
   if (!valor) {
@@ -315,107 +229,6 @@ const parseFechaEntrada = (valor) => {
   }
 
   return new Date();
-};
-
-const detectarTipoBoxPick3 = (numero = '') => {
-  if (numero.length !== 3) return null;
-  const frecuencia = {};
-  numero.split('').forEach(digito => {
-    frecuencia[digito] = (frecuencia[digito] || 0) + 1;
-  });
-
-  const valores = Object.values(frecuencia).sort((a, b) => b - a);
-  if (valores[0] === 3) return 'triple';
-  if (valores[0] === 2) return 'par';
-  if (valores[0] === 1) return 'todos-diferentes';
-  return null;
-};
-
-const detectarTipoBoxPick4 = (numero = '') => {
-  if (numero.length !== 4) return null;
-  const frecuencia = {};
-  numero.split('').forEach(digito => {
-    frecuencia[digito] = (frecuencia[digito] || 0) + 1;
-  });
-
-  const valores = Object.values(frecuencia).sort((a, b) => b - a);
-  if (valores[0] === 4) return 'cuadruple';
-  if (valores[0] === 3) return 'tres-iguales';
-  if (valores[0] === 2 && valores[1] === 2) return 'dos-pares';
-  if (valores[0] === 2) return 'un-par';
-  if (valores[0] === 1) return 'todos-diferentes';
-  return null;
-};
-
-const normalizarPosicion = (posicion) => {
-  const valor = String(posicion || 'primera').trim().toLowerCase();
-  if (valor === '2' || valor.startsWith('seg')) return 'segunda';
-  if (valor === '3' || valor.startsWith('ter')) return 'tercera';
-  return 'primera';
-};
-
-const calcularPremio = (tipoApuesta, numero, monto, configuracionPremios, opciones = {}) => {
-  const premios = normalizarPremios(configuracionPremios);
-  const montoNum = parseFloat(monto) || 0;
-  if (montoNum <= 0) {
-    return 0;
-  }
-
-  const numeroStr = String(numero || '').trim();
-  const longitud = numeroStr.length;
-  const posicion = normalizarPosicion(opciones.posicion);
-
-  if (longitud === 1) {
-    return tipoApuesta === 'singulation' ? montoNum * premios.singulation.straight : 0;
-  }
-
-  if (tipoApuesta === 'bolita1' || tipoApuesta === 'bolita2') {
-    return longitud === 2 ? montoNum * 80 : 0;
-  }
-
-  if (longitud === 2) {
-    if (tipoApuesta !== 'straight') return 0;
-    if (posicion === 'segunda') return montoNum * premios.pick2.straightSegunda;
-    if (posicion === 'tercera') return montoNum * premios.pick2.straightTercera;
-    return montoNum * premios.pick2.straightPrimera;
-  }
-
-  if (longitud === 3) {
-    const tipoBox = detectarTipoBoxPick3(numeroStr);
-    if (tipoBox === 'triple') {
-      return montoNum * premios.pick3.triple;
-    }
-    if (tipoApuesta === 'straight' || tipoApuesta === 'pick4tail3' || tipoApuesta === 'pick4head3') {
-      return montoNum * premios.pick3.straight;
-    }
-    if (tipoApuesta === 'box' || tipoApuesta === 'pick4tail3box' || tipoApuesta === 'pick4head3box') {
-      if (tipoBox === 'par') return montoNum * premios.pick3.boxPar;
-      if (tipoBox === 'todos-diferentes') {
-        return montoNum * premios.pick3.boxTodosDiferentes;
-      }
-    }
-    return 0;
-  }
-
-  if (longitud === 4) {
-    if (tipoApuesta === 'straight') {
-      const esCuadruple = numeroStr.split('').every(digito => digito === numeroStr[0]);
-      return montoNum * (esCuadruple ? premios.pick4.cuadrupleStraight : premios.pick4.straight);
-    }
-
-    if (tipoApuesta === 'box') {
-      const tipoBox = detectarTipoBoxPick4(numeroStr);
-      if (tipoBox === 'cuadruple') return montoNum * premios.pick4.boxCuadruple;
-      if (tipoBox === 'tres-iguales') return montoNum * premios.pick4.boxTresIguales;
-      if (tipoBox === 'dos-pares') return montoNum * premios.pick4.boxDosPares;
-      if (tipoBox === 'un-par') return montoNum * premios.pick4.boxUnPar;
-      if (tipoBox === 'todos-diferentes') {
-        return montoNum * premios.pick4.boxTodosDiferentes;
-      }
-    }
-  }
-
-  return 0;
 };
 
 const crearDocumentoSorteo = ({
@@ -658,6 +471,8 @@ router.post(
         });
       }
 
+      asegurarLoteriaAbiertaParaVenta(req.user, loteriaDoc);
+
       const sorteo = await Sorteo.create(
         crearDocumentoSorteo({
           sorteo: { ...req.body, loteria: loteriaId },
@@ -731,6 +546,8 @@ router.post('/multiple', protect, async (req, res) => {
         });
       }
 
+      asegurarLoteriaAbiertaParaVenta(req.user, loteriaDoc);
+
       sorteosPreparados.push(
         crearDocumentoSorteo({
           sorteo: { ...sorteo, loteria: loteriaId, tipoApuesta, numero, monto },
@@ -772,78 +589,125 @@ router.post('/multiple', protect, async (req, res) => {
   }
 });
 
-router.put('/ticket/pagado', protect, async (req, res) => {
-  try {
-    const { ticketId, grupoId, id, pagado } = req.body || {};
-    const query = {};
+  router.put('/ticket/pagado', protect, async (req, res) => {
+    try {
+      const { ticketId, grupoId, id, pagado } = req.body || {};
+      const query = {};
 
-    if (grupoId) {
-      query.grupoId = String(grupoId).trim();
-    } else if (ticketId) {
-      query.ticketId = String(ticketId).trim();
-    } else if (id) {
-      query._id = id;
-    } else {
-      return res.status(400).json({
+      if (typeof pagado !== 'boolean') {
+        return res.status(400).json({
+          success: false,
+          message: 'El campo pagado debe ser booleano'
+        });
+      }
+
+      if (grupoId) {
+        query.grupoId = String(grupoId).trim();
+      } else if (ticketId) {
+        query.ticketId = String(ticketId).trim();
+      } else if (id) {
+        query._id = id;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: 'Debe indicar un ticketId, grupoId o id valido'
+        });
+      }
+
+      if (esPuntoVenta(req.user.rol)) {
+        aplicarRestriccionOperativa(query, req.user);
+      }
+
+      const sorteos = await Sorteo.find(query).populate(
+        'loteria',
+        'nombre premios numerosGanadores'
+      );
+
+      if (!sorteos || sorteos.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'No se encontraron tickets para actualizar'
+        });
+      }
+
+      const marcarComoPagado = pagado;
+      const evaluaciones = sorteos.map((sorteo) => ({
+        sorteo,
+        resultado: evaluarSorteoGanador(sorteo, sorteo.loteria, {
+          zonaHoraria: ZONA_HORARIA_OPERATIVA
+        })
+      }));
+      const sorteosGanadores = evaluaciones.filter(
+        ({ resultado }) => resultado.ganador
+      );
+
+      if (marcarComoPagado && sorteosGanadores.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Este ticket no tiene premios ganadores registrados para pagar'
+        });
+      }
+
+      const sorteosAActualizar = marcarComoPagado
+        ? sorteosGanadores
+        : evaluaciones;
+
+      const puntoVentaPagoId =
+        req.user?.puntoVenta?._id || req.user?.puntoVenta || null;
+      const puntoVentaPagoNombre =
+        req.user?.puntoVenta?.nombre ||
+        (req.user?.rol === 'admin' ? 'Administracion Central' : '');
+      const fechaPago = marcarComoPagado ? new Date() : null;
+
+      sorteosAActualizar.forEach(({ sorteo, resultado }) => {
+        if (marcarComoPagado) {
+          sorteo.ganador = true;
+          sorteo.premio = resultado.premioTotal;
+          sorteo.numeroGanador = resultado.coincidencias
+            .map((coincidencia) => coincidencia.numeroGanador)
+            .filter(Boolean)
+            .join(', ');
+        }
+
+        sorteo.pagado = marcarComoPagado;
+        sorteo.pagadoPor = marcarComoPagado ? req.user.id : null;
+        sorteo.pagadoPorNombre = marcarComoPagado ? req.user.nombre : '';
+        sorteo.fechaPago = fechaPago;
+        sorteo.puntoVentaPago = marcarComoPagado ? puntoVentaPagoId : null;
+        sorteo.puntoVentaPagoNombre =
+          marcarComoPagado ? puntoVentaPagoNombre : '';
+      });
+
+      await Promise.all(
+        sorteosAActualizar.map(({ sorteo }) => sorteo.save())
+      );
+
+      res.json({
+        success: true,
+        count: sorteosAActualizar.length,
+        data: sorteosAActualizar.map(({ sorteo }) => ({
+          id: sorteo._id,
+          ticketId: sorteo.ticketId,
+          grupoId: sorteo.grupoId,
+          ganador: sorteo.ganador,
+          numeroGanador: sorteo.numeroGanador,
+          premio: sorteo.premio,
+          pagado: sorteo.pagado,
+          pagadoPor: sorteo.pagadoPor,
+          pagadoPorNombre: sorteo.pagadoPorNombre,
+          fechaPago: sorteo.fechaPago,
+          puntoVentaPago: sorteo.puntoVentaPago,
+          puntoVentaPagoNombre: sorteo.puntoVentaPagoNombre
+        }))
+      });
+    } catch (error) {
+      console.error('Error al actualizar pago del ticket:', error);
+      res.status(500).json({
         success: false,
-        message: 'Debe indicar un ticketId, grupoId o id valido'
+        message: 'Error al actualizar el pago del ticket'
       });
     }
-
-    if (esPuntoVenta(req.user.rol)) {
-      aplicarRestriccionOperativa(query, req.user);
-    }
-
-    const sorteos = await Sorteo.find(query);
-
-    if (!sorteos || sorteos.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'No se encontraron tickets para actualizar'
-      });
-    }
-
-    const puntoVentaPagoId =
-      req.user?.puntoVenta?._id || req.user?.puntoVenta || null;
-    const puntoVentaPagoNombre =
-      req.user?.puntoVenta?.nombre ||
-      (req.user?.rol === 'admin' ? 'Administracion Central' : '');
-    const fechaPago = Boolean(pagado) ? new Date() : null;
-
-    sorteos.forEach((sorteo) => {
-      sorteo.pagado = Boolean(pagado);
-      sorteo.pagadoPor = Boolean(pagado) ? req.user.id : null;
-      sorteo.pagadoPorNombre = Boolean(pagado) ? req.user.nombre : '';
-      sorteo.fechaPago = fechaPago;
-      sorteo.puntoVentaPago = Boolean(pagado) ? puntoVentaPagoId : null;
-      sorteo.puntoVentaPagoNombre = Boolean(pagado) ? puntoVentaPagoNombre : '';
-    });
-
-    await Promise.all(sorteos.map((sorteo) => sorteo.save()));
-
-    res.json({
-      success: true,
-      count: sorteos.length,
-      data: sorteos.map((sorteo) => ({
-        id: sorteo._id,
-        ticketId: sorteo.ticketId,
-        grupoId: sorteo.grupoId,
-        pagado: sorteo.pagado,
-        pagadoPor: sorteo.pagadoPor,
-        pagadoPorNombre: sorteo.pagadoPorNombre,
-        fechaPago: sorteo.fechaPago,
-        puntoVentaPago: sorteo.puntoVentaPago,
-        puntoVentaPagoNombre: sorteo.puntoVentaPagoNombre
-      }))
-    });
-  } catch (error) {
-    console.error('Error al actualizar pago del ticket:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error al actualizar el pago del ticket'
-    });
-  }
-});
+  });
 
 router.delete('/:id', protect, async (req, res) => {
   try {

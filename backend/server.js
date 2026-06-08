@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const { connectDB, getMongoStatus } = require('./config/db');
 const { startBotSyncScheduler } = require('./services/resultadosBotService');
 
@@ -27,8 +28,25 @@ const parseAllowedOrigins = () => {
 const createApp = () => {
   const app = express();
   const allowedOrigins = parseAllowedOrigins();
+  const isProduction = process.env.NODE_ENV === 'production';
+  const helmetOptions = {
+    crossOriginOpenerPolicy: {
+      policy: 'same-origin-allow-popups'
+    },
+    contentSecurityPolicy: {
+      directives: {
+        upgradeInsecureRequests: isProduction ? [] : null
+      }
+    }
+  };
+
+  if (!isProduction) {
+    helmetOptions.strictTransportSecurity = false;
+  }
 
   app.set('trust proxy', 1);
+  app.disable('x-powered-by');
+  app.use(helmet(helmetOptions));
 
   const getRequestOrigin = (req) => {
     const protocol =
@@ -63,8 +81,8 @@ const createApp = () => {
     return corsMiddleware(req, res, next);
   });
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '100kb' }));
+  app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
   // Healthcheck simple para Railway. Debe responder aunque Mongo tarde.
   app.get('/health', (req, res) => {
@@ -72,6 +90,17 @@ const createApp = () => {
       success: true,
       status: 'ok',
       database: getMongoStatus()
+    });
+  });
+
+  app.get('/ready', (req, res) => {
+    const database = getMongoStatus();
+    const ready = database === 'connected';
+
+    res.status(ready ? 200 : 503).json({
+      success: ready,
+      status: ready ? 'ready' : 'not_ready',
+      database
     });
   });
 
@@ -128,7 +157,33 @@ const createApp = () => {
   return { app, allowedOrigins };
 };
 
+const validarConfiguracionProduccion = () => {
+  if (process.env.NODE_ENV !== 'production') {
+    return;
+  }
+
+  const errores = [];
+  const mongodbUri = String(process.env.MONGODB_URI || '').trim();
+  const jwtSecret = String(process.env.JWT_SECRET || '');
+  const esValorDeEjemplo = (valor) =>
+    /^(tu_|reemplaza|cambia|change|example)/i.test(String(valor || '').trim());
+
+  if (!mongodbUri || esValorDeEjemplo(mongodbUri)) {
+    errores.push('MONGODB_URI');
+  }
+  if (jwtSecret.length < 32 || esValorDeEjemplo(jwtSecret)) {
+    errores.push('JWT_SECRET de al menos 32 caracteres');
+  }
+
+  if (errores.length > 0) {
+    throw new Error(
+      `Configuracion de produccion invalida: ${errores.join(', ')}`
+    );
+  }
+};
+
 const startServer = async () => {
+  validarConfiguracionProduccion();
   const { app, allowedOrigins } = createApp();
   const PORT = process.env.PORT || 8080;
   const HOST = process.env.HOST || '0.0.0.0';

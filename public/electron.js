@@ -19,9 +19,9 @@ function createWindow() {
     minHeight: 600,
     show: false, // No mostrar hasta que esté lista
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      enableRemoteModule: true
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true
     },
     icon: icon,
     title: 'TBY Sistemas - Sistema de Lotería'
