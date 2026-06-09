@@ -1282,7 +1282,13 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                             </div>
                           )}
                         </div>
-                        <div className="col-numero">{ticket.numero || (ticket.numeros && ticket.numeros[0])}</div>
+                        <div className="col-numero">{(() => {
+                          const num = ticket.numero || (ticket.numeros && ticket.numeros[0]) || '';
+                          if ((ticket.tipoApuesta || '').toLowerCase() === 'pale' && /^\d{4}$/.test(String(num))) {
+                            return `${String(num).slice(0,2)} - ${String(num).slice(2,4)}`;
+                          }
+                          return num;
+                        })()}</div>
                         <div className="col-tipo">
                           {(() => {
                             const datos = obtenerDatosTipoApuesta(ticket.tipoApuesta, ticket.tipo);

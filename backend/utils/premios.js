@@ -23,6 +23,9 @@ const premiosPorDefecto = {
     boxDosPares: 800,
     boxUnPar: 400,
     boxTodosDiferentes: 200
+  },
+  pale: {
+    straight: 700
   }
 };
 
@@ -99,6 +102,12 @@ const normalizarPremios = (entrada = null) => ({
       entrada?.pick4?.boxTodosDiferentes,
       premiosPorDefecto.pick4.boxTodosDiferentes
     )
+  },
+  pale: {
+    straight: numeroSeguro(
+      entrada?.pale?.straight,
+      premiosPorDefecto.pale.straight
+    )
   }
 });
 
@@ -150,6 +159,11 @@ const calcularPremio = (
   const montoNum = parseFloat(monto) || 0;
   if (montoNum <= 0) {
     return 0;
+  }
+
+  // Pale: parlay de dos números de 2 dígitos — premio directo por monto
+  if (String(tipoApuesta || '').toLowerCase() === 'pale') {
+    return montoNum * (premios.pale?.straight ?? 700);
   }
 
   const numeroStr = String(numero || '').trim();
@@ -390,6 +404,37 @@ const evaluarSorteoGanador = (
       premioTotal: 0,
       coincidencias
     };
+  }
+
+  // ── Pale: evaluación especial (necesita todos los ganadores del día) ──
+  if (tipoApuesta === 'pale') {
+    const num1 = numeroTicket.slice(0, 2);
+    const num2 = numeroTicket.slice(2, 4);
+    if (num1.length === 2 && num2.length === 2) {
+      const ganadoresDelDia = (loteria?.numerosGanadores || []).filter(ng => {
+        const fg = obtenerClaveFechaOperativa(ng.fecha, zonaHoraria);
+        return fg && fg === fechaTicket;
+      });
+      const pick2sDelDia = new Set();
+      extenderNumerosGanadores(ganadoresDelDia).forEach(c => {
+        const n = String(c.numero || '').trim();
+        if (/^\d{2}$/.test(n)) pick2sDelDia.add(n);
+      });
+      if (pick2sDelDia.has(num1) && pick2sDelDia.has(num2)) {
+        const premios = normalizarPremios(loteria?.premios);
+        const monto = parseFloat(sorteo.monto) || 0;
+        const premio = monto * (premios.pale?.straight ?? 700);
+        if (premio > 0) {
+          coincidencias.push({
+            numeroGanador: `${num1}-${num2}`,
+            posicion: 'pale',
+            premio
+          });
+        }
+      }
+    }
+    const premioTotal = coincidencias.reduce((t, c) => t + c.premio, 0);
+    return { ganador: premioTotal > 0, premioTotal, coincidencias };
   }
 
   candidatos.forEach((candidato) => {
