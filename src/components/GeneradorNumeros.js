@@ -1668,6 +1668,16 @@ const GeneradorNumeros = ({
           <section className="ticket-board">
             <div className="ticket-board__header">
               <h3>NÃºmeros Ingresados</h3>
+              <div className="ticket-board__header-resumen">
+                <span className="header-resumen-item">
+                  <label>Monto:</label>
+                  <strong>${montoTotalConLoterias.toFixed(2)}</strong>
+                </span>
+                <span className="header-resumen-item">
+                  <label>Jugadas:</label>
+                  <strong>{jugadasConLoterias}</strong>
+                </span>
+              </div>
               <button className="btn-limpiar-mini" onClick={limpiarTodo}>Limpiar</button>
             </div>
             <div className="ticket-board__content">

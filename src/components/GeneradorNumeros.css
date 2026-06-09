@@ -1686,6 +1686,31 @@
   text-transform: uppercase;
 }
 
+.ticket-board__header-resumen {
+  display: flex;
+  gap: 1.2rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.header-resumen-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.header-resumen-item label {
+  margin: 0;
+  font-weight: 400;
+  color: rgba(248, 251, 255, 0.7);
+}
+
+.header-resumen-item strong {
+  color: #fff;
+  font-size: 0.95rem;
+}
+
 .ticket-board__header p {
   margin: 0.2rem 0 0;
   font-size: 0.78rem;
