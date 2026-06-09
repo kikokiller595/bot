@@ -1404,130 +1404,114 @@ const GeneradorNumeros = ({
         <h2 className="card-title">Generar Ticket</h2>
 
         <div className="ticket-form-simple">
-          <div className="impresion-config">
+          {/* ── Barra superior compacta ── */}
+          <div className="top-bar-compact">
             <label className="impresion-toggle">
               <input
                 type="checkbox"
                 checked={impresionAutomatica}
                 onChange={(e) => setImpresionAutomatica(e.target.checked)}
               />
-              <span>Impresion automatica al generar ticket</span>
+              <span>Impresion automatica</span>
             </label>
+            <div className="top-bar-ayuda">
+              <button
+                type="button"
+                className="btn-ayuda-ingreso"
+                onClick={() => setMostrarAyudaIngreso((prev) => !prev)}
+                aria-expanded={mostrarAyudaIngreso}
+              >
+                {mostrarAyudaIngreso ? '✕ Ingreso' : '? Ingresar numeros'}
+              </button>
+              <button
+                type="button"
+                className="btn-ayuda-ingreso"
+                onClick={() => setMostrarAyudaGanadores((prev) => !prev)}
+                aria-expanded={mostrarAyudaGanadores}
+              >
+                {mostrarAyudaGanadores ? '✕ Ganadores' : '? Como gana'}
+              </button>
+            </div>
             <span className="impresion-estado">
               {impresionAutomatica ? 'Activada' : 'Desactivada'}
             </span>
           </div>
 
+          {/* Avisos inline compactos */}
           {sinLoteriasAbiertasParaVenta ? (
-            <div className="loteria-cerrada-aviso">
-              No hay loterias abiertas en este momento. Las loterias volveran a aparecer cuando esten disponibles.
-            </div>
+            <span className="aviso-inline aviso-cerrada">⚠ No hay loterias abiertas ahora.</span>
           ) : noHaySeleccion && (
-            <div className="loteria-info-aviso">
-              Selecciona al menos una lotería para registrar tus jugadas.
-            </div>
+            <span className="aviso-inline aviso-info">Selecciona al menos una lotería para registrar tus jugadas.</span>
           )}
           {todasCerradas && (
-            <div className="loteria-cerrada-aviso">
-              Todas las loterías seleccionadas están cerradas desde sus horarios de corte. Podrás continuar mañana.
-            </div>
+            <span className="aviso-inline aviso-cerrada">⚠ Todas las loterías están cerradas. Continúa mañana.</span>
           )}
           {!todasCerradas && loteriasCerradas.length > 0 && (
-            <div className="loteria-parcial-aviso">
-              Loterías cerradas: {loteriasCerradas.map(l => l.nombre).join(', ')}.
+            <span className="aviso-inline aviso-parcial">Cerradas: {loteriasCerradas.map(l => l.nombre).join(', ')}</span>
+          )}
+
+          {/* Paneles de ayuda desplegables */}
+          {mostrarAyudaIngreso && (
+            <div className="ayuda-ingreso-panel">
+              <div className="ayuda-ingreso-panel-header">
+                <h3>Formas de ingresar numeros</h3>
+                <p>Usa esta guia rapida para ver todos los formatos soportados por el generador.</p>
+              </div>
+              <div className="ayuda-ingreso-grid">
+                {AYUDA_INGRESO_SECCIONES.map((seccion) => (
+                  <section key={seccion.titulo} className="ayuda-ingreso-card">
+                    <h4>{seccion.titulo}</h4>
+                    <p>{seccion.descripcion}</p>
+                    <ul>
+                      {seccion.ejemplos.map((ejemplo) => (
+                        <li key={`${seccion.titulo}-${ejemplo.codigo}`}>
+                          <code>{ejemplo.codigo}</code>
+                          <span>{ejemplo.detalle}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+              <div className="ayuda-ingreso-notas">
+                {AYUDA_INGRESO_NOTAS.map((nota) => (
+                  <span key={nota} className="ayuda-ingreso-nota">{nota}</span>
+                ))}
+              </div>
             </div>
           )}
+          {mostrarAyudaGanadores && (
+            <div className="ayuda-ingreso-panel">
+              <div className="ayuda-ingreso-panel-header">
+                <h3>Como gana cada jugada</h3>
+                <p>Usa esta guia para explicar de forma rapida que necesita acertar cada tipo de jugada.</p>
+              </div>
+              <div className="ayuda-ingreso-grid">
+                {AYUDA_GANADORES_SECCIONES.map((seccion) => (
+                  <section key={seccion.titulo} className="ayuda-ingreso-card">
+                    <h4>{seccion.titulo}</h4>
+                    <p>{seccion.descripcion}</p>
+                    <ul>
+                      {seccion.ejemplos.map((ejemplo) => (
+                        <li key={`${seccion.titulo}-${ejemplo.codigo}`}>
+                          <code>{ejemplo.codigo}</code>
+                          <span>{ejemplo.detalle}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+              <div className="ayuda-ingreso-notas">
+                {AYUDA_GANADORES_NOTAS.map((nota) => (
+                  <span key={nota} className="ayuda-ingreso-nota">{nota}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Área de entrada */}
           <div className="area-entrada">
-            <div className="ayuda-ingreso">
-              <div className="ayuda-ingreso-botones">
-                <button
-                  type="button"
-                  className="btn-ayuda-ingreso"
-                  onClick={() => setMostrarAyudaIngreso((prev) => !prev)}
-                  aria-expanded={mostrarAyudaIngreso}
-                >
-                  {mostrarAyudaIngreso ? 'Ocultar ayuda de ingreso' : 'Ayuda: como ingresar numeros'}
-                </button>
-
-                <button
-                  type="button"
-                  className="btn-ayuda-ingreso"
-                  onClick={() => setMostrarAyudaGanadores((prev) => !prev)}
-                  aria-expanded={mostrarAyudaGanadores}
-                >
-                  {mostrarAyudaGanadores ? 'Ocultar ayuda de ganadores' : 'Ayuda: como gana cada jugada'}
-                </button>
-              </div>
-
-              {mostrarAyudaIngreso && (
-                <div className="ayuda-ingreso-panel">
-                  <div className="ayuda-ingreso-panel-header">
-                    <h3>Formas de ingresar numeros</h3>
-                    <p>Usa esta guia rapida para ver todos los formatos soportados por el generador.</p>
-                  </div>
-
-                  <div className="ayuda-ingreso-grid">
-                    {AYUDA_INGRESO_SECCIONES.map((seccion) => (
-                      <section key={seccion.titulo} className="ayuda-ingreso-card">
-                        <h4>{seccion.titulo}</h4>
-                        <p>{seccion.descripcion}</p>
-                        <ul>
-                          {seccion.ejemplos.map((ejemplo) => (
-                            <li key={`${seccion.titulo}-${ejemplo.codigo}`}>
-                              <code>{ejemplo.codigo}</code>
-                              <span>{ejemplo.detalle}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </section>
-                    ))}
-                  </div>
-
-                  <div className="ayuda-ingreso-notas">
-                    {AYUDA_INGRESO_NOTAS.map((nota) => (
-                      <span key={nota} className="ayuda-ingreso-nota">
-                        {nota}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {mostrarAyudaGanadores && (
-                <div className="ayuda-ingreso-panel">
-                  <div className="ayuda-ingreso-panel-header">
-                    <h3>Como gana cada jugada</h3>
-                    <p>Usa esta guia para explicar de forma rapida que necesita acertar cada tipo de jugada.</p>
-                  </div>
-
-                  <div className="ayuda-ingreso-grid">
-                    {AYUDA_GANADORES_SECCIONES.map((seccion) => (
-                      <section key={seccion.titulo} className="ayuda-ingreso-card">
-                        <h4>{seccion.titulo}</h4>
-                        <p>{seccion.descripcion}</p>
-                        <ul>
-                          {seccion.ejemplos.map((ejemplo) => (
-                            <li key={`${seccion.titulo}-${ejemplo.codigo}`}>
-                              <code>{ejemplo.codigo}</code>
-                              <span>{ejemplo.detalle}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </section>
-                    ))}
-                  </div>
-
-                  <div className="ayuda-ingreso-notas">
-                    {AYUDA_GANADORES_NOTAS.map((nota) => (
-                      <span key={nota} className="ayuda-ingreso-nota">
-                        {nota}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
 
             {esAdmin && (
               <div className="campo-fecha">
