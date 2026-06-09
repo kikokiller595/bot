@@ -662,6 +662,58 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
           }
         });
       });
+
+      // ── Pale: procesamiento especial ──
+      ticketsEnRango.forEach(ticket => {
+        if (!ticket.loteriaId || ticket.loteriaId.toString() !== loteria.id.toString()) return;
+
+        const tipoApuesta = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase().trim();
+        if (tipoApuesta !== 'pale') return;
+
+        const numeroTicket = String(ticket.numero || '').trim();
+        const numeroTicketLimpio = numeroTicket.replace(/[^0-9]/g, '');
+        if (!/^\d{4}$/.test(numeroTicketLimpio)) return;
+
+        const num1 = numeroTicketLimpio.slice(0, 2);
+        const num2 = numeroTicketLimpio.slice(2, 4);
+
+        const claveFechaTicket = obtenerClaveFecha(obtenerFechaReferenciaTicket(ticket));
+        const ganadoresDelDia = (loteria.numerosGanadores || []).filter(
+          ng => obtenerClaveFecha(ng.fecha) === claveFechaTicket
+        );
+        if (ganadoresDelDia.length === 0) return;
+
+        const pick2sDelDia = new Set();
+        ganadoresDelDia.forEach(ng => {
+          extenderNumerosGanadores([ng]).forEach(c => {
+            const n = String(c.numero || '').trim();
+            if (/^\d{2}$/.test(n)) pick2sDelDia.add(n);
+          });
+        });
+
+        if (pick2sDelDia.has(num1) && pick2sDelDia.has(num2)) {
+          const monto = parseFloat(ticket.monto) || 0;
+          if (monto <= 0) return;
+          const premio = monto * (premiosLoteria?.pale?.straight ?? 700);
+          if (premio <= 0) return;
+          resultados.push({
+            ticketId: ticket.ticketId || ticket.id,
+            grupoId: ticket.grupoId || null,
+            numero: numeroTicketLimpio,
+            tipoApuesta,
+            monto,
+            premio,
+            fechaTicket: obtenerFechaReferenciaTicket(ticket),
+            fechaSorteo: ganadoresDelDia[0]?.fecha || null,
+            loteriaNombre: loteria.nombre,
+            puntoVentaId: ticket.puntoVentaId || '',
+            puntoVentaNombre: ticket.puntoVentaNombre || '',
+            usuarioNombre: ticket.usuarioNombre || ticket.vendedorNombre || '',
+            pagado: Boolean(ticket.pagado),
+            posicion: 'pale'
+          });
+        }
+      });
     });
 
     const agrupados = combinarPremiosAgrupados(
