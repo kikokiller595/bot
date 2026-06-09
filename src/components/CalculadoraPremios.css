@@ -1139,10 +1139,9 @@
   border-color: rgba(59, 130, 246, 0.6);
 }
 
-.resumen-premios,
 .historial-completo-header {
-  background: linear-gradient(135deg, var(--bg-strong) 0%, var(--bg-strong-2) 62%, var(--accent) 100%);
-  color: var(--text-inverse);
+  background: var(--surface-strong);
+  color: var(--text-main);
 }
 
 .resumen-total {
