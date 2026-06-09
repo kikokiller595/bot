@@ -147,10 +147,11 @@ const createApp = () => {
   });
 
   app.use((err, req, res, next) => {
+    const status = err.status || 500;
     console.error('Error:', err);
-    res.status(err.status || 500).json({
+    res.status(status).json({
       success: false,
-      message: err.message || 'Error del servidor'
+      message: status < 500 ? err.message : 'Error del servidor'
     });
   });
 

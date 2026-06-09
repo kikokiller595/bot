@@ -90,8 +90,8 @@ router.post(
       .matches(/^[a-zA-Z0-9._-]{3,30}$/)
       .withMessage('El username debe tener entre 3 y 30 caracteres y solo usar letras, numeros, punto, guion o guion bajo'),
     body('password')
-      .isLength({ min: 6 })
-      .withMessage('La contrasena debe tener al menos 6 caracteres'),
+      .isLength({ min: 12 })
+      .withMessage('La contrasena debe tener al menos 12 caracteres'),
     body('rol').isIn(['admin', 'punto_venta']).withMessage('Rol invalido'),
     body('puntoVentaId')
       .optional({ nullable: true, checkFalsy: true })
@@ -288,8 +288,8 @@ router.put(
       .withMessage('Username invalido'),
     body('password')
       .optional({ checkFalsy: true })
-      .isLength({ min: 6 })
-      .withMessage('La contrasena debe tener al menos 6 caracteres'),
+      .isLength({ min: 12 })
+      .withMessage('La contrasena debe tener al menos 12 caracteres'),
     body('rol')
       .optional({ checkFalsy: true })
       .isIn(['admin', 'punto_venta'])

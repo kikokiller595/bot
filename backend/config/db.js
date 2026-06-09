@@ -32,22 +32,24 @@ const cleanupLegacyUserEmailIndex = async (conn) => {
   }
 };
 
-const connectDB = async (attempt = 1) => {
+const connectDB = async (attempt = 1, maxAttempts = 20) => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
-    console.log(`MongoDB conectado: ${conn.connection.host}`);
+    console.log('MongoDB conectado');
     await cleanupLegacyUserEmailIndex(conn);
     return conn;
   } catch (error) {
+    if (attempt >= maxAttempts) {
+      console.error(`MongoDB: no se pudo conectar luego de ${maxAttempts} intentos. Abortando.`);
+      process.exit(1);
+    }
+
     const retryDelay = Number(process.env.MONGODB_RETRY_DELAY_MS || 5000);
-    console.error(`Error de conexion MongoDB (intento ${attempt}): ${error.message}`);
-    console.log(`Reintentando conexion a MongoDB en ${retryDelay / 1000} segundos...`);
+    console.error(`Error de conexion MongoDB (intento ${attempt}/${maxAttempts}): ${error.message}`);
+    console.log(`Reintentando en ${retryDelay / 1000}s...`);
 
-    setTimeout(() => {
-      connectDB(attempt + 1);
-    }, retryDelay);
-
-    return null;
+    await new Promise(resolve => setTimeout(resolve, retryDelay));
+    return connectDB(attempt + 1, maxAttempts);
   }
 };
 

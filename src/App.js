@@ -9,6 +9,7 @@ import PanelAdministracion from './components/PanelAdministracion';
 import CalculadoraPremios from './components/CalculadoraPremios';
 import NumerosGanadores from './components/NumerosGanadores';
 import { normalizarPremios } from './utils/premiosDefault';
+import { obtenerClaveFecha } from './utils/dateParser';
 import { useAuth } from './context/AuthContext';
 import sorteosService from './services/sorteosService';
 import loteriasService from './services/loteriasService';
@@ -25,31 +26,6 @@ function App() {
   const [menuRapidoAbierto, setMenuRapidoAbierto] = useState(false);
   const menuRapidoRef = useRef(null);
 
-  const obtenerClaveFecha = (valor) => {
-    if (!valor) return null;
-
-    if (valor instanceof Date && !Number.isNaN(valor.getTime())) {
-      const anio = valor.getFullYear();
-      const mes = String(valor.getMonth() + 1).padStart(2, '0');
-      const dia = String(valor.getDate()).padStart(2, '0');
-      return `${anio}-${mes}-${dia}`;
-    }
-
-    const isoMatch = String(valor).match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (isoMatch) {
-      return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
-    }
-
-    const fecha = new Date(valor);
-    if (Number.isNaN(fecha.getTime())) {
-      return null;
-    }
-
-    const anio = fecha.getFullYear();
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    return `${anio}-${mes}-${dia}`;
-  };
 
   const formatearMoneda = (valor = 0) =>
     new Intl.NumberFormat('en-US', {
@@ -269,8 +245,6 @@ function App() {
         nuevoSorteo.grupoId = ticket.grupoId;
       }
       
-      console.log('App: Guardando sorteo en servidor:', nuevoSorteo);
-      
       // Guardar en el servidor
       const sorteoGuardado = await sorteosService.crearSorteo({
         ...nuevoSorteo,
@@ -281,7 +255,6 @@ function App() {
       setSorteos(prevSorteos => {
         const existe = prevSorteos.some(s => s.id === sorteoGuardado.id);
         if (existe) {
-          console.log('App: Ticket ya existe, omitiendo:', sorteoGuardado.id);
           return prevSorteos;
         }
         return [sorteoGuardado, ...prevSorteos];
@@ -298,8 +271,6 @@ function App() {
   // Función para guardar múltiples sorteos a la vez
   const guardarMultiplesSorteos = async (tickets) => {
     if (!tickets || tickets.length === 0) return;
-    
-    console.log('App: Guardando múltiples sorteos:', tickets.length);
     
     try {
       const sorteosGuardados = await sorteosService.crearMultiplesSorteos(

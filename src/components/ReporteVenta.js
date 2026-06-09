@@ -484,62 +484,30 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
 
   // Filtrar tickets por rango de fechas
   const ticketsEnRango = useMemo(() => {
-    if (!sorteos || sorteos.length === 0) {
-      console.log('ReporteVenta: No hay sorteos');
-      return [];
-    }
-
-    console.log('ReporteVenta: Filtrando', sorteos.length, 'tickets');
-    console.log('ReporteVenta: Rango de fechas:', fechaInicio, 'a', fechaFin);
+    if (!sorteos || sorteos.length === 0) return [];
 
     const fechaInicioDate = new Date(`${fechaInicio}T00:00:00`);
     const fechaFinDate = new Date(`${fechaFin}T23:59:59.999`);
 
     const filtrados = sorteos.filter(ticket => {
       const fechaReferenciaTicket = obtenerFechaReferenciaTicket(ticket);
-
-      if (!fechaReferenciaTicket) {
-        console.log('ReporteVenta: Ticket sin fecha:', ticket.id);
-        return false;
-      }
+      if (!fechaReferenciaTicket) return false;
 
       if (puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) {
         return false;
       }
-      
+
       const ticketFecha = parsearFecha(fechaReferenciaTicket);
-      if (!ticketFecha) {
-        console.log(
-          'ReporteVenta: No se pudo parsear fecha:',
-          fechaReferenciaTicket,
-          'del ticket:',
-          ticket.id
-        );
-        return false;
-      }
-      
-      const enRango = ticketFecha >= fechaInicioDate && ticketFecha <= fechaFinDate;
-      if (!enRango) {
-        console.log('ReporteVenta: Ticket fuera de rango:', {
-          ticketFecha: ticketFecha.toISOString(),
-          fechaInicio: fechaInicioDate.toISOString(),
-          fechaFin: fechaFinDate.toISOString()
-        });
-      }
-      
-      return enRango;
+      if (!ticketFecha) return false;
+
+      return ticketFecha >= fechaInicioDate && ticketFecha <= fechaFinDate;
     });
 
-    console.log('ReporteVenta: Tickets filtrados:', filtrados.length, 'de', sorteos.length);
     return filtrados;
   }, [sorteos, fechaInicio, fechaFin, puntoVentaFiltro]);
 
   const ticketsGanadoresEnRango = useMemo(() => {
-    console.log('📊 REPORTE DE VENTAS - Calculando tickets ganadores');
-    console.log('Rango de fechas:', fechaInicio, 'a', fechaFin);
-    
     if (!loterias || loterias.length === 0 || !ticketsEnRango || ticketsEnRango.length === 0) {
-      console.log('❌ No hay loterías o sorteos');
       return [];
     }
 
@@ -547,19 +515,11 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     const fechaFinDate = new Date(`${fechaFin}T23:59:59.999`);
     const resultados = [];
 
-    console.log('Total de loterías:', loterias.length);
-    console.log('Total de sorteos en rango:', ticketsEnRango.length);
-
     loterias.forEach(loteria => {
       if (!loteria || !loteria.numerosGanadores || loteria.numerosGanadores.length === 0) return;
 
-      console.log(`\n🎰 Procesando lotería: ${loteria.nombre}`);
-      console.log('Números ganadores:', loteria.numerosGanadores.length);
-
       const premiosLoteria = normalizarPremios(loteria.premios);
-
       const numerosCandidatos = extenderNumerosGanadores(loteria.numerosGanadores);
-      console.log('Números candidatos (con derivados):', numerosCandidatos.map(n => n.numero));
 
       numerosCandidatos.forEach(numeroGanador => {
         const fechaGanadorDate = numeroGanador.fecha ? parsearFecha(numeroGanador.fecha) : null;
@@ -569,11 +529,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
           }
         }
 
-        console.log(`  Procesando número ganador: ${numeroGanador.numero}, Fecha: ${numeroGanador.fecha}`);
-
-        // Obtener clave de fecha del número ganador
         const claveFechaGanador = obtenerClaveFecha(numeroGanador.fecha);
-        console.log('  Clave fecha ganador:', claveFechaGanador);
 
         let ticketsProcesados = 0;
         let ticketsCoinciden = 0;
@@ -627,21 +583,8 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
           // VALIDACIÓN CRÍTICA: El ticket y el número ganador deben ser del mismo día
           const claveFechaTicket = obtenerClaveFecha(obtenerFechaReferenciaTicket(ticket));
           
-          if (ticketsProcesados <= 3) {
-            console.log(`    Ticket ${ticketsProcesados}:`, {
-              numero: numeroTicketLimpio,
-              fechaTicket: obtenerFechaReferenciaTicket(ticket),
-              claveTicket: claveFechaTicket,
-              claveGanador: claveFechaGanador,
-              coincideFecha: claveFechaTicket === claveFechaGanador
-            });
-          }
-          
           if (claveFechaTicket && claveFechaGanador && claveFechaTicket !== claveFechaGanador) {
-            if (ticketsProcesados <= 3) {
-              console.log('    ❌ Rechazado: Fechas no coinciden');
-            }
-            return; // Las fechas no coinciden - no puede ganar
+            return;
           }
 
           // Validación estricta: Si el número ganador es derivado, solo puede ganar si el ticket es Pick 2 straight
@@ -698,10 +641,6 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
               { posicion: numeroGanador.posicion }
             );
 
-            if (ticketsProcesados <= 3) {
-              console.log('    ✅ Número coincide! Premio:', premio);
-            }
-
             if (premio > 0) {
               resultados.push({
                 ticketId: ticket.ticketId || ticket.id,
@@ -719,30 +658,17 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                 pagado: Boolean(ticket.pagado),
                 posicion: obtenerPosicionLabel(numeroGanador.posicion, tipoApuesta)
               });
-            } else {
-              if (ticketsProcesados <= 3) {
-                console.log('    ⚠️ Premio es 0');
-              }
             }
           }
         });
-        
-        console.log(`  Tickets procesados: ${ticketsProcesados}, Coincidencias: ${ticketsCoinciden}`);
       });
     });
 
-    console.log('\n🏆 RESUMEN REPORTE:');
-    console.log('Total de resultados antes de agrupar:', resultados.length);
-
-    // Agrupar resultados por ticketId y tomar solo el premio más alto para cada ticket
-    // Esto evita que un ticket que gana múltiples veces se sume múltiples veces
     const agrupados = combinarPremiosAgrupados(
       agruparPremiosPorTicket(resultados),
       agruparPremiosPersistidos(ticketsEnRango)
     );
-    console.log('Total de tickets ganadores agrupados:', agrupados.length);
-    console.log('Premios totales:', agrupados.reduce((sum, t) => sum + obtenerMontoPremioTicket(t), 0));
-    
+
     return agrupados;
   }, [ticketsEnRango, loterias, fechaInicio, fechaFin]);
 

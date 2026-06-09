@@ -459,44 +459,29 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
 
   // Calcular premios cuando se seleccione un número ganador
   const calcularPremiosParaNumero = (numeroGanador) => {
-    console.log('🎯 CALCULADORA DE PREMIOS - INICIO');
-    console.log('Número ganador seleccionado:', numeroGanador);
-    console.log('Lotería seleccionada:', loteriaSeleccionada);
-    
     if (!numeroGanador || !loteriaSeleccionada) {
-      console.log('❌ No hay número ganador o lotería seleccionada');
       setPremiosCalculados([]);
       return;
     }
 
     const loteria = loterias.find(l => l.id && l.id.toString() === loteriaSeleccionada);
     if (!loteria) {
-      console.log('❌ No se encontró la lotería');
       setPremiosCalculados([]);
       return;
     }
-    console.log('✅ Lotería encontrada:', loteria.nombre);
 
-    // Filtrar tickets de la lotería seleccionada
-    const ticketsLoteria = sorteos.filter(ticket => 
+    const ticketsLoteria = sorteos.filter(ticket =>
       ticket.loteriaId && ticket.loteriaId.toString() === loteriaSeleccionada
     );
-    console.log('📊 Tickets de esta lotería:', ticketsLoteria.length);
-    console.log('Total de sorteos en sistema:', sorteos.length);
 
     const premios = [];
     const premiosConfigurados = loteria.premios ? normalizarPremios(loteria.premios) : normalizarPremios();
 
     const candidatos = extenderNumerosGanadores([numeroGanador]);
-    console.log('🎲 Números candidatos (incluyendo derivados):', candidatos.map(c => c.numero));
 
     candidatos.forEach(candidato => {
       const numeroGanadorStr = String(candidato.numero || '').trim();
       if (!numeroGanadorStr) return;
-      
-      console.log('\n--- Procesando número ganador:', numeroGanadorStr, '---');
-      console.log('Fecha del número ganador:', candidato.fecha);
-      console.log('Es derivado:', candidato.esDerivado);
 
       let ticketsProcesados = 0;
       let ticketsGanadores = 0;
@@ -545,21 +530,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         const claveTicket = obtenerClaveFecha(ticket.fecha);
         const claveSorteo = obtenerClaveFecha(candidato.fecha || numeroGanador.fecha);
         
-        if (ticketsProcesados <= 3) {
-          console.log(`  Ticket ${ticketsProcesados}:`, {
-            numero: numeroTicketLimpio,
-            tipo: tipoApuesta,
-            fechaTicket: ticket.fecha,
-            claveTicket,
-            claveSorteo,
-            coincideFecha: claveTicket === claveSorteo
-          });
-        }
-        
         if (claveTicket && claveSorteo && claveTicket !== claveSorteo) {
-          if (ticketsProcesados <= 3) {
-            console.log('  ❌ Rechazado: Fechas no coinciden');
-          }
           return;
         }
 
@@ -615,10 +586,6 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
             { posicion: candidato.posicion }
           );
           
-          if (ticketsProcesados <= 3) {
-            console.log('  ✅ Número coincide! Premio calculado:', premio);
-          }
-          
           if (premio > 0) {
             ticketsGanadores++;
             const detalleTicket = construirDetalleTicket(ticket, sorteos);
@@ -645,25 +612,11 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
               ticketDetalle: detalleTicket,
               ticketCompleto: detalleTicket.map(d => d.numero).join(', ')
             });
-          } else {
-            if (ticketsProcesados <= 3) {
-              console.log('  ⚠️ Premio calculado es 0');
-            }
-          }
-        } else {
-          if (ticketsProcesados <= 3) {
-            console.log('  ❌ Número no coincide');
           }
         }
       });
-      
-      console.log(`Tickets procesados: ${ticketsProcesados}, Ganadores: ${ticketsGanadores}`);
     });
 
-    console.log('\n🏆 RESUMEN FINAL:');
-    console.log('Total de premios encontrados:', premios.length);
-    console.log('Premios:', premios);
-    
     setPremiosCalculados(agruparResultadosPorTicket(premios));
   };
 

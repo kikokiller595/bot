@@ -71,9 +71,13 @@ api.interceptors.request.use(
       window.backendAwake = true;
     }
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (_) {
+      // localStorage no disponible (modo privado bloqueado, etc.)
     }
 
     return config;

@@ -1,50 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { obtenerClaveFecha, obtenerFechaActualLocal } from '../utils/dateParser';
 
 import './GeneradorNumeros.css';
-
-// Función para obtener la clave de fecha en formato YYYY-MM-DD
-const obtenerClaveFecha = (fechaStr) => {
-  if (!fechaStr) return null;
-
-  if (fechaStr instanceof Date && !isNaN(fechaStr.getTime())) {
-    const año = fechaStr.getFullYear();
-    const mes = String(fechaStr.getMonth() + 1).padStart(2, '0');
-    const dia = String(fechaStr.getDate()).padStart(2, '0');
-    return `${año}-${mes}-${dia}`;
-  }
-
-  const isoMatch = fechaStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (isoMatch) {
-    return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
-  }
-
-  const partes = fechaStr.split(',');
-  const fechaParte = partes[0]?.trim() || '';
-  const matchES = fechaParte.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (matchES) {
-    const [, dia, mes, año] = matchES;
-    return `${año.padStart(4, '0')}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
-  }
-
-  const fecha = new Date(fechaStr);
-  if (!isNaN(fecha.getTime())) {
-    const año = fecha.getFullYear();
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    return `${año}-${mes}-${dia}`;
-  }
-
-  return null;
-};
-
-const obtenerFechaActualLocal = () => {
-  const ahora = new Date();
-  const anio = ahora.getFullYear();
-  const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-  const dia = String(ahora.getDate()).padStart(2, '0');
-  return `${anio}-${mes}-${dia}`;
-};
 
 const AYUDA_INGRESO_SECCIONES = [
   {
