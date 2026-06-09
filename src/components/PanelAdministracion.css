@@ -104,7 +104,7 @@
 }
 
 .tab-panel-button.active {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(20, 53, 62, 0.94) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, #0a1d42 100%);
   color: var(--text-inverse);
   border-color: transparent;
   box-shadow: 0 22px 36px rgba(12, 27, 34, 0.18);

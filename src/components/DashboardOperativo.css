@@ -5,7 +5,7 @@
 .dashboard-operativo-card {
   padding: 1.15rem;
   border-radius: 8px;
-  background: rgba(255, 253, 248, 0.92);
+  background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
 }
@@ -57,7 +57,7 @@
 .dashboard-meta span {
   padding: 0.78rem 0.95rem;
   border-radius: 6px;
-  background: #101a2e;
+  background: var(--surface-strong);
   color: var(--text-inverse);
   font-size: 0.78rem;
   font-weight: 800;
@@ -78,8 +78,8 @@
   min-height: 168px;
   padding: 1rem;
   border-radius: 8px;
-  border: 1px solid rgba(20, 25, 43, 0.08);
-  background: linear-gradient(180deg, var(--surface) 0%, rgba(249, 239, 226, 0.95) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.08);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface-strong) 100%);
 }
 
 .dashboard-stat::before {
@@ -125,7 +125,7 @@
   padding: 1.05rem;
   border-radius: 8px;
   background: var(--surface);
-  border: 1px solid rgba(20, 25, 43, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .dashboard-panel-header {
@@ -167,7 +167,7 @@
   padding: 0.9rem;
   border-radius: 6px;
   background: rgba(249, 239, 226, 0.72);
-  border: 1px solid rgba(20, 25, 43, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .dashboard-table-row.compact {
@@ -184,7 +184,7 @@
   padding: 0.92rem;
   border-radius: 6px;
   background: rgba(249, 239, 226, 0.72);
-  border: 1px solid rgba(20, 25, 43, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .ticket-mini-top,
