@@ -4,7 +4,7 @@
 
 .dashboard-operativo-card {
   padding: 1.15rem;
-  border-radius: 30px;
+  border-radius: 8px;
   background: rgba(255, 253, 248, 0.92);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
@@ -56,7 +56,7 @@
 
 .dashboard-meta span {
   padding: 0.78rem 0.95rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: #101a2e;
   color: var(--text-inverse);
   font-size: 0.78rem;
@@ -77,7 +77,7 @@
   overflow: hidden;
   min-height: 168px;
   padding: 1rem;
-  border-radius: 24px;
+  border-radius: 8px;
   border: 1px solid rgba(20, 25, 43, 0.08);
   background: linear-gradient(180deg, rgba(20, 30, 52, 0.92) 0%, rgba(249, 239, 226, 0.95) 100%);
 }
@@ -123,7 +123,7 @@
 
 .dashboard-panel {
   padding: 1.05rem;
-  border-radius: 26px;
+  border-radius: 8px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(20, 25, 43, 0.08);
 }
@@ -165,7 +165,7 @@
 
 .dashboard-table-row {
   padding: 0.9rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(249, 239, 226, 0.72);
   border: 1px solid rgba(20, 25, 43, 0.08);
 }
@@ -182,7 +182,7 @@
 
 .ticket-mini-card {
   padding: 0.92rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(249, 239, 226, 0.72);
   border: 1px solid rgba(20, 25, 43, 0.08);
 }
@@ -222,7 +222,7 @@
 @media (max-width: 768px) {
   .dashboard-operativo-card {
     padding: 0.95rem;
-    border-radius: 24px;
+    border-radius: 8px;
   }
 
   .dashboard-title {

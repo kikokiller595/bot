@@ -75,7 +75,7 @@
 .terminal-summary-card,
 .terminal-card,
 .terminal-form-panel {
-  border-radius: 28px;
+  border-radius: 8px;
   border: 1px solid rgba(23, 49, 58, 0.08);
   background: rgba(247, 244, 236, 0.88);
   box-shadow: 0 14px 28px rgba(17, 78, 96, 0.08);
@@ -150,7 +150,7 @@
 .terminal-field input {
   width: 100%;
   padding: 0.95rem 1rem;
-  border-radius: 18px;
+  border-radius: 6px;
   border: 1px solid rgba(23, 49, 58, 0.12);
   background: rgba(20, 30, 52, 0.92);
   color: var(--text-main);

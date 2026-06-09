@@ -6,14 +6,14 @@
 .panel-administracion-card {
   min-height: 100%;
   padding: 1.45rem;
-  border-radius: var(--radius-xl);
+  border-radius: 8px;
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  backdrop-filter: blur(14px);
+  
 }
 
 .panel-header {
@@ -61,7 +61,7 @@
   position: relative;
   overflow: hidden;
   padding: 1rem 1rem 1rem 1.15rem;
-  border-radius: 22px;
+  border-radius: 6px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.05);
   color: var(--text-main);
@@ -142,7 +142,7 @@
 .tab-content .gestion-puntos-card,
 .tab-content .gestion-usuarios-card {
   padding: 1.45rem;
-  border-radius: 26px;
+  border-radius: 8px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: none;
@@ -161,7 +161,7 @@
 @media (max-width: 768px) {
   .panel-administracion-card {
     padding: 1rem;
-    border-radius: 24px;
+    border-radius: 8px;
   }
 
   .panel-title {
@@ -173,6 +173,6 @@
   }
 
   .tab-panel-button {
-    border-radius: 20px;
+    border-radius: 6px;
   }
 }

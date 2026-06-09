@@ -41,7 +41,7 @@
 
 .calculadora-premios-card {
   background: white;
-  border-radius: 15px;
+  border-radius: 4px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   display: flex;
@@ -51,7 +51,7 @@
 
 .card-title {
   font-size: 1.8rem;
-  color: #667eea;
+  color: var(--accent);
   margin: 0 0 1.5rem 0;
 }
 
@@ -76,14 +76,14 @@
 }
 
 .tab-button:hover {
-  color: #667eea;
-  background: #f8f9fa;
+  color: var(--accent);
+  background: var(--surface);
 }
 
 .tab-button.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
-  background: #f8f9fa;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: var(--surface);
 }
 
 .tickets-ganadores-tab {
@@ -108,7 +108,7 @@
 }
 
 .filtros-premios {
-  background: #f8f9fa;
+  background: var(--surface);
   border-radius: 10px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -143,7 +143,7 @@
 .select-loteria-premios:focus,
 .select-numero-ganador:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--accent);
 }
 
 .resultados-premios {
@@ -202,13 +202,13 @@
 }
 
 .premios-table {
-  background: #f8f9fa;
+  background: var(--surface);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .premios-table-header {
-  background: #667eea;
+  background: var(--accent);
   color: white;
   display: grid;
   gap: 1rem;
@@ -250,16 +250,16 @@
 }
 
 .ganador-row {
-  background: #fff9e6;
+  background: var(--surface);
 }
 
 .ganador-row:hover {
-  background: #fff3cd;
+  background: var(--surface);
 }
 
 .col-loteria {
   font-weight: 600;
-  color: #667eea;
+  color: var(--accent);
   font-size: 0.9rem;
 }
 
@@ -269,7 +269,7 @@
 }
 
 .premio-row:hover {
-  background-color: #f0f0f0;
+  background-color: var(--surface);
 }
 
 .premio-row:last-child {
@@ -278,7 +278,7 @@
 
 .col-ticket-id {
   font-weight: 600;
-  color: #667eea;
+  color: var(--accent);
   font-size: 0.85rem;
 }
 
@@ -304,7 +304,7 @@
 
 .col-numero-premio {
   font-weight: 600;
-  color: #28a745;
+  color: var(--text-main);
   font-size: 1.1rem;
   letter-spacing: 0.1rem;
 }
@@ -316,8 +316,8 @@
 }
 
 .badge-multiple {
-  background: #ede9fe;
-  color: #5b21b6;
+  background: var(--surface);
+  color: var(--text-soft);
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
   font-size: 0.85rem;
@@ -340,7 +340,7 @@
 }
 
 .ticket-numero-valor {
-  background: #f1f5f9;
+  background: var(--surface);
   border: 1px solid #d5e0eb;
   color: #1f2937;
   padding: 0.18rem 0.6rem;
@@ -392,14 +392,14 @@
 
 .col-posicion-premio {
   font-weight: 600;
-  color: #3f51b5;
+  color: var(--text-main);
   font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
 
 .badge-straight {
-  background: #e3f2fd;
+  background: var(--surface);
   color: #1976d2;
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
@@ -408,7 +408,7 @@
 }
 
 .badge-box {
-  background: #fff3e0;
+  background: var(--surface);
   color: #e65100;
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
@@ -418,7 +418,7 @@
 
 .badge-bolita1,
 .badge-bolita2 {
-  background: #e8f5e9;
+  background: var(--surface);
   color: #1b5e20;
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
@@ -427,7 +427,7 @@
 }
 
 .badge-singulation {
-  background: #fff8e1;
+  background: var(--surface);
   color: #8a6d1a;
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
@@ -485,7 +485,7 @@
 .historial-completo-container {
   background: white;
   border: 3px solid #667eea;
-  border-radius: 15px;
+  border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   padding: 0;
@@ -535,7 +535,7 @@
 }
 
 .select-loteria-historial option {
-  background: #667eea;
+  background: var(--accent);
   color: white;
   padding: 0.5rem;
 }
@@ -605,7 +605,7 @@
 .select-tipo-historial option,
 .select-apuesta-historial option,
 .select-orden-historial option {
-  background: #667eea;
+  background: var(--accent);
   color: white;
   padding: 0.5rem;
 }
@@ -635,7 +635,7 @@
   padding: 2rem;
   max-height: 800px;
   overflow-y: auto;
-  background: #fafbfc;
+  background: var(--surface);
 }
 
 .sin-historial {
@@ -648,7 +648,7 @@
 
 .historial-resumen-filtros {
   padding: 1rem 1.5rem;
-  background: #f0f4ff;
+  background: var(--surface);
   border-bottom: 2px solid #667eea;
   border-radius: 10px 10px 0 0;
   margin-bottom: 0.5rem;
@@ -657,7 +657,7 @@
 .contador-resultados {
   font-size: 1rem;
   font-weight: 600;
-  color: #667eea;
+  color: var(--accent);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -665,14 +665,14 @@
 }
 
 .filtro-activo-badge {
-  background: #667eea;
+  background: var(--accent);
   color: white;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: 4px;
   font-size: 0.9rem;
   font-weight: 700;
   margin-left: 0.5rem;
-  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 212, 191, 0.3);
 }
 
 .tabla-historial {
@@ -714,9 +714,9 @@
 }
 
 .fila-historial:hover {
-  background: #f8faff;
-  border-color: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 212, 191, 0.2);
   transform: translateY(-2px);
 }
 
@@ -735,7 +735,7 @@
 }
 
 .col-destacada {
-  background: rgba(102, 126, 234, 0.15) !important;
+  background: rgba(0, 212, 191, 0.15) !important;
   font-weight: 700 !important;
   border-left: 3px solid #667eea;
   border-right: 3px solid #667eea;
@@ -763,7 +763,7 @@
   font-size: 1.3rem;
   letter-spacing: 0.1rem;
   padding: 0.5rem 1rem;
-  background: #f0f4ff;
+  background: var(--surface);
   border-radius: 8px;
   border: 2px solid #667eea;
   display: inline-block;
@@ -772,10 +772,10 @@
 .numero-tipo-badge {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #667eea;
-  background: #e8f0ff;
+  color: var(--accent);
+  background: var(--surface);
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: 1px solid #667eea;
@@ -787,32 +787,32 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
-  background: #f8faff;
+  background: var(--surface);
   border-radius: 8px;
   min-width: 80px;
 }
 
 .stat-item.total {
   font-weight: 700;
-  background: #e8f0ff;
+  background: var(--surface);
   padding: 0.75rem;
   border: 2px solid #667eea;
 }
 
 .stat-count {
   font-size: 1.1rem;
-  color: #667eea;
+  color: var(--accent);
   font-weight: 700;
 }
 
 .stat-amount {
   font-size: 1rem;
-  color: #28a745;
+  color: var(--text-main);
   font-weight: 700;
 }
 
 .stat-item.total .stat-count {
-  color: #4c51bf;
+  color: var(--text-soft);
   font-size: 1.3rem;
 }
 
@@ -849,7 +849,7 @@
 
 .footer-value {
   font-weight: 700;
-  color: #667eea;
+  color: var(--accent);
   font-size: 1.5rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -1015,7 +1015,7 @@
 /* Redisenio visual */
 .calculadora-premios-card {
   padding: 1.45rem;
-  border-radius: var(--radius-xl);
+  border-radius: 8px;
   background: linear-gradient(180deg, rgba(18, 27, 46, 0.82) 0%, rgba(243, 250, 247, 0.92) 100%);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
@@ -1060,7 +1060,7 @@
 .historial-completo-container,
 .premios-table,
 .historial-resumen-filtros {
-  border-radius: 24px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(18, 27, 46, 0.82);
 }
@@ -1086,7 +1086,7 @@
 .select-apuesta-historial,
 .select-orden-historial,
 .input-fecha-historial {
-  border-radius: 16px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(255, 255, 255, 0.9);
   color: var(--text-main);
@@ -1110,7 +1110,7 @@
 .historial-completo-header .input-fecha-historial::-webkit-datetime-edit-month-field,
 .historial-completo-header .input-fecha-historial::-webkit-datetime-edit-day-field,
 .historial-completo-header .input-fecha-historial::-webkit-datetime-edit-year-field {
-  color: #4d6770;
+  color: var(--text-soft);
 }
 
 .historial-completo-header .input-fecha-historial::-webkit-calendar-picker-indicator {
@@ -1158,7 +1158,7 @@
 .premio-row,
 .fila-historial {
   background: rgba(18, 27, 46, 0.82);
-  border-radius: 18px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -1218,7 +1218,7 @@
 
 .historial-completo-header {
   border-bottom: none;
-  border-radius: 24px 24px 0 0;
+  border-radius: 8px 24px 0 0;
 }
 
 .historial-resumen-filtros {
@@ -1228,7 +1228,7 @@
 @media (max-width: 768px) {
   .calculadora-premios-card {
     padding: 1rem;
-    border-radius: 24px;
+    border-radius: 8px;
   }
 
   .calculadora-premios-card .card-title {

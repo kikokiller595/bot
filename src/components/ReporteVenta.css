@@ -6,7 +6,7 @@
   min-height: 100%;
   min-height: 760px;
   padding: 1.8rem;
-  border-radius: var(--radius-xl);
+  border-radius: 8px;
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
@@ -32,7 +32,7 @@
 
 .filtros-fecha {
   padding: 1rem;
-  border-radius: 24px;
+  border-radius: 8px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
   margin-bottom: 1rem;
@@ -68,7 +68,7 @@
 
 .input-fecha {
   padding: 0.85rem 0.95rem;
-  border-radius: 16px;
+  border-radius: 6px;
   border: 1px solid rgba(23, 49, 58, 0.12);
   background: rgba(20, 30, 52, 0.92);
 }
@@ -117,12 +117,12 @@
 .stat-card.stat-principal {
   padding: 1.3rem;
   margin-bottom: 1rem;
-  border-radius: 26px;
+  border-radius: 8px;
   background:
     linear-gradient(135deg, #17313a 0%, #114e60 62%, #0f766e 100%);
   color: var(--text-inverse) !important;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 24px 40px rgba(17, 78, 96, 0.22);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .stat-card.stat-principal * {
@@ -178,7 +178,7 @@
 .ganancia-neta-item,
 .socio-item {
   padding: 0.85rem 0.95rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -222,7 +222,7 @@
 
 .stat-card {
   padding: 1rem;
-  border-radius: 22px;
+  border-radius: 6px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
@@ -266,7 +266,7 @@
 
 .summary-report-card {
   margin: 1.25rem 0 1.35rem;
-  border-radius: 24px;
+  border-radius: 8px;
   overflow: hidden;
   border: 1px solid rgba(23, 49, 58, 0.12);
   background: rgba(20, 30, 52, 0.92);
@@ -346,7 +346,7 @@
 
 .punto-venta-card {
   padding: 1rem;
-  border-radius: 20px;
+  border-radius: 6px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
@@ -383,7 +383,7 @@
 
 .stat-extra {
   padding: 0.9rem 1rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
@@ -409,7 +409,7 @@
 .tickets-list {
   flex: 1;
   overflow: auto;
-  border-radius: 22px;
+  border-radius: 6px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
@@ -519,7 +519,7 @@
 @media (max-width: 768px) {
   .reporte-venta-card {
     padding: 1rem;
-    border-radius: 24px;
+    border-radius: 8px;
   }
 
   .reporte-venta-card .card-title {

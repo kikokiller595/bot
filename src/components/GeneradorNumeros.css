@@ -46,7 +46,7 @@
 
 .generador-card {
   background: rgba(16, 24, 42, 0.95);
-  border-radius: 15px;
+  border-radius: 4px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
@@ -174,7 +174,7 @@
 
 .ayuda-ingreso-panel {
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
+  border-radius: 8px;
   padding: 1rem 1.1rem 1.15rem;
   background: linear-gradient(180deg, rgba(247, 251, 249, 0.98) 0%, rgba(240, 248, 246, 0.98) 100%);
   box-shadow: 0 18px 34px rgba(18, 39, 58, 0.07);
@@ -210,7 +210,7 @@
 .ayuda-ingreso-card {
   background: rgba(20, 30, 52, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 18px;
+  border-radius: 6px;
   padding: 0.95rem 1rem;
   box-shadow: 0 8px 18px rgba(18, 39, 58, 0.05);
 }
@@ -243,7 +243,7 @@
   flex-direction: column;
   gap: 0.18rem;
   padding: 0.55rem 0.65rem;
-  border-radius: 14px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -412,7 +412,7 @@
   cursor: not-allowed;
   opacity: 0.8;
   background: rgba(23, 49, 58, 0.08);
-  color: #5b6472;
+  color: var(--text-soft);
 }
 
 .input-numero-grande:focus,
@@ -430,7 +430,7 @@
 }
 
 .campo-fecha-ayuda {
-  color: #5b6472;
+  color: var(--text-soft);
   font-size: 0.82rem;
   line-height: 1.4;
 }
@@ -444,42 +444,42 @@
 }
 
 .tipo-indicador.straight {
-  background: #e3f2fd;
+  background: var(--surface);
   color: #1976d2;
 }
 
 .tipo-indicador.box {
-  background: #fff3e0;
+  background: var(--surface);
   color: #e65100;
 }
 
 .tipo-indicador.combinaciones {
-  background: #f3e5f5;
+  background: var(--surface);
   color: #7b1fa2;
 }
 
 .tipo-indicador.bolita {
-  background: #e8f5e9;
+  background: var(--surface);
   color: #1b5e20;
 }
 
 .tipo-indicador.singulation {
-  background: #fffce0;
+  background: var(--surface);
   color: #8a6d1a;
 }
 
 .tipo-indicador.pick4tail3 {
-  background: #e0f7f4;
+  background: var(--surface);
   color: var(--accent);
 }
 
 .tipo-indicador.pick4head3 {
-  background: #e6f0ff;
+  background: var(--surface);
   color: #1d4ed8;
 }
 
 .ticket-anterior {
-  background: #f8f9fa;
+  background: var(--surface);
   border: 2px solid rgba(255,255,255,0.1);
   border-radius: 8px;
   padding: 1rem;
@@ -501,7 +501,7 @@
 
 .ticket-monto {
   font-weight: bold;
-  color: #28a745;
+  color: var(--text-main);
   font-size: 1.1rem;
 }
 
@@ -549,7 +549,7 @@
 .mini-historial {
   background: linear-gradient(180deg, #fbfcfe 0%, #f5f7fb 100%);
   border: 1px solid rgba(33, 51, 78, 0.12);
-  border-radius: 18px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 16px 38px rgba(22, 31, 61, 0.08);
 }
@@ -559,7 +559,7 @@
 }
 
 .mini-historial-header {
-  background: #ffffff;
+  background: var(--surface);
   color: #16213a;
   padding: 1rem 1.15rem;
   display: flex;
@@ -575,8 +575,8 @@
 }
 
 .btn-limpiar-mini {
-  background: #eef4ff;
-  color: #2850b8;
+  background: var(--surface);
+  color: var(--text-main);
   border: 1px solid rgba(40, 80, 184, 0.14);
   border-radius: 999px;
   padding: 0.35rem 0.85rem;
@@ -624,7 +624,7 @@
 .historial-grupo-card {
   background: rgba(20, 30, 52, 0.92);
   border: 1px solid rgba(28, 43, 70, 0.1);
-  border-radius: 20px;
+  border-radius: 6px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -690,7 +690,7 @@
     "numero amount action";
   background: rgba(247, 249, 253, 0.95);
   border: 1px solid rgba(28, 43, 70, 0.08);
-  border-radius: 14px;
+  border-radius: 4px;
   padding: 0.85rem 0.9rem;
 }
 
@@ -702,10 +702,10 @@
   max-width: 100%;
   padding: 0.28rem 0.65rem;
   border-radius: 999px;
-  background: #eef3f8;
+  background: var(--surface);
   font-size: 0.78rem;
   font-weight: 700;
-  color: #4b5c74;
+  color: var(--text-soft);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -750,7 +750,7 @@
   padding: 0.8rem 1rem;
   font-size: 0.95rem;
   font-weight: 800;
-  border-radius: 14px;
+  border-radius: 4px;
 }
 
 .item-numero {
@@ -766,7 +766,7 @@
 }
 
 .item-numero:hover {
-  background: #f8f9fa;
+  background: var(--surface);
   border-color: #13c9b5;
   transform: translateX(5px);
 }
@@ -783,14 +783,14 @@
   color: #13c9b5;
   font-weight: 500;
   text-align: center;
-  background: #e3f2fd;
+  background: var(--surface);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
 }
 
 .monto-item {
   font-weight: 600;
-  color: #28a745;
+  color: var(--text-main);
   text-align: right;
 }
 
@@ -872,7 +872,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   text-align: center;
-  background: #f8f9fa;
+  background: var(--surface);
   color: var(--text-main);
 }
 
@@ -952,7 +952,7 @@
 
 .numero-stats-chip {
   background: rgba(19, 201, 181, 0.1);
-  color: #3730a3;
+  color: var(--text-main);
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
   font-size: 0.8rem;
@@ -969,13 +969,13 @@
 
 .numero-stats-total {
   font-size: 0.85rem;
-  color: #374151;
+  color: var(--text-main);
   font-weight: 600;
 }
 
 /* Historial completo de números jugados */
 .historial-completo-container {
-  background: #f8f9fa;
+  background: var(--surface);
   border: 2px solid rgba(255,255,255,0.1);
   border-radius: 8px;
   overflow: hidden;
@@ -1036,7 +1036,7 @@
   grid-template-columns: 120px repeat(5, 1fr) 140px;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: #667eea;
+  background: var(--accent);
   color: white;
   font-weight: 600;
   font-size: 0.85rem;
@@ -1063,7 +1063,7 @@
 }
 
 .fila-historial:hover {
-  background: #f8f9fa;
+  background: var(--surface);
   border-color: #13c9b5;
   box-shadow: 0 2px 4px rgba(19, 201, 181, 0.1);
 }
@@ -1115,12 +1115,12 @@
 
 .stat-amount {
   font-size: 0.85rem;
-  color: #28a745;
+  color: var(--text-main);
   font-weight: 600;
 }
 
 .stat-item.total .stat-count {
-  color: #4c51bf;
+  color: var(--text-soft);
   font-size: 1rem;
 }
 
@@ -1139,7 +1139,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--surface);
   border-top: 2px solid #e0e0e0;
   margin-top: 0.5rem;
   border-radius: 0 0 6px 6px;
@@ -1251,11 +1251,11 @@
 /* Redisenio visual */
 .generador-card {
   padding: 1.45rem;
-  border-radius: var(--radius-xl);
+  border-radius: 8px;
   background: linear-gradient(180deg, rgba(18, 27, 46, 0.82) 0%, rgba(243, 250, 247, 0.92) 100%);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(12px);
+  
 }
 
 .generador-card .card-title {
@@ -1275,7 +1275,7 @@
 .mini-historial,
 .historial-completo-container,
 .numero-stats {
-  border-radius: 24px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(18, 27, 46, 0.82);
   box-shadow: none;
@@ -1304,7 +1304,7 @@
 .loteria-cerrada-aviso,
 .loteria-parcial-aviso,
 .loteria-info-aviso {
-  border-radius: 18px;
+  border-radius: 6px;
   padding: 0.95rem 1rem;
 }
 
@@ -1332,7 +1332,7 @@
 
 .loteria-opcion {
   padding: 0.72rem 1rem;
-  border-radius: 18px;
+  border-radius: 6px;
   border-color: rgba(255, 255, 255, 0.05);
   background: rgba(20, 30, 52, 0.92);
 }
@@ -1347,7 +1347,7 @@
 .input-fecha-ticket,
 .input-terminal-ticket,
 .input-resumen {
-  border-radius: 18px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(20, 30, 52, 0.92);
   color: var(--text-main);
@@ -1440,7 +1440,7 @@
   overflow: hidden;
   padding: 1rem;
   border: 1px solid rgba(19, 201, 181, 0.16);
-  border-radius: 24px;
+  border-radius: 8px;
   background:
     radial-gradient(circle at top left, rgba(32, 178, 162, 0.22), transparent 34%),
     linear-gradient(135deg, #082f34 0%, #0d5f56 58%, #102f3c 100%);
@@ -1518,7 +1518,7 @@
 .ticket-anterior-total {
   min-width: 112px;
   padding: 0.72rem 0.85rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
@@ -1556,7 +1556,7 @@
 }
 
 .btn-ticket-print {
-  background: #f8fffd;
+  background: var(--surface);
   color: #0d5f56;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
 }
@@ -1581,7 +1581,7 @@
 .tabla-historial-header {
   background: linear-gradient(135deg, var(--bg-strong) 0%, var(--bg-strong-2) 100%);
   color: var(--text-inverse);
-  border-radius: 24px 24px 0 0;
+  border-radius: 8px 24px 0 0;
 }
 
 .mini-historial-content,
@@ -1591,7 +1591,7 @@
 
 .item-numero,
 .fila-historial {
-  border-radius: 18px;
+  border-radius: 6px;
   border-color: rgba(255, 255, 255, 0.05);
   background: rgba(18, 27, 46, 0.82);
 }
@@ -1662,7 +1662,7 @@
 
 .ticket-board {
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
+  border-radius: 8px;
   background: linear-gradient(180deg, rgba(20, 30, 52, 0.92) 0%, rgba(245, 250, 248, 0.98) 100%);
   box-shadow: 0 22px 42px rgba(18, 39, 58, 0.08);
   overflow: hidden;
@@ -1751,7 +1751,7 @@
 }
 
 .ticket-board__group {
-  border-radius: 18px;
+  border-radius: 6px;
   border: 1px solid rgba(18, 39, 58, 0.08);
   background: rgba(20, 30, 52, 0.92);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
@@ -1802,7 +1802,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.9rem;
-  border-radius: 14px;
+  border-radius: 4px;
   border: 1px solid rgba(28, 43, 70, 0.08);
   background: rgba(247, 249, 253, 0.95);
   padding: 0.82rem 0.85rem;
@@ -1857,7 +1857,7 @@
 
 .ticket-board__group-total {
   margin: 0 0.9rem 0.9rem;
-  border-radius: 14px;
+  border-radius: 4px;
   background: linear-gradient(135deg, rgba(18, 39, 58, 0.96) 0%, rgba(19, 201, 181, 0.92) 100%);
   color: #f9fbff;
   text-align: left;
@@ -1871,7 +1871,7 @@
 @media (max-width: 768px) {
   .generador-card {
     padding: 1rem;
-    border-radius: 24px;
+    border-radius: 8px;
   }
 
   .generador-card .card-title {
@@ -1959,7 +1959,7 @@
   .loteria-info-aviso {
     padding: 0.55rem 0.8rem;
     font-size: 0.8rem;
-    border-radius: 14px;
+    border-radius: 4px;
     margin-bottom: 0;
   }
 
@@ -2041,7 +2041,7 @@
 
   .loteria-opcion {
     padding: 0.38rem 0.62rem;
-    border-radius: 12px;
+    border-radius: 4px;
     font-size: 0.78rem;
     gap: 0.36rem;
   }
@@ -2061,7 +2061,7 @@
   .input-fecha-ticket,
   .input-terminal-ticket,
   .input-resumen {
-    border-radius: 14px;
+    border-radius: 4px;
   }
 
   .input-numero-grande,
@@ -2110,7 +2110,7 @@
   }
 
   .ticket-board {
-    border-radius: 18px;
+    border-radius: 6px;
   }
 
   .ticket-board__header {
@@ -2131,7 +2131,7 @@
   }
 
   .ticket-board__group {
-    border-radius: 15px;
+    border-radius: 4px;
   }
 
   .ticket-board__group-header {
@@ -2184,7 +2184,7 @@
     border-radius: 0;
     font-size: 0.7rem;
     font-weight: 600;
-    color: #456d74;
+    color: var(--text-soft);
   }
 
   .ticket-board__meta {
@@ -2219,7 +2219,7 @@
     margin: 0 0.7rem 0.7rem;
     padding: 0.36rem 0.58rem;
     font-size: 0.7rem;
-    border-radius: 12px;
+    border-radius: 4px;
   }
 
   .resumen-area {

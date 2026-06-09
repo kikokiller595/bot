@@ -30,7 +30,7 @@
 
 .formulario-numero {
   padding: 1.1rem;
-  border-radius: 24px;
+  border-radius: 8px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
   display: grid;
@@ -57,7 +57,7 @@
 .input-premio,
 .acciones-fecha input[type="date"] {
   padding: 0.9rem 0.95rem;
-  border-radius: 16px;
+  border-radius: 6px;
   border: 1px solid rgba(23, 49, 58, 0.12);
   background: rgba(20, 30, 52, 0.92);
 }
@@ -118,7 +118,7 @@
 
 .filtro-fecha-global {
   padding: 1rem 1.1rem;
-  border-radius: 22px;
+  border-radius: 6px;
   background: rgba(247, 244, 236, 0.72);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
@@ -169,7 +169,7 @@
 
 .loteria-resultado-card {
   padding: 1rem;
-  border-radius: 22px;
+  border-radius: 6px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
@@ -283,7 +283,7 @@
 
 .sin-numeros-fecha {
   padding: 1rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px dashed rgba(23, 49, 58, 0.18);
   color: var(--text-soft);
@@ -297,7 +297,7 @@
 
 .numero-ganador-item {
   padding: 1rem;
-  border-radius: 24px;
+  border-radius: 8px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;

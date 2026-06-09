@@ -61,7 +61,7 @@
 
 .formulario-agregar {
   padding: 1.1rem;
-  border-radius: 24px;
+  border-radius: 8px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
@@ -71,7 +71,7 @@
 
 .bot-status-banner {
   padding: 1rem 1.1rem;
-  border-radius: 22px;
+  border-radius: 6px;
   border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
   align-items: center;
@@ -103,7 +103,7 @@
 
 .mensaje-edicion {
   padding: 0.9rem 1rem;
-  border-radius: 18px;
+  border-radius: 6px;
   background: rgba(34, 119, 85, 0.12);
   color: var(--success);
   font-weight: 700;
@@ -118,7 +118,7 @@
 
 .bot-sync-config {
   padding: 1rem;
-  border-radius: 22px;
+  border-radius: 6px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
@@ -170,7 +170,7 @@
 .select-bot-slot {
   width: 100%;
   padding: 0.85rem 0.95rem;
-  border-radius: 16px;
+  border-radius: 6px;
   border: 1px solid rgba(23, 49, 58, 0.12);
   background: rgba(20, 30, 52, 0.92);
 }
@@ -200,7 +200,7 @@
 
 .premios-col {
   padding: 1rem;
-  border-radius: 20px;
+  border-radius: 6px;
   background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
@@ -242,7 +242,7 @@
 
 .loteria-item {
   padding: 1rem;
-  border-radius: 24px;
+  border-radius: 8px;
   background: rgba(247, 244, 236, 0.86);
   border: 1px solid rgba(23, 49, 58, 0.08);
   display: flex;
