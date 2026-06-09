@@ -1,33 +1,33 @@
 ﻿:root {
   /* Backgrounds */
-  --bg-main: #0d0d0d;
-  --bg-soft: #111111;
+  --bg-main: #000000;
+  --bg-soft: #000000;
   --bg-strong: #000000;
-  --bg-strong-2: #0a0a0a;
+  --bg-strong-2: #000000;
 
   /* Surfaces */
-  --surface: #141414;
-  --surface-strong: #1a1a1a;
-  --surface-muted: #111111;
+  --surface: #0f0f0f;
+  --surface-strong: #161616;
+  --surface-muted: #0a0a0a;
 
   /* Borders */
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.13);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.2);
 
   /* Text */
-  --text-main: #ededed;
-  --text-soft: #777;
-  --text-inverse: #0d0d0d;
+  --text-main: #ffffff;
+  --text-soft: rgba(255, 255, 255, 0.45);
+  --text-inverse: #000000;
 
   /* Accent */
   --accent: #ffffff;
-  --accent-strong: #cccccc;
-  --accent-warm: #aaaaaa;
-  --accent-warm-soft: rgba(255, 255, 255, 0.08);
+  --accent-strong: #ffffff;
+  --accent-warm: #ffffff;
+  --accent-warm-soft: rgba(255, 255, 255, 0.07);
 
   /* State */
-  --danger: #888888;
-  --success: #cccccc;
+  --danger: #ffffff;
+  --success: #ffffff;
 
   /* Shadows — very minimal like Vercel */
   --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05);

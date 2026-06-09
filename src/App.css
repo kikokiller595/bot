@@ -302,7 +302,7 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-sm);
-  background: rgba(200, 200, 200, 0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--accent-warm);
   font-family: var(--font-code);
   font-size: 0.72rem;
@@ -484,7 +484,7 @@
   line-height: 1.65;
 }
 
-.state-card-error { border-color: rgba(150, 150, 150, 0.25); }
+.state-card-error { border-color: rgba(255, 255, 255, 0.25); }
 
 .state-action {
   margin-top: 1rem;
