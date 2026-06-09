@@ -709,6 +709,20 @@ const GestionLoterias = ({ loterias, setLoterias }) => {
                   />
                 </div>
               </div>
+
+              <div className="premios-col">
+                <h4>Premios Pale (por $1)</h4>
+                <div className="grid-premios">
+                  <label>Pale straight</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={premiosFormulario.pale.straight}
+                    onChange={(e) => actualizarPremio('pale', 'straight', e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="acciones-formulario">

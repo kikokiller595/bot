@@ -174,6 +174,12 @@ const loteriaSchema = new mongoose.Schema(
           type: Number,
           default: 200
         }
+      },
+      pale: {
+        straight: {
+          type: Number,
+          default: 700
+        }
       }
     },
     numerosGanadores: {
