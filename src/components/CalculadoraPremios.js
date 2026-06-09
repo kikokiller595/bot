@@ -629,7 +629,12 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           ng => obtenerClaveFecha(ng.fecha) === fechaSorteoSeleccionado
         )
       : [];
-    const setGanadoresDia = new Set(ganadoresMismoDia.map(ng => String(ng.numero || '').trim()));
+    // Para la comparación de pales, usamos los últimos 2 dígitos de cada número ganador.
+    // Esto cubre tanto loterías pick-2 (el número ya tiene 2 dígitos) como pick-3/pick-4
+    // donde el pick-2 se deriva de los últimos 2 dígitos del premio.
+    const setGanadoresDia = new Set(
+      ganadoresMismoDia.map(ng => String(ng.numero || '').trim().slice(-2))
+    );
 
     const paletasLoteria = ticketsLoteria.filter(t =>
       (t.tipoApuesta || t.tipo || '').toLowerCase().trim() === 'pale'
