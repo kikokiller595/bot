@@ -636,10 +636,10 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
     );
 
     paletasLoteria.forEach(ticket => {
-      const partes = String(ticket.numero || '').split('|');
-      if (partes.length !== 2) return;
-      const [num1, num2] = partes.map(p => p.trim());
-      if (!num1 || !num2) return;
+      const raw = String(ticket.numero || '').trim();
+      const num1 = raw.slice(0, 2);
+      const num2 = raw.slice(2, 4);
+      if (num1.length !== 2 || num2.length !== 2) return;
 
       const fechaTicket = obtenerClaveFecha(ticket.fecha);
       if (fechaTicket && fechaSorteoSeleccionado && fechaTicket !== fechaSorteoSeleccionado) return;

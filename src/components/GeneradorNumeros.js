@@ -424,9 +424,10 @@ const GeneradorNumeros = ({
   };
 
   const formatearNumeroPale = (numero = '') => {
-    if (!numero.includes('|')) return numero;
-    const [n1, n2] = numero.split('|');
-    return `${n1} - ${n2}`;
+    if (typeof numero === 'string' && /^\d{4}$/.test(numero)) {
+      return `${numero.slice(0, 2)} - ${numero.slice(2, 4)}`;
+    }
+    return numero;
   };
 
   const obtenerGrupoHistorial = useCallback((item) => {
@@ -817,11 +818,13 @@ const GeneradorNumeros = ({
       }
       const montoPale = monto.trim() ? parseFloat(monto) || 1 : 1;
 
+      // Guardar como 4 dígitos puros (sin |) para que el backend lo acepte.
+      // El split 12|34 se reconstruye en display/cálculo desde tipoApuesta === 'pale'.
       setHistorialTemporal(prev => [
         ...prev,
         crearItemHistorial({
           id: Date.now(),
-          numero: `${num1}|${num2}`,
+          numero: `${num1}${num2}`,
           monto: montoPale,
           tipo: 'Pale'
         })
