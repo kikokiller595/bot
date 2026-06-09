@@ -1669,14 +1669,18 @@ const GeneradorNumeros = ({
             <div className="ticket-board__header">
               <h3>NÃºmeros Ingresados</h3>
               <div className="ticket-board__header-resumen">
-                <span className="header-resumen-item">
-                  <label>Monto:</label>
-                  <strong>${montoTotalConLoterias.toFixed(2)}</strong>
-                </span>
-                <span className="header-resumen-item">
+                <div className="resumen-item-header">
+                  <label>Monto Total:</label>
+                  <input type="text" value={`$${montoTotalConLoterias.toFixed(2)}`} readOnly className="input-resumen" />
+                </div>
+                <div className="resumen-item-header">
                   <label>Jugadas:</label>
-                  <strong>{jugadasConLoterias}</strong>
-                </span>
+                  <input type="text" value={jugadasConLoterias} readOnly className="input-resumen" />
+                </div>
+                <div className="resumen-item-header">
+                  <label>Pago:</label>
+                  <input type="text" value={`$${montoTotalConLoterias.toFixed(2)}`} readOnly className="input-resumen" />
+                </div>
               </div>
               <button className="btn-limpiar-mini" onClick={limpiarTodo}>Limpiar</button>
             </div>
@@ -1730,22 +1734,6 @@ const GeneradorNumeros = ({
                 </div>
             </div>
           </section>
-
-          {/* Resumen */}
-          <div className="resumen-area">
-            <div className="resumen-item">
-              <label>Monto Total:</label>
-              <input type="text" value={`$${montoTotalConLoterias.toFixed(2)}`} readOnly className="input-resumen" />
-            </div>
-            <div className="resumen-item">
-              <label>Jugadas:</label>
-              <input type="text" value={jugadasConLoterias} readOnly className="input-resumen" />
-            </div>
-            <div className="resumen-item">
-              <label>Pago:</label>
-              <input type="text" value={`$${montoTotalConLoterias.toFixed(2)}`} readOnly className="input-resumen" />
-            </div>
-          </div>
 
           {/* Botones */}
           <div className="button-group">

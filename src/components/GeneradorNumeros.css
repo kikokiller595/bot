@@ -1688,27 +1688,38 @@
 
 .ticket-board__header-resumen {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   flex: 1;
   justify-content: center;
-}
-
-.header-resumen-item {
-  display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
 }
 
-.header-resumen-item label {
+.resumen-item-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.resumen-item-header label {
   margin: 0;
-  font-weight: 400;
-  color: rgba(248, 251, 255, 0.7);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(248, 251, 255, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-.header-resumen-item strong {
+.resumen-item-header .input-resumen {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  width: 100px;
 }
 
 .ticket-board__header p {
