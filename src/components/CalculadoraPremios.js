@@ -629,10 +629,14 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           ng => obtenerClaveFecha(ng.fecha) === fechaSorteoSeleccionado
         )
       : [];
-    // Comparación exacta: el pale gana si AMBOS números del pale (2 dígitos cada uno)
-    // aparecen exactamente en los números ganadores del día.
+    // El pale compara contra los últimos 2 dígitos de cada número ganador del día.
+    // Ej: premio "132" → pick2 = "32"; "456" → "56"; "4567" → "67".
+    // Si el número ganador ya tiene 2 dígitos, slice(-2) lo devuelve igual.
     const setGanadoresDia = new Set(
-      ganadoresMismoDia.map(ng => String(ng.numero || '').trim())
+      ganadoresMismoDia
+        .map(ng => String(ng.numero || '').trim())
+        .filter(n => n.length >= 2)
+        .map(n => n.slice(-2))
     );
 
     const paletasLoteria = ticketsLoteria.filter(t =>
