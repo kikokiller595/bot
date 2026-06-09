@@ -1117,9 +1117,12 @@
 .select-orden-historial,
 .input-fecha-historial {
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line);
+  background-color: var(--surface);
   color: var(--text-main);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .historial-completo-header .select-loteria-historial,
@@ -1128,10 +1131,10 @@
 .historial-completo-header .select-apuesta-historial,
 .historial-completo-header .select-orden-historial,
 .historial-completo-header .input-fecha-historial {
-  background: var(--surface);
-  color: #102a31;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 20px rgba(7, 27, 31, 0.14);
+  background-color: var(--surface);
+  color: var(--text-main);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
 }
 
 .historial-completo-header .input-fecha-historial::placeholder,
