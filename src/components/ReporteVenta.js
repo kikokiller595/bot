@@ -84,6 +84,8 @@ function extenderNumerosGanadores(numeros = []) {
 function obtenerDatosTipoApuesta(tipoApuesta = '', tipoFallback = '') {
   const valor = (tipoApuesta || tipoFallback || 'straight').toLowerCase();
   switch (valor) {
+    case 'pale':
+      return { clase: 'badge-pale', etiqueta: 'Pale' };
     case 'box':
       return { clase: 'badge-box', etiqueta: 'Box' };
     case 'pick4head3':

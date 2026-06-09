@@ -91,10 +91,14 @@ export const calcularPremio = (
   configuracionPremios = null,
   opciones = {}
 ) => {
+  // Pale requiere conocer AMBOS números y todos los ganadores del día.
+  // Su premio se calcula directamente en cada componente (no puede resolverse aquí).
+  if ((tipoApuesta || '').toLowerCase() === 'pale') return 0;
+
   const premios = normalizarPremios(configuracionPremios);
   const montoNum = parseFloat(monto) || 0;
   if (montoNum <= 0) return 0;
-  
+
   const numeroStr = String(numero).trim();
   const longitud = numeroStr.length;
   const posicionNormalizada = normalizarPosicion(opciones?.posicion);
@@ -203,7 +207,11 @@ export const calcularPremio = (
 // opciones: { esDerivado: boolean, longitudTicket: number }
 export const numeroCoincide = (numeroTicket, numeroGanador, tipoApuesta, opciones = {}) => {
   if (!numeroTicket || !numeroGanador) return false;
-  
+
+  // Pale no puede evaluarse candidato por candidato — necesita todo el set del día.
+  // Cada componente lo maneja con su bloque especial antes de llamar esta función.
+  if ((tipoApuesta || '').toLowerCase() === 'pale') return false;
+
   const tipo = (tipoApuesta || '').toLowerCase();
   const ticketStr = String(numeroTicket).trim();
   const ganadorStr = String(numeroGanador).trim();

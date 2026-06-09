@@ -474,7 +474,8 @@
 .badge-box,
 .badge-bolita1,
 .badge-bolita2,
-.badge-singulation {
+.badge-singulation,
+.badge-pale {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -482,6 +483,11 @@
   border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 700;
+}
+
+.badge-pale {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--accent-warm, #fbbf24);
 }
 
 .badge-straight {

@@ -587,6 +587,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
     const valor = (tipoApuesta || '').toLowerCase();
     if (valor === 'straight') return 'Straight';
     if (valor === 'box') return 'Box';
+    if (valor === 'pale') return 'Pale';
     if (valor === 'pick4head3') return 'Primeros 3 Pick 4';
     if (valor === 'pick4head3box') return 'Primeros 3 Pick 4 Box';
     if (valor === 'pick4tail3') return 'Ultimos 3 Pick 4';
@@ -595,6 +596,14 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
     if (valor === 'bolita2') return 'Bolita 2';
     if (valor === 'singulation') return 'Singulation';
     return tipoApuesta || 'Straight';
+  };
+
+  const formatearNumeroTicket = (numero, tipoApuesta = '') => {
+    if ((tipoApuesta || '').toLowerCase() === 'pale') {
+      const n = String(numero || '').replace(/\D/g, '');
+      if (n.length === 4) return `${n.slice(0, 2)} - ${n.slice(2, 4)}`;
+    }
+    return numero || 'N/A';
   };
 
   const puedeEliminarGrupo = (grupo) => {
@@ -907,7 +916,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                           const numeroTicket = ticket.numero || (ticket.numeros && ticket.numeros[0]) || 'N/A';
                           return (
                             <div key={ticket.id || index} className={`detalle-row ${isAdmin() ? 'admin-view' : ''}`}>
-                              <span>{numeroTicket}</span>
+                              <span>{formatearNumeroTicket(numeroTicket, ticket.tipoApuesta)}</span>
                               <span>{ticket.tipoApuesta ? getTipoApuestaLabel(ticket.tipoApuesta) : getTipoLabel(ticket.tipo)}</span>
                               <span>${(ticket.monto || 1).toFixed(2)}</span>
                               {isAdmin() && <span>{ticket.puntoVentaNombre || 'Sin punto'}</span>}
