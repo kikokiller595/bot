@@ -1,4 +1,4 @@
-.panel-administracion-container {
+﻿.panel-administracion-container {
   height: 100%;
   grid-column: 1 / -1;
 }
@@ -25,7 +25,7 @@
   margin-bottom: 0.7rem;
   padding: 0.42rem 0.75rem;
   border-radius: 999px;
-  background: rgba(15, 138, 124, 0.12);
+  background: rgba(19, 201, 181, 0.12);
   color: var(--accent-strong);
   font-family: var(--font-code);
   font-size: 0.76rem;
@@ -62,8 +62,8 @@
   overflow: hidden;
   padding: 1rem 1rem 1rem 1.15rem;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.76);
-  border: 1px solid rgba(12, 27, 34, 0.08);
+  background: rgba(18, 27, 46, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   color: var(--text-main);
   cursor: pointer;
   display: flex;
@@ -99,12 +99,12 @@
 
 .tab-panel-button:hover {
   transform: translateY(-2px);
-  border-color: rgba(15, 138, 124, 0.18);
-  box-shadow: 0 18px 30px rgba(12, 27, 34, 0.08);
+  border-color: rgba(19, 201, 181, 0.18);
+  box-shadow: 0 18px 30px rgba(255, 255, 255, 0.05);
 }
 
 .tab-panel-button.active {
-  background: linear-gradient(135deg, rgba(12, 27, 34, 0.96) 0%, rgba(20, 53, 62, 0.94) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(20, 53, 62, 0.94) 100%);
   color: var(--text-inverse);
   border-color: transparent;
   box-shadow: 0 22px 36px rgba(12, 27, 34, 0.18);
@@ -143,8 +143,8 @@
 .tab-content .gestion-usuarios-card {
   padding: 1.45rem;
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(12, 27, 34, 0.08);
+  background: rgba(18, 27, 46, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: none;
 }
 

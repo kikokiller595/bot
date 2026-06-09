@@ -1,4 +1,4 @@
-.dashboard-operativo {
+﻿.dashboard-operativo {
   margin-bottom: 1rem;
 }
 
@@ -79,7 +79,7 @@
   padding: 1rem;
   border-radius: 24px;
   border: 1px solid rgba(20, 25, 43, 0.08);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(249, 239, 226, 0.95) 100%);
+  background: linear-gradient(180deg, rgba(20, 30, 52, 0.92) 0%, rgba(249, 239, 226, 0.95) 100%);
 }
 
 .dashboard-stat::before {
@@ -124,7 +124,7 @@
 .dashboard-panel {
   padding: 1.05rem;
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(20, 25, 43, 0.08);
 }
 

@@ -1,4 +1,4 @@
-.reporte-venta-container {
+﻿.reporte-venta-container {
   height: 100%;
 }
 
@@ -70,7 +70,7 @@
   padding: 0.85rem 0.95rem;
   border-radius: 16px;
   border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(20, 30, 52, 0.92);
 }
 
 .botones-rapidos {
@@ -121,7 +121,7 @@
   background:
     linear-gradient(135deg, #17313a 0%, #114e60 62%, #0f766e 100%);
   color: var(--text-inverse) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 24px 40px rgba(17, 78, 96, 0.22);
 }
 
@@ -155,8 +155,8 @@
   display: inline-flex;
   padding: 0.55rem 0.85rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   font-weight: 700;
 }
 
@@ -164,7 +164,7 @@
 .stat-premios-section {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .stat-info-extra {
@@ -179,7 +179,7 @@
 .socio-item {
   padding: 0.85rem 0.95rem;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .info-label,
@@ -269,7 +269,7 @@
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(20, 30, 52, 0.92);
   box-shadow: 0 16px 32px rgba(23, 49, 58, 0.08);
 }
 
@@ -347,7 +347,7 @@
 .punto-venta-card {
   padding: 1rem;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
 
@@ -384,7 +384,7 @@
 .stat-extra {
   padding: 0.9rem 1rem;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(23, 49, 58, 0.08);
 }
 

@@ -1,4 +1,4 @@
-.form-fecha-filtro,
+﻿.form-fecha-filtro,
 .filtro-fecha-general {
   display: flex;
   flex-direction: column;
@@ -522,7 +522,7 @@
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
   color: white;
   cursor: pointer;
   transition: all 0.3s;
@@ -530,7 +530,7 @@
 }
 
 .select-loteria-historial:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.6);
 }
 
@@ -550,7 +550,7 @@
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
   color: white;
   cursor: pointer;
   transition: all 0.3s;
@@ -591,7 +591,7 @@
 .select-apuesta-historial:hover,
 .select-orden-historial:hover,
 .input-fecha-historial:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.6);
 }
 
@@ -611,7 +611,7 @@
 }
 
 .btn-toggle-historial {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 8px;
@@ -1016,7 +1016,7 @@
 .calculadora-premios-card {
   padding: 1.45rem;
   border-radius: var(--radius-xl);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(243, 250, 247, 0.92) 100%);
+  background: linear-gradient(180deg, rgba(18, 27, 46, 0.82) 0%, rgba(243, 250, 247, 0.92) 100%);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
 }
@@ -1045,9 +1045,9 @@
 .tab-button {
   padding: 0.85rem 1.1rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.76);
+  background: rgba(18, 27, 46, 0.82);
   color: var(--text-main);
-  border: 1px solid rgba(12, 27, 34, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .tab-button.active {
@@ -1061,8 +1061,8 @@
 .premios-table,
 .historial-resumen-filtros {
   border-radius: 24px;
-  border: 1px solid rgba(12, 27, 34, 0.08);
-  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(18, 27, 46, 0.82);
 }
 
 .filtros-premios {
@@ -1087,7 +1087,7 @@
 .select-orden-historial,
 .input-fecha-historial {
   border-radius: 16px;
-  border: 1px solid rgba(12, 27, 34, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(255, 255, 255, 0.9);
   color: var(--text-main);
 }
@@ -1098,9 +1098,9 @@
 .historial-completo-header .select-apuesta-historial,
 .historial-completo-header .select-orden-historial,
 .historial-completo-header .input-fecha-historial {
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(20, 30, 52, 0.92);
   color: #102a31;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 8px 20px rgba(7, 27, 31, 0.14);
 }
 
@@ -1121,7 +1121,7 @@
 .btn-limpiar-fecha,
 .btn-toggle-historial {
   border-radius: 999px;
-  background: rgba(12, 27, 34, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
 }
 
@@ -1151,15 +1151,15 @@
 
 .premios-table-header,
 .tabla-historial-header {
-  background: rgba(15, 138, 124, 0.08);
+  background: rgba(19, 201, 181, 0.08);
   color: var(--accent-strong);
 }
 
 .premio-row,
 .fila-historial {
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(18, 27, 46, 0.82);
   border-radius: 18px;
-  border: 1px solid rgba(12, 27, 34, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .premios-table-body,
@@ -1170,8 +1170,8 @@
 .ganador-row:hover,
 .premio-row:hover,
 .fila-historial:hover {
-  background: rgba(255, 255, 255, 0.94);
-  border-color: rgba(15, 138, 124, 0.16);
+  background: rgba(20, 30, 52, 0.92);
+  border-color: rgba(19, 201, 181, 0.16);
   box-shadow: none;
   transform: translateY(-1px);
 }
@@ -1198,13 +1198,13 @@
 }
 
 .ticket-numero-valor {
-  background: rgba(15, 138, 124, 0.08);
-  border-color: rgba(15, 138, 124, 0.12);
+  background: rgba(19, 201, 181, 0.08);
+  border-color: rgba(19, 201, 181, 0.12);
   color: var(--accent-strong);
 }
 
 .badge-multiple {
-  background: rgba(242, 106, 75, 0.12);
+  background: rgba(255, 122, 85, 0.12);
   color: #9b4c3a;
 }
 
@@ -1222,7 +1222,7 @@
 }
 
 .historial-resumen-filtros {
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(18, 27, 46, 0.82);
 }
 
 @media (max-width: 768px) {

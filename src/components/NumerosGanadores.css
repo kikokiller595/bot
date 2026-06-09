@@ -1,4 +1,4 @@
-.numeros-ganadores-container {
+﻿.numeros-ganadores-container {
   height: 100%;
 }
 
@@ -59,7 +59,7 @@
   padding: 0.9rem 0.95rem;
   border-radius: 16px;
   border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(20, 30, 52, 0.92);
 }
 
 .input-numero-ganador,
@@ -178,7 +178,7 @@
 }
 
 .loteria-resultado-card.sin-resultado {
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(18, 27, 46, 0.82);
 }
 
 .loteria-resultado-head {
@@ -223,7 +223,7 @@
   gap: 0.45rem;
   padding: 0.48rem 0.7rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(18, 27, 46, 0.82);
   border: 1px solid rgba(17, 78, 96, 0.08);
 }
 
@@ -284,7 +284,7 @@
 .sin-numeros-fecha {
   padding: 1rem;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(18, 27, 46, 0.82);
   border: 1px dashed rgba(23, 49, 58, 0.18);
   color: var(--text-soft);
 }
