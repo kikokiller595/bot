@@ -125,19 +125,28 @@
 
 .form-group label {
   font-weight: 600;
-  color: var(--text-soft);
+  color: var(--text-main);
   font-size: 0.9rem;
 }
 
 .select-loteria-premios,
 .select-numero-ganador {
   padding: 0.75rem;
-  border: 2px solid var(--line);
+  padding-right: 2.2rem;
+  border: 1px solid var(--line);
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s;
-  background: var(--surface);
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233b82f6' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  color: var(--text-main);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   cursor: pointer;
+  width: 100%;
 }
 
 .select-loteria-premios:focus,
@@ -518,21 +527,26 @@
 }
 
 .select-loteria-historial {
-  padding: 0.6rem 1rem;
-  border: 2px solid rgba(59, 130, 246, 0.4);
+  padding: 0.6rem 2.2rem 0.6rem 1rem;
+  border: 1px solid var(--line);
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.05);
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233b82f6' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
   color: var(--text-main);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   cursor: pointer;
   transition: all 0.3s;
-  min-width: 200px;
 }
 
 .select-loteria-historial:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.6);
+  background-color: var(--surface-strong);
+  border-color: var(--accent);
 }
 
 .select-loteria-historial option {
@@ -544,18 +558,33 @@
 .select-juego-historial,
 .select-tipo-historial,
 .select-apuesta-historial,
-.select-orden-historial,
-.input-fecha-historial {
-  padding: 0.6rem 1rem;
-  border: 2px solid rgba(59, 130, 246, 0.4);
+.select-orden-historial {
+  padding: 0.6rem 2.2rem 0.6rem 1rem;
+  border: 1px solid var(--line);
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.05);
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233b82f6' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
   color: var(--text-main);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   cursor: pointer;
   transition: all 0.3s;
-  min-width: 200px;
+}
+
+.input-fecha-historial {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: var(--surface);
+  color: var(--text-main);
+  transition: all 0.3s;
 }
 
 .input-fecha-historial {
@@ -592,8 +621,8 @@
 .select-apuesta-historial:hover,
 .select-orden-historial:hover,
 .input-fecha-historial:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.6);
+  background-color: var(--surface-strong);
+  border-color: var(--accent);
 }
 
 .input-fecha-historial:focus {
