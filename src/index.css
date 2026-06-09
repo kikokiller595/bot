@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   /* Backgrounds */
   --bg-main: #0d0d0d;
   --bg-soft: #111111;
@@ -20,14 +20,14 @@
   --text-inverse: #0d0d0d;
 
   /* Accent */
-  --accent: #00d4bf;
-  --accent-strong: #00b5a3;
-  --accent-warm: #ff6b4a;
-  --accent-warm-soft: rgba(255, 107, 74, 0.12);
+  --accent: #ffffff;
+  --accent-strong: #cccccc;
+  --accent-warm: #aaaaaa;
+  --accent-warm-soft: rgba(255, 255, 255, 0.08);
 
   /* State */
-  --danger: #f04444;
-  --success: #22c97a;
+  --danger: #888888;
+  --success: #cccccc;
 
   /* Shadows — very minimal like Vercel */
   --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05);
@@ -89,11 +89,11 @@ code {
 }
 
 ::selection {
-  background: rgba(0, 212, 191, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 :focus-visible {
-  outline: 2px solid rgba(0, 212, 191, 0.5);
+  outline: 2px solid rgba(255, 255, 255, 0.5);
   outline-offset: 2px;
 }
 

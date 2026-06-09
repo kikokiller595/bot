@@ -1,4 +1,4 @@
-.login-container {
+﻿.login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -61,8 +61,8 @@
 }
 
 .login-poster-signal {
-  background: rgba(255, 107, 74, 0.1);
-  border: 1px solid rgba(255, 107, 74, 0.2);
+  background: rgba(200, 200, 200, 0.1);
+  border: 1px solid rgba(200, 200, 200, 0.2);
   color: var(--accent-warm);
 }
 
@@ -154,8 +154,8 @@
 }
 
 .login-box-kicker {
-  background: rgba(0, 212, 191, 0.08);
-  border: 1px solid rgba(0, 212, 191, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--accent);
 }
 
@@ -165,8 +165,8 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-md);
-  background: rgba(0, 212, 191, 0.08);
-  border: 1px solid rgba(0, 212, 191, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: var(--accent);
   font-family: var(--font-code);
   font-size: 1rem;
@@ -205,28 +205,28 @@
 }
 
 .login-status-online {
-  background: rgba(34, 201, 122, 0.07);
-  border-color: rgba(34, 201, 122, 0.2);
+  background: rgba(200, 200, 200, 0.07);
+  border-color: rgba(200, 200, 200, 0.2);
   color: var(--success);
 }
 
 .login-status-checking {
-  background: rgba(255, 107, 74, 0.07);
-  border-color: rgba(255, 107, 74, 0.2);
+  background: rgba(200, 200, 200, 0.07);
+  border-color: rgba(200, 200, 200, 0.2);
   color: var(--accent-warm);
 }
 
 .login-status-offline,
 .login-error {
-  background: rgba(240, 68, 68, 0.07);
-  border-color: rgba(240, 68, 68, 0.2);
+  background: rgba(150, 150, 150, 0.07);
+  border-color: rgba(150, 150, 150, 0.2);
   color: var(--danger);
 }
 
 .login-notice {
-  background: rgba(255, 193, 7, 0.07);
-  border-color: rgba(255, 193, 7, 0.2);
-  color: #fbbf24;
+  background: rgba(180, 180, 180, 0.07);
+  border-color: rgba(180, 180, 180, 0.2);
+  color: #999999;
 }
 
 /* ─── Form ─── */
@@ -267,10 +267,10 @@
 }
 
 .login-form .form-group input:focus {
-  border-color: rgba(0, 212, 191, 0.4);
-  background: rgba(0, 212, 191, 0.03);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.03);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 212, 191, 0.07);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.07);
 }
 
 .login-button {
@@ -278,7 +278,7 @@
   padding: 0.72rem 1rem;
   border-radius: var(--radius-md);
   background: var(--accent);
-  color: #050d0c;
+  color: var(--text-inverse);
   font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.01em;

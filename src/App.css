@@ -1,4 +1,4 @@
-.App {
+﻿.App {
   min-height: 100vh;
 }
 
@@ -66,8 +66,8 @@
   gap: 0.35rem;
   padding: 0.28rem 0.6rem;
   border-radius: var(--radius-sm);
-  background: rgba(0, 212, 191, 0.08);
-  border: 1px solid rgba(0, 212, 191, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--accent);
   font-family: var(--font-code);
   font-size: 0.7rem;
@@ -206,8 +206,8 @@
 }
 
 .stage-top-nav-trigger:hover {
-  border-color: rgba(0, 212, 191, 0.25);
-  background: rgba(0, 212, 191, 0.04);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .stage-top-nav-trigger-icon {
@@ -291,8 +291,8 @@
 }
 
 .stage-top-nav-button.is-active {
-  background: rgba(0, 212, 191, 0.07);
-  border-color: rgba(0, 212, 191, 0.25);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.25);
   color: var(--accent);
 }
 
@@ -302,7 +302,7 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-sm);
-  background: rgba(255, 107, 74, 0.08);
+  background: rgba(200, 200, 200, 0.08);
   color: var(--accent-warm);
   font-family: var(--font-code);
   font-size: 0.72rem;
@@ -311,7 +311,7 @@
 }
 
 .stage-top-nav-button.is-active .stage-top-nav-code {
-  background: rgba(0, 212, 191, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--accent);
 }
 
@@ -337,7 +337,7 @@
 }
 
 .stage-top-nav-button.is-active .stage-top-nav-text small {
-  color: rgba(0, 212, 191, 0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* ─── Masthead ─── */
@@ -484,7 +484,7 @@
   line-height: 1.65;
 }
 
-.state-card-error { border-color: rgba(240, 68, 68, 0.25); }
+.state-card-error { border-color: rgba(150, 150, 150, 0.25); }
 
 .state-action {
   margin-top: 1rem;

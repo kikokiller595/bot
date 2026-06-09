@@ -672,7 +672,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   margin-left: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 212, 191, 0.3);
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .tabla-historial {
@@ -716,7 +716,7 @@
 .fila-historial:hover {
   background: var(--surface);
   border-color: var(--accent);
-  box-shadow: 0 4px 12px rgba(0, 212, 191, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
@@ -735,7 +735,7 @@
 }
 
 .col-destacada {
-  background: rgba(0, 212, 191, 0.15) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
   font-weight: 700 !important;
   border-left: 3px solid #667eea;
   border-right: 3px solid #667eea;
