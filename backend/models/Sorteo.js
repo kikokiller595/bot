@@ -31,7 +31,8 @@ const sorteoSchema = new mongoose.Schema({
       'pick4tail3',
       'pick4tail3box',
       'pick4head3',
-      'pick4head3box'
+      'pick4head3box',
+      'pale'
     ],
     required: [true, 'El tipo de apuesta es requerido']
   },

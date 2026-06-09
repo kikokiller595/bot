@@ -32,7 +32,8 @@ const TIPOS_APUESTA_VALIDOS = new Set([
   'pick4tail3',
   'pick4tail3box',
   'pick4head3',
-  'pick4head3box'
+  'pick4head3box',
+  'pale'
 ]);
 
 const esPuntoVenta = (rol) => {
