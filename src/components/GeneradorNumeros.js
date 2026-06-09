@@ -1224,16 +1224,18 @@ const GeneradorNumeros = ({
 
   const handleNumeroChange = (e) => {
     let valor = e.target.value.toLowerCase();
-    // Permitir números, + y q
-    valor = valor.replace(/[^0-9+qbf]/gi, '');
+    // Permitir números, + y q y p (pale)
+    valor = valor.replace(/[^0-9+qbfp]/gi, '');
     
     const tieneMas = valor.includes('+');
     const tieneQ = valor.includes('q');
     const tieneB = valor.includes('b');
     const tieneF = valor.includes('f');
+    const tieneP = valor.includes('p');
     const esBolitaParcial = /^\d{0,2}(\+([12]?))?$/.test(valor);
     const esPick4Head3Parcial = /^\d{0,3}(f\+?|f?)?$/.test(valor);
     const esPick4Tail3Parcial = /^\d{0,3}(b\+?|b?)?$/.test(valor);
+    const esPaleParcial = /^\d{0,4}p?$/.test(valor);
     
     // Si tiene q y +, q tiene prioridad solo si está al final
     if (tieneMas && tieneQ) {
@@ -1294,6 +1296,23 @@ const GeneradorNumeros = ({
 
     if (tieneF && valor.endsWith('+') && !valor.endsWith('f+')) {
       valor = `${valor.replace(/[^0-9]/g, '').slice(0, 3)}f+`;
+    }
+
+    // Pale (NNNNp): la p solo al final, solo con 4 dígitos, no combina con otros sufijos
+    if (tieneP) {
+      if (tieneB || tieneF || tieneQ || tieneMas) {
+        // p no combina — eliminar los otros sufijos
+        valor = valor.replace(/[bfq+]/g, '');
+      }
+      if (!esPaleParcial) {
+        const soloDigitos = valor.replace(/[^0-9]/g, '').slice(0, 4);
+        valor = soloDigitos + 'p';
+      } else if (!valor.endsWith('p')) {
+        valor = valor.replace(/p/g, '') + 'p';
+      }
+      // Limitar a 4 dígitos + p
+      const digitosPale = valor.replace(/[^0-9]/g, '').slice(0, 4);
+      valor = digitosPale + (valor.includes('p') ? 'p' : '');
     }
 
     // Normalizar entrada parcial de bolita (NN+1 / NN+2)
@@ -1592,7 +1611,7 @@ const GeneradorNumeros = ({
                 value={numero}
                 onChange={handleNumeroChange}
                 onKeyPress={handleKeyPressNumero}
-                placeholder="Ej: 1234, 1234+, 1234q, 123f, 123f+, 123b, 123b+, 22+1, 7"
+                placeholder="Ej: 1234, 1234+, 123b, 22+1, 1234p (pale)"
                 className="input-numero-grande"
                 maxLength="6"
                 autoFocus
