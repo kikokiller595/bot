@@ -445,6 +445,16 @@
   font-weight: 600;
 }
 
+.badge-pale {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--accent-warm);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
 .col-monto-premio {
   color: var(--text-soft);
   font-size: 0.9rem;

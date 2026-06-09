@@ -479,6 +479,12 @@
   color: var(--accent);
 }
 
+.tipo-indicador.pale {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--accent-warm);
+  font-weight: 700;
+}
+
 .ticket-anterior {
   background: var(--surface);
   border: 1px solid var(--line);

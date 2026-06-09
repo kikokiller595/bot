@@ -21,6 +21,9 @@ export const premiosPorDefecto = {
     boxDosPares: 800,
     boxUnPar: 400,
     boxTodosDiferentes: 200
+  },
+  pale: {
+    straight: 700
   }
 };
 
@@ -93,6 +96,9 @@ export const normalizarPremios = (entrada = null) => {
         entrada?.pick4?.boxTodosDiferentes,
         base.pick4.boxTodosDiferentes
       )
+    },
+    pale: {
+      straight: parsearNumero(entrada?.pale?.straight, base.pale.straight)
     }
   };
 };
@@ -122,6 +128,9 @@ export const premiosParaFormulario = (entrada = null) => {
       boxDosPares: normalizados.pick4.boxDosPares.toString(),
       boxUnPar: normalizados.pick4.boxUnPar.toString(),
       boxTodosDiferentes: normalizados.pick4.boxTodosDiferentes.toString()
+    },
+    pale: {
+      straight: normalizados.pale.straight.toString()
     }
   };
 };

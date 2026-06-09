@@ -43,6 +43,14 @@ const AYUDA_INGRESO_SECCIONES = [
       { codigo: '7', detalle: 'Singulation' },
       { codigo: '123q', detalle: 'Genera todas las combinaciones como straight' }
     ]
+  },
+  {
+    titulo: 'Pale',
+    descripcion: 'Escribe los dos numeros de 2 digitos juntos seguidos de p. Gana si ambos salen entre el 1ro, 2do o 3ro premio de la loteria ese dia, en cualquier orden.',
+    ejemplos: [
+      { codigo: '1234p', detalle: 'Pale de 12 y 34 — gana $700 por $1 si ambos numeros salen premiados' },
+      { codigo: '0512p', detalle: 'Pale de 05 y 12' }
+    ]
   }
 ];
 
@@ -402,6 +410,7 @@ const GeneradorNumeros = ({
 
   const obtenerEtiquetaTipo = (tipo = '') => {
     const valor = tipo.toLowerCase();
+    if (valor === 'pale') return 'Pale';
     if (valor === 'bolita1') return 'Bolita 1';
     if (valor === 'bolita2') return 'Bolita 2';
     if (valor === 'singulation') return 'Singulation';
@@ -412,6 +421,12 @@ const GeneradorNumeros = ({
     if (valor === 'box') return 'Box';
     if (valor === 'straight') return 'Straight';
     return tipo;
+  };
+
+  const formatearNumeroPale = (numero = '') => {
+    if (!numero.includes('|')) return numero;
+    const [n1, n2] = numero.split('|');
+    return `${n1} - ${n2}`;
   };
 
   const obtenerGrupoHistorial = useCallback((item) => {
@@ -768,6 +783,7 @@ const GeneradorNumeros = ({
 
     const numeroInput = numero.trim().toLowerCase();
     const bolitaMatch = numeroInput.match(/^(\d{2})\+(1|2)$/);
+    const paleMatch = numeroInput.match(/^(\d{2})(\d{2})p$/);
     const pick4Head3BoxMatch = numeroInput.match(/^(\d{3})f\+$/);
     const pick4Head3Match = numeroInput.match(/^(\d{3})f$/);
     const pick4Tail3BoxMatch = numeroInput.match(/^(\d{3})b\+$/);
@@ -791,6 +807,31 @@ const GeneradorNumeros = ({
       : null;
     const montoDobleValido = Boolean(montosDobles) && montosDobles.every((valor) => valor !== null);
     
+    // Caso especial: Pale (formato NNNNp, ej: 1234p → pale de 12 y 34)
+    if (paleMatch) {
+      const num1 = paleMatch[1];
+      const num2 = paleMatch[2];
+      if (num1 === num2) {
+        alert('Los dos números del pale deben ser diferentes.');
+        return;
+      }
+      const montoPale = monto.trim() ? parseFloat(monto) || 1 : 1;
+
+      setHistorialTemporal(prev => [
+        ...prev,
+        crearItemHistorial({
+          id: Date.now(),
+          numero: `${num1}|${num2}`,
+          monto: montoPale,
+          tipo: 'Pale'
+        })
+      ]);
+
+      setNumero('');
+      volverAlNumero();
+      return;
+    }
+
     // Caso especial: Bolita (formato NN+1 o NN+2)
     if (bolitaMatch) {
       const numeroBolita = bolitaMatch[1];
@@ -1327,6 +1368,7 @@ const GeneradorNumeros = ({
   const numeroActual = numero.toLowerCase();
   const bolitaIndicadorParcial = /^\d{1,2}\+([12]?)$/.test(numeroActual);
   const bolitaIndicadorCompleto = numeroActual.match(/^(\d{2})\+(1|2)$/);
+  const paleIndicador = /^\d{4}p$/.test(numeroActual);
   const pick4Head3Indicador = /^\d{3}f$/.test(numeroActual);
   const pick4Head3BoxIndicador = /^\d{3}f\+$/.test(numeroActual);
   const pick4Tail3Indicador = /^\d{3}b$/.test(numeroActual);
@@ -1557,7 +1599,11 @@ const GeneradorNumeros = ({
                 disabled={deshabilitarAcciones}
               />
               <small>
-                {esSingulationIndicador ? (
+                {paleIndicador ? (
+                  <span className="tipo-indicador pale">
+                    Pale: {numeroActual.slice(0, 2)} y {numeroActual.slice(2, 4)} — gana $700 por $1
+                  </span>
+                ) : esSingulationIndicador ? (
                   <span className="tipo-indicador singulation">Singulation (1 dígito)</span>
                 ) : pick4Head3BoxIndicador ? (
                   <span className="tipo-indicador pick4head3">Primeros 3 del Pick 4 Box</span>
@@ -1710,7 +1756,7 @@ const GeneradorNumeros = ({
                                   {resumenItem.etiqueta}
                                 </span>
                                 <div className="ticket-board__meta">
-                                  <strong>{item.numero}</strong>
+                                  <strong>{item.tipo?.toLowerCase() === 'pale' ? formatearNumeroPale(item.numero) : item.numero}</strong>
                                   <small>{obtenerEtiquetaTipo(item.tipo)}</small>
                                 </div>
                                 <span className="ticket-board__amount">

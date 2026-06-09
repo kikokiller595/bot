@@ -85,6 +85,8 @@ function extenderNumerosGanadores(numeros = []) {
 function obtenerDatosTipoApuesta(tipoApuesta = '') {
   const valor = (tipoApuesta || '').toLowerCase();
   switch (valor) {
+    case 'pale':
+      return { clase: 'badge-pale', etiqueta: 'Pale' };
     case 'box':
       return { clase: 'badge-box', etiqueta: 'Box' };
     case 'pick4tail3':
@@ -490,6 +492,9 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         ticketsProcesados++;
         // Detectar tipo de apuesta - usar tipoApuesta si existe, sino detectar del formato
         let tipoApuestaDetectado = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase().trim();
+
+        // Los pales se calculan por separado al final
+        if (tipoApuestaDetectado === 'pale') return;
         
         const numeroTicket = String(ticket.numero || '').trim();
         if (!numeroTicket) return;
@@ -615,6 +620,59 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           }
         }
       });
+    });
+
+    // ── Pale: evaluar contra TODOS los números ganadores del mismo día ──
+    const fechaSorteoSeleccionado = obtenerClaveFecha(numeroGanador.fecha);
+    const ganadoresMismoDia = loteria.numerosGanadores
+      ? loteria.numerosGanadores.filter(
+          ng => obtenerClaveFecha(ng.fecha) === fechaSorteoSeleccionado
+        )
+      : [];
+    const setGanadoresDia = new Set(ganadoresMismoDia.map(ng => String(ng.numero || '').trim()));
+
+    const paletasLoteria = ticketsLoteria.filter(t =>
+      (t.tipoApuesta || t.tipo || '').toLowerCase().trim() === 'pale'
+    );
+
+    paletasLoteria.forEach(ticket => {
+      const partes = String(ticket.numero || '').split('|');
+      if (partes.length !== 2) return;
+      const [num1, num2] = partes.map(p => p.trim());
+      if (!num1 || !num2) return;
+
+      const fechaTicket = obtenerClaveFecha(ticket.fecha);
+      if (fechaTicket && fechaSorteoSeleccionado && fechaTicket !== fechaSorteoSeleccionado) return;
+
+      if (setGanadoresDia.has(num1) && setGanadoresDia.has(num2)) {
+        const monto = parseFloat(ticket.monto) || 0;
+        const premio = monto * premiosConfigurados.pale.straight;
+        if (premio > 0) {
+          const detalleTicket = construirDetalleTicket(ticket, sorteos);
+          premios.push({
+            id: ticket.id,
+            ticketId: ticket.ticketId || ticket.id,
+            grupoId: ticket.grupoId || null,
+            numero: `${num1} - ${num2}`,
+            tipoApuesta: 'pale',
+            monto,
+            premio,
+            fecha: ticket.fecha,
+            numeroGanador: `${num1} y ${num2}`,
+            puntoVentaId: ticket.puntoVentaId || '',
+            puntoVentaNombre: ticket.puntoVentaNombre || '',
+            usuarioNombre: ticket.usuarioNombre || ticket.vendedorNombre || '',
+            username: ticket.username || '',
+            pagado: Boolean(ticket.pagado),
+            pagadoPorNombre: ticket.pagadoPorNombre || '',
+            fechaPago: ticket.fechaPago || null,
+            puntoVentaPagoNombre: ticket.puntoVentaPagoNombre || '',
+            posicion: 'pale',
+            ticketDetalle: detalleTicket,
+            ticketCompleto: `${num1} - ${num2}`
+          });
+        }
+      }
     });
 
     setPremiosCalculados(agruparResultadosPorTicket(premios));
