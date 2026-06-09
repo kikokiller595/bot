@@ -96,7 +96,7 @@
 .login-poster-panel {
   padding: 1rem;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(59, 130, 246, 0.04);
   border: 1px solid var(--line);
 }
 
@@ -255,7 +255,7 @@
   padding: 0.65rem 0.85rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(59, 130, 246, 0.04);
   color: var(--text-main);
   font-size: 0.9rem;
   transition: border-color 0.15s, background 0.15s;
@@ -268,7 +268,7 @@
 
 .login-form .form-group input:focus {
   border-color: rgba(59, 130, 246, 0.4);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(59, 130, 246, 0.04);
   outline: none;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.05);
 }

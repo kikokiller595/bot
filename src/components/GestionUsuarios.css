@@ -46,7 +46,7 @@
 .btn-agregar-usuario,
 .usuario-form-actions button:not(.secondary),
 .tabla-acciones button:not(.danger) {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  background: var(--accent-strong);
   color: var(--text-inverse);
 }
 
@@ -84,7 +84,7 @@
 }
 
 .usuario-role-switch button.active {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  background: var(--accent-strong);
   color: var(--text-inverse);
 }
 

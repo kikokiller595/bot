@@ -78,7 +78,7 @@
 .btn-agregar-ganador {
   align-self: end;
   padding: 0.95rem 1.15rem;
-  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  background: var(--accent-strong);
   color: var(--text-inverse);
 }
 
