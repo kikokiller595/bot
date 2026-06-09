@@ -36,7 +36,7 @@
 }
 
 .btn-eliminar:hover {
-  background: rgba(182, 69, 60, 0.18);
+  background: rgba(244, 63, 94, 0.18);
 }
 
 .historial-filtros {
@@ -45,8 +45,8 @@
   gap: 0.9rem;
   padding: 1rem;
   border-radius: 8px;
-  background: rgba(247, 244, 236, 0.86);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
   margin-bottom: 1rem;
 }
 
@@ -67,14 +67,14 @@
 .historial-filtros select {
   padding: 0.85rem 0.95rem;
   border-radius: 6px;
-  border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(20, 30, 52, 0.92);
+  border: 1px solid rgba(59, 130, 246, 0.12);
+  background: var(--surface);
 }
 
 .btn-limpiar-filtro {
   align-self: end;
   padding: 0.85rem 1rem;
-  background: rgba(17, 78, 96, 0.1);
+  background: rgba(59, 130, 246, 0.10);
   color: var(--accent-strong);
 }
 
@@ -88,8 +88,8 @@
 .resumen-card {
   padding: 1rem;
   border-radius: 6px;
-  background: rgba(18, 27, 46, 0.82);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .resumen-label {
@@ -130,7 +130,7 @@
 
 .texto-secundario {
   margin-top: 0.45rem;
-  color: #82918f;
+  color: rgba(180, 200, 255, 0.48);
 }
 
 .sorteos-list {
@@ -143,8 +143,8 @@
 .sorteo-item {
   padding: 1rem;
   border-radius: 8px;
-  background: rgba(247, 244, 236, 0.86);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .sorteo-header {
@@ -180,7 +180,7 @@
 
 .sorteo-ticket-id {
   padding: 0.45rem 0.75rem;
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
 }
 
@@ -197,8 +197,8 @@
 
 .sorteo-loteria-badge {
   padding: 0.38rem 0.75rem;
-  background: rgba(209, 138, 57, 0.14);
-  color: #8a5a1a;
+  background: rgba(245, 158, 11, 0.14);
+  color: #f59e0b;
 }
 
 .sorteo-acciones {
@@ -218,23 +218,23 @@
 }
 
 .estado-badge.estado-gano {
-  background: rgba(34, 119, 85, 0.12);
+  background: rgba(34, 197, 94, 0.12);
   color: var(--success);
 }
 
 .estado-badge.estado-perdio {
-  background: rgba(182, 69, 60, 0.12);
+  background: rgba(244, 63, 94, 0.12);
   color: var(--danger);
 }
 
 .estado-badge.estado-pendiente {
-  background: rgba(209, 138, 57, 0.14);
-  color: #8a5a1a;
+  background: rgba(245, 158, 11, 0.14);
+  color: #f59e0b;
 }
 
 .btn-toggle {
   padding: 0.65rem 0.95rem;
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
 }
 
@@ -244,7 +244,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(182, 69, 60, 0.1);
+  background: rgba(244, 63, 94, 0.10);
   color: var(--danger);
   font-size: 1.2rem;
 }
@@ -252,12 +252,12 @@
 .btn-eliminar:disabled {
   cursor: not-allowed;
   opacity: 0.45;
-  background: rgba(23, 49, 58, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--text-soft);
 }
 
 .btn-eliminar:disabled:hover {
-  background: rgba(23, 49, 58, 0.08);
+  background: rgba(59, 130, 246, 0.08);
 }
 
 .sorteo-resumen {
@@ -269,8 +269,8 @@
 .resumen-block {
   padding: 0.9rem;
   border-radius: 6px;
-  background: rgba(18, 27, 46, 0.82);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -306,7 +306,7 @@
 
 .chip-numero {
   padding: 0.35rem 0.7rem;
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
   font-size: 0.82rem;
 }
@@ -315,8 +315,8 @@
   margin-top: 0.9rem;
   border-radius: 6px;
   overflow: hidden;
-  border: 1px solid rgba(23, 49, 58, 0.08);
-  background: rgba(18, 27, 46, 0.82);
+  border: 1px solid rgba(59, 130, 246, 0.08);
+  background: var(--surface);
 }
 
 .detalle-table-header,
@@ -329,7 +329,7 @@
 }
 
 .detalle-table-header {
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
   font-size: 0.75rem;
   font-weight: 800;
@@ -338,7 +338,7 @@
 }
 
 .detalle-row {
-  border-top: 1px solid rgba(23, 49, 58, 0.08);
+  border-top: 1px solid rgba(59, 130, 246, 0.08);
   color: var(--text-main);
 }
 

@@ -1,9 +1,9 @@
-.estadisticas-container {
+﻿.estadisticas-container {
   height: 100%;
 }
 
 .estadisticas-card {
-  background: white;
+  background: var(--surface);
   border-radius: 15px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -21,7 +21,7 @@
 .sin-estadisticas {
   text-align: center;
   padding: 3rem 1rem;
-  color: #666;
+  color: var(--text-soft);
 }
 
 .texto-secundario {
@@ -102,7 +102,7 @@
 .frecuencia-veces {
   min-width: 80px;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-soft);
   font-weight: 500;
 }
 

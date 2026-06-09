@@ -62,7 +62,7 @@
 
 .login-poster-signal {
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   color: var(--accent-warm);
 }
 
@@ -154,7 +154,7 @@
 }
 
 .login-box-kicker {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--accent);
 }
@@ -165,7 +165,7 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
   color: var(--accent);
   font-family: var(--font-code);
@@ -205,28 +205,28 @@
 }
 
 .login-status-online {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.2);
   color: var(--success);
 }
 
 .login-status-checking {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.2);
   color: var(--accent-warm);
 }
 
 .login-status-offline,
 .login-error {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.2);
   color: var(--danger);
 }
 
 .login-notice {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.5);
+  background: rgba(59, 130, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.2);
+  color: rgba(59, 130, 246, 0.6);
 }
 
 /* ─── Form ─── */
@@ -267,10 +267,10 @@
 }
 
 .login-form .form-group input:focus {
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(59, 130, 246, 0.4);
   background: rgba(255, 255, 255, 0.03);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.05);
 }
 
 .login-button {

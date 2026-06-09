@@ -79,7 +79,7 @@
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid rgba(20, 25, 43, 0.08);
-  background: linear-gradient(180deg, rgba(20, 30, 52, 0.92) 0%, rgba(249, 239, 226, 0.95) 100%);
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(249, 239, 226, 0.95) 100%);
 }
 
 .dashboard-stat::before {
@@ -124,7 +124,7 @@
 .dashboard-panel {
   padding: 1.05rem;
   border-radius: 8px;
-  background: rgba(18, 27, 46, 0.82);
+  background: var(--surface);
   border: 1px solid rgba(20, 25, 43, 0.08);
 }
 

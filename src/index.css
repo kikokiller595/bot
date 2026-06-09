@@ -1,37 +1,37 @@
 ﻿:root {
   /* Backgrounds */
-  --bg-main: #000000;
-  --bg-soft: #000000;
+  --bg-main: #01050f;
+  --bg-soft: #020814;
   --bg-strong: #000000;
-  --bg-strong-2: #000000;
+  --bg-strong-2: #010610;
 
   /* Surfaces */
-  --surface: #0f0f0f;
-  --surface-strong: #161616;
-  --surface-muted: #0a0a0a;
+  --surface: #06122a;
+  --surface-strong: #0a1d42;
+  --surface-muted: #040e20;
 
   /* Borders */
-  --line: rgba(255, 255, 255, 0.12);
-  --line-strong: rgba(255, 255, 255, 0.2);
+  --line: rgba(59, 130, 246, 0.15);
+  --line-strong: rgba(59, 130, 246, 0.28);
 
   /* Text */
-  --text-main: #ffffff;
-  --text-soft: rgba(255, 255, 255, 0.45);
-  --text-inverse: #000000;
+  --text-main: #dde8ff;
+  --text-soft: rgba(180, 200, 255, 0.48);
+  --text-inverse: #01050f;
 
   /* Accent */
-  --accent: #ffffff;
-  --accent-strong: #ffffff;
-  --accent-warm: #ffffff;
-  --accent-warm-soft: rgba(255, 255, 255, 0.07);
+  --accent: #3b82f6;
+  --accent-strong: #2563eb;
+  --accent-warm: #f59e0b;
+  --accent-warm-soft: rgba(245, 158, 11, 0.1);
 
   /* State */
-  --danger: #ffffff;
-  --success: #ffffff;
+  --danger: #f43f5e;
+  --success: #22c55e;
 
-  /* Shadows — very minimal like Vercel */
-  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05);
-  --shadow-strong: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.06);
+  /* Shadows */
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.08);
+  --shadow-strong: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(59, 130, 246, 0.12);
 
   /* Radius — much tighter */
   --radius-xl: 10px;
@@ -77,6 +77,14 @@ button, input, select, textarea {
 
 input, select, textarea {
   color: var(--text-main);
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  background-color: transparent;
+  accent-color: var(--accent);
 }
 
 button {
@@ -89,11 +97,11 @@ code {
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.2);
 }
 
 :focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline: 2px solid rgba(59, 130, 246, 0.6);
   outline-offset: 2px;
 }
 
@@ -107,10 +115,10 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(59, 130, 246, 0.3);
 }

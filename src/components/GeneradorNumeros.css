@@ -53,7 +53,7 @@
 
 .card-title {
   font-size: 1.8rem;
-  color: #13c9b5;
+  color: #3b82f6;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -87,20 +87,20 @@
 .impresion-toggle input {
   width: 18px;
   height: 18px;
-  accent-color: #13c9b5;
+  accent-color: #3b82f6;
 }
 
 .impresion-estado {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #13c9b5;
-  background: rgba(19, 201, 181, 0.1);
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
   border-radius: 999px;
   padding: 0.35rem 0.75rem;
 }
 
 .loteria-cerrada-aviso {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: #ffc107;
   border: 1px solid rgba(255,193,7,0.2);
   border-radius: 8px;
@@ -110,7 +110,7 @@
 }
 
 .loteria-parcial-aviso {
-  background: rgba(19, 201, 181, 0.06);
+  background: rgba(59, 130, 246, 0.06);
   color: var(--accent);
   border: 1px solid rgba(19,201,181,0.15);
   border-radius: 8px;
@@ -167,7 +167,7 @@
 }
 
 .btn-ayuda-ingreso:hover {
-  background: rgba(19, 201, 181, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   box-shadow: 0 10px 22px rgba(255, 255, 255, 0.05);
   transform: translateY(-1px);
 }
@@ -176,8 +176,8 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   padding: 1rem 1.1rem 1.15rem;
-  background: linear-gradient(180deg, rgba(247, 251, 249, 0.98) 0%, rgba(240, 248, 246, 0.98) 100%);
-  box-shadow: 0 18px 34px rgba(18, 39, 58, 0.07);
+  background: var(--surface);
+  box-shadow: 0 18px 34px rgba(59, 130, 246, 0.06);
 }
 
 .ayuda-ingreso-panel-header {
@@ -208,11 +208,11 @@
 }
 
 .ayuda-ingreso-card {
-  background: rgba(20, 30, 52, 0.92);
+  background: var(--surface);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 6px;
   padding: 0.95rem 1rem;
-  box-shadow: 0 8px 18px rgba(18, 39, 58, 0.05);
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.04);
 }
 
 .ayuda-ingreso-card h4 {
@@ -271,7 +271,7 @@
   align-items: center;
   padding: 0.45rem 0.8rem;
   border-radius: 999px;
-  background: rgba(19, 201, 181, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   color: var(--accent);
   font-size: 0.8rem;
   font-weight: 700;
@@ -303,19 +303,19 @@
   padding: 0.35rem 0.75rem;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 6px;
-  background: rgba(20, 30, 52, 0.92);
+  background: var(--surface);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .loteria-opcion:hover {
-  border-color: #13c9b5;
-  box-shadow: 0 2px 6px rgba(19, 201, 181, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15);
 }
 
 .loteria-opcion input {
-  accent-color: #13c9b5;
+  accent-color: #3b82f6;
   width: 16px;
   height: 16px;
 }
@@ -404,26 +404,26 @@
 .input-fecha-ticket:focus,
 .input-terminal-ticket:focus {
   outline: none;
-  border-color: #13c9b5;
+  border-color: #3b82f6;
 }
 
 .input-fecha-ticket:disabled,
 .input-terminal-ticket:disabled {
   cursor: not-allowed;
   opacity: 0.8;
-  background: rgba(23, 49, 58, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--text-soft);
 }
 
 .input-numero-grande:focus,
 .input-monto-grande:focus {
   outline: none;
-  border-color: #13c9b5;
+  border-color: #3b82f6;
 }
 
 .campo-numero small,
 .campo-monto small {
-  color: #666;
+  color: var(--text-soft);
   font-size: 0.85rem;
   display: block;
   margin-top: 0.5rem;
@@ -507,8 +507,8 @@
 
 .ticket-loterias {
   font-size: 0.85rem;
-  color: #555;
-  background: rgba(19, 201, 181, 0.1);
+  color: var(--text-soft);
+  background: rgba(59, 130, 246, 0.1);
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
   flex: 1 1 100%;
@@ -622,7 +622,7 @@
 }
 
 .historial-grupo-card {
-  background: rgba(20, 30, 52, 0.92);
+  background: var(--surface);
   border: 1px solid rgba(28, 43, 70, 0.1);
   border-radius: 6px;
   overflow: hidden;
@@ -767,7 +767,7 @@
 
 .item-numero:hover {
   background: var(--surface);
-  border-color: #13c9b5;
+  border-color: #3b82f6;
   transform: translateX(5px);
 }
 
@@ -780,7 +780,7 @@
 
 .tipo-item {
   font-size: 0.9rem;
-  color: #13c9b5;
+  color: #3b82f6;
   font-weight: 500;
   text-align: center;
   background: var(--surface);
@@ -861,7 +861,7 @@
 
 .resumen-item label {
   font-weight: 500;
-  color: #666;
+  color: var(--text-soft);
   font-size: 0.9rem;
 }
 
@@ -899,7 +899,7 @@
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(19, 201, 181, 0.4);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
 }
 
 .btn-primary:disabled {
@@ -913,12 +913,12 @@
 }
 
 .btn-secondary {
-  background: #6c757d;
+  background: var(--surface-strong);
   color: white;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #5a6268;
+  background: var(--surface-strong);
   transform: translateY(-2px);
 }
 
@@ -951,7 +951,7 @@
 }
 
 .numero-stats-chip {
-  background: rgba(19, 201, 181, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   color: var(--text-main);
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
@@ -998,9 +998,9 @@
 }
 
 .btn-toggle-historial {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.2);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 4px;
   padding: 0.35rem 0.75rem;
   cursor: pointer;
@@ -1010,7 +1010,7 @@
 }
 
 .btn-toggle-historial:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(59, 130, 246, 0.3);
 }
 
 .historial-completo-content {
@@ -1064,8 +1064,8 @@
 
 .fila-historial:hover {
   background: var(--surface);
-  border-color: #13c9b5;
-  box-shadow: 0 2px 4px rgba(19, 201, 181, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
 }
 
 .col-numero-hist,
@@ -1109,7 +1109,7 @@
 
 .stat-count {
   font-size: 0.9rem;
-  color: #13c9b5;
+  color: #3b82f6;
   font-weight: 600;
 }
 
@@ -1153,7 +1153,7 @@
 
 .footer-value {
   font-weight: 600;
-  color: #13c9b5;
+  color: #3b82f6;
   font-size: 1.1rem;
 }
 
@@ -1252,7 +1252,7 @@
 .generador-card {
   padding: 1.45rem;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(18, 27, 46, 0.82) 0%, rgba(243, 250, 247, 0.92) 100%);
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(243, 250, 247, 0.92) 100%);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
   
@@ -1277,7 +1277,7 @@
 .numero-stats {
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(18, 27, 46, 0.82);
+  background: var(--surface);
   box-shadow: none;
 }
 
@@ -1297,7 +1297,7 @@
 }
 
 .impresion-estado {
-  background: rgba(19, 201, 181, 0.12);
+  background: rgba(59, 130, 246, 0.12);
   color: var(--accent-strong);
 }
 
@@ -1315,8 +1315,8 @@
 }
 
 .loteria-parcial-aviso {
-  background: rgba(19, 201, 181, 0.08);
-  border-color: rgba(19, 201, 181, 0.12);
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.12);
   color: var(--accent-strong);
 }
 
@@ -1334,11 +1334,11 @@
   padding: 0.72rem 1rem;
   border-radius: 6px;
   border-color: rgba(255, 255, 255, 0.05);
-  background: rgba(20, 30, 52, 0.92);
+  background: var(--surface);
 }
 
 .loteria-opcion:hover {
-  border-color: rgba(19, 201, 181, 0.18);
+  border-color: rgba(59, 130, 246, 0.18);
   box-shadow: 0 12px 26px rgba(255, 255, 255, 0.05);
 }
 
@@ -1349,7 +1349,7 @@
 .input-resumen {
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(20, 30, 52, 0.92);
+  background: var(--surface);
   color: var(--text-main);
 }
 
@@ -1366,8 +1366,8 @@
 .input-monto-grande:focus,
 .input-fecha-ticket:focus,
 .input-terminal-ticket:focus {
-  border-color: rgba(19, 201, 181, 0.28);
-  box-shadow: 0 0 0 4px rgba(19, 201, 181, 0.08);
+  border-color: rgba(59, 130, 246, 0.28);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
 }
 
 .tipo-indicador {
@@ -1395,7 +1395,7 @@
 }
 
 .ticket-loterias {
-  background: rgba(19, 201, 181, 0.09);
+  background: rgba(59, 130, 246, 0.09);
   color: var(--accent-strong);
   border-radius: 999px;
   padding: 0.45rem 0.8rem;
@@ -1439,7 +1439,7 @@
   position: relative;
   overflow: hidden;
   padding: 1rem;
-  border: 1px solid rgba(19, 201, 181, 0.16);
+  border: 1px solid rgba(59, 130, 246, 0.16);
   border-radius: 8px;
   background:
     radial-gradient(circle at top left, rgba(32, 178, 162, 0.22), transparent 34%),
@@ -1572,7 +1572,7 @@
 }
 
 .btn-ticket-dismiss:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.2);
   transform: translateY(-1px);
 }
 
@@ -1593,17 +1593,17 @@
 .fila-historial {
   border-radius: 6px;
   border-color: rgba(255, 255, 255, 0.05);
-  background: rgba(18, 27, 46, 0.82);
+  background: var(--surface);
 }
 
 .item-numero:hover,
 .fila-historial:hover {
-  border-color: rgba(19, 201, 181, 0.18);
+  border-color: rgba(59, 130, 246, 0.18);
   transform: translateY(-1px);
 }
 
 .tipo-item {
-  background: rgba(19, 201, 181, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   color: var(--accent-strong);
   border-radius: 999px;
 }
@@ -1647,7 +1647,7 @@
 }
 
 .numero-stats-chip {
-  background: rgba(19, 201, 181, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   color: var(--accent-strong);
 }
 
@@ -1663,8 +1663,8 @@
 .ticket-board {
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(20, 30, 52, 0.92) 0%, rgba(245, 250, 248, 0.98) 100%);
-  box-shadow: 0 22px 42px rgba(18, 39, 58, 0.08);
+  background: var(--surface);
+  box-shadow: 0 22px 42px rgba(59, 130, 246, 0.08);
   overflow: hidden;
 }
 
@@ -1674,8 +1674,8 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.15rem;
-  border-bottom: 1px solid rgba(19, 201, 181, 0.08);
-  background: linear-gradient(135deg, rgba(18, 39, 58, 0.96) 0%, rgba(19, 201, 181, 0.9) 100%);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.08);
+  background: linear-gradient(135deg, #0a1d42 0%, #1d4ed8 100%);
   color: #f8fbff;
 }
 
@@ -1712,7 +1712,7 @@
 
 .resumen-item-header .input-resumen {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   color: #fff;
   font-weight: 700;
   font-size: 0.9rem;
@@ -1752,9 +1752,9 @@
 
 .ticket-board__group {
   border-radius: 6px;
-  border: 1px solid rgba(18, 39, 58, 0.08);
-  background: rgba(20, 30, 52, 0.92);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(59, 130, 246, 0.08);
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 rgba(59, 130, 246, 0.08);
   overflow: hidden;
 }
 
@@ -1833,7 +1833,7 @@
   max-width: 100%;
   padding: 0.28rem 0.65rem;
   border-radius: 999px;
-  background: rgba(19, 201, 181, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   color: var(--accent-strong);
   font-size: 0.74rem;
   font-weight: 700;
@@ -1858,7 +1858,7 @@
 .ticket-board__group-total {
   margin: 0 0.9rem 0.9rem;
   border-radius: 4px;
-  background: linear-gradient(135deg, rgba(18, 39, 58, 0.96) 0%, rgba(19, 201, 181, 0.92) 100%);
+  background: linear-gradient(135deg, #0a1d42 0%, #1d4ed8 100%);
   color: #f9fbff;
   text-align: left;
   padding: 0.8rem 1rem;

@@ -33,8 +33,8 @@
 .filtros-fecha {
   padding: 1rem;
   border-radius: 8px;
-  background: rgba(247, 244, 236, 0.86);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
   margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
@@ -69,8 +69,8 @@
 .input-fecha {
   padding: 0.85rem 0.95rem;
   border-radius: 6px;
-  border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(20, 30, 52, 0.92);
+  border: 1px solid rgba(59, 130, 246, 0.12);
+  background: var(--surface);
 }
 
 .botones-rapidos {
@@ -83,7 +83,7 @@
 .btn-toggle {
   padding: 0.8rem 1rem;
   border-radius: 999px;
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
   font-weight: 700;
   cursor: pointer;
@@ -91,7 +91,7 @@
 
 .btn-rapido:hover,
 .btn-toggle:hover {
-  background: rgba(17, 78, 96, 0.14);
+  background: rgba(59, 130, 246, 0.14);
 }
 
 .resumen-ventas {
@@ -119,7 +119,7 @@
   margin-bottom: 1rem;
   border-radius: 8px;
   background:
-    linear-gradient(135deg, #17313a 0%, #114e60 62%, #0f766e 100%);
+    linear-gradient(135deg, #0a1d42 0%, #1e3a8a 62%, #1d4ed8 100%);
   color: var(--text-inverse) !important;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
@@ -202,11 +202,11 @@
 }
 
 .ganancia-value.positiva {
-  color: #b7ffd7 !important;
+  color: #22c55e !important;
 }
 
 .ganancia-value.negativa {
-  color: #ffd8d4 !important;
+  color: #f43f5e !important;
 }
 
 .stats-grid {
@@ -223,8 +223,8 @@
 .stat-card {
   padding: 1rem;
   border-radius: 6px;
-  background: rgba(247, 244, 236, 0.86);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .stat-label {
@@ -249,7 +249,7 @@
 }
 
 .stat-premios .stat-value {
-  color: #b46b1e;
+  color: #f59e0b;
 }
 
 .stat-ganancia-positiva .stat-value {
@@ -268,15 +268,15 @@
   margin: 1.25rem 0 1.35rem;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid rgba(23, 49, 58, 0.12);
-  background: rgba(20, 30, 52, 0.92);
-  box-shadow: 0 16px 32px rgba(23, 49, 58, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.12);
+  background: var(--surface);
+  box-shadow: 0 16px 32px rgba(59, 130, 246, 0.08);
 }
 
 .summary-report-title {
   padding: 1.1rem 1.3rem;
-  background: #2f3136;
-  color: #f5f2ea;
+  background: #0a1d42;
+  color: #dde8ff;
   text-align: center;
   font-size: 1rem;
   font-weight: 800;
@@ -295,13 +295,13 @@
 
 .summary-report-row:nth-child(odd) .summary-report-label,
 .summary-report-row:nth-child(odd) .summary-report-value {
-  background: rgba(23, 49, 58, 0.04);
+  background: rgba(59, 130, 246, 0.04);
 }
 
 .summary-report-label,
 .summary-report-value {
   padding: 1.15rem 1.25rem;
-  border-top: 1px solid rgba(23, 49, 58, 0.1);
+  border-top: 1px solid rgba(59, 130, 246, 0.10);
 }
 
 .summary-report-label {
@@ -313,7 +313,7 @@
 }
 
 .summary-report-value {
-  border-left: 1px solid rgba(23, 49, 58, 0.1);
+  border-left: 1px solid rgba(59, 130, 246, 0.10);
   color: var(--text-main);
   font-size: 1.08rem;
   font-weight: 700;
@@ -321,14 +321,14 @@
 }
 
 .summary-report-value.tone-success {
-  background: rgba(125, 217, 218, 0.45);
-  color: #0f5d5f;
+  background: rgba(34, 197, 94, 0.15);
+  color: #dde8ff;
   font-weight: 800;
 }
 
 .summary-report-value.tone-danger {
-  background: rgba(255, 210, 210, 0.5);
-  color: #a23737;
+  background: rgba(244, 63, 94, 0.15);
+  color: #dde8ff;
   font-weight: 800;
 }
 
@@ -347,8 +347,8 @@
 .punto-venta-card {
   padding: 1rem;
   border-radius: 6px;
-  background: rgba(18, 27, 46, 0.82);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .punto-venta-nombre {
@@ -384,8 +384,8 @@
 .stat-extra {
   padding: 0.9rem 1rem;
   border-radius: 6px;
-  background: rgba(18, 27, 46, 0.82);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .tickets-section {
@@ -410,8 +410,8 @@
   flex: 1;
   overflow: auto;
   border-radius: 6px;
-  background: rgba(247, 244, 236, 0.86);
-  border: 1px solid rgba(23, 49, 58, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.08);
 }
 
 .tickets-table-header,
@@ -427,7 +427,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
   font-size: 0.76rem;
   font-weight: 800;
@@ -436,8 +436,8 @@
 }
 
 .ticket-row {
-  border-top: 1px solid rgba(23, 49, 58, 0.08);
-  background: rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(59, 130, 246, 0.08);
+  background: rgba(59, 130, 246, 0.6);
 }
 
 .col-id {
@@ -485,23 +485,23 @@
 }
 
 .badge-straight {
-  background: rgba(17, 78, 96, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
 }
 
 .badge-box {
-  background: rgba(209, 138, 57, 0.15);
-  color: #8a5a1a;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
 }
 
 .badge-bolita1,
 .badge-bolita2 {
-  background: rgba(34, 119, 85, 0.12);
+  background: rgba(34, 197, 94, 0.12);
   color: var(--success);
 }
 
 .badge-singulation {
-  background: rgba(23, 49, 58, 0.1);
+  background: rgba(59, 130, 246, 0.10);
   color: var(--text-main);
 }
 

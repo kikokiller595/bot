@@ -13,14 +13,14 @@
 
 .filtro-fecha-acciones input[type="date"] {
   padding: 0.35rem 0.5rem;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--line-strong);
   border-radius: 6px;
   font-size: 0.95rem;
 }
 
 .btn-limpiar-fecha {
   padding: 0.35rem 0.8rem;
-  background: #6c757d;
+  background: var(--surface-strong);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -30,7 +30,7 @@
 }
 
 .btn-limpiar-fecha:hover {
-  background: #5a6268;
+  background: var(--surface-strong);
 }
 
 .calculadora-premios-container {
@@ -40,7 +40,7 @@
 }
 
 .calculadora-premios-card {
-  background: white;
+  background: var(--surface);
   border-radius: 4px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -59,7 +59,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 1px solid var(--line);
 }
 
 .tab-button {
@@ -69,7 +69,7 @@
   border-bottom: 3px solid transparent;
   font-size: 1rem;
   font-weight: 600;
-  color: #666;
+  color: var(--text-soft);
   cursor: pointer;
   transition: all 0.3s;
   margin-bottom: -2px;
@@ -125,7 +125,7 @@
 
 .form-group label {
   font-weight: 600;
-  color: #666;
+  color: var(--text-soft);
   font-size: 0.9rem;
 }
 
@@ -136,7 +136,7 @@
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s;
-  background: white;
+  background: var(--surface);
   cursor: pointer;
 }
 
@@ -265,7 +265,7 @@
 
 .col-fecha-sorteo {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-soft);
 }
 
 .premio-row:hover {
@@ -436,7 +436,7 @@
 }
 
 .col-monto-premio {
-  color: #666;
+  color: var(--text-soft);
   font-size: 0.9rem;
 }
 
@@ -472,7 +472,7 @@
   .premio-row > div::before {
     content: attr(data-label);
     font-weight: 600;
-    color: #666;
+    color: var(--text-soft);
   }
 }
 
@@ -483,7 +483,7 @@
 }
 
 .historial-completo-container {
-  background: white;
+  background: var(--surface);
   border: 3px solid #667eea;
   border-radius: 4px;
   overflow: hidden;
@@ -518,7 +518,7 @@
 
 .select-loteria-historial {
   padding: 0.6rem 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(59, 130, 246, 0.4);
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -546,7 +546,7 @@
 .select-orden-historial,
 .input-fecha-historial {
   padding: 0.6rem 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(59, 130, 246, 0.4);
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -596,7 +596,7 @@
 }
 
 .input-fecha-historial:focus {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(59, 130, 246, 0.4);
   border-color: rgba(255, 255, 255, 0.8);
   outline: none;
 }
@@ -613,7 +613,7 @@
 .btn-toggle-historial {
   background: rgba(255, 255, 255, 0.05);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(59, 130, 246, 0.4);
   border-radius: 8px;
   padding: 0.6rem 1.5rem;
   cursor: pointer;
@@ -625,7 +625,7 @@
 }
 
 .btn-toggle-historial:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(59, 130, 246, 0.4);
   border-color: rgba(255, 255, 255, 0.6);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -672,7 +672,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   margin-left: 0.5rem;
-  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
 }
 
 .tabla-historial {
@@ -705,7 +705,7 @@
   grid-template-columns: 150px repeat(5, 1fr) 180px;
   gap: 1rem;
   padding: 1.25rem 1rem;
-  background: white;
+  background: var(--surface);
   border: 2px solid #e5e7eb;
   border-radius: 10px;
   align-items: center;
@@ -716,7 +716,7 @@
 .fila-historial:hover {
   background: var(--surface);
   border-color: var(--accent);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
   transform: translateY(-2px);
 }
 
@@ -1016,7 +1016,7 @@
 .calculadora-premios-card {
   padding: 1.45rem;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(18, 27, 46, 0.82) 0%, rgba(243, 250, 247, 0.92) 100%);
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(243, 250, 247, 0.92) 100%);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
 }
@@ -1045,7 +1045,7 @@
 .tab-button {
   padding: 0.85rem 1.1rem;
   border-radius: 999px;
-  background: rgba(18, 27, 46, 0.82);
+  background: var(--surface);
   color: var(--text-main);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -1062,7 +1062,7 @@
 .historial-resumen-filtros {
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(18, 27, 46, 0.82);
+  background: var(--surface);
 }
 
 .filtros-premios {
@@ -1098,7 +1098,7 @@
 .historial-completo-header .select-apuesta-historial,
 .historial-completo-header .select-orden-historial,
 .historial-completo-header .input-fecha-historial {
-  background: rgba(20, 30, 52, 0.92);
+  background: var(--surface);
   color: #102a31;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 8px 20px rgba(7, 27, 31, 0.14);
@@ -1128,14 +1128,14 @@
 .historial-completo-header .btn-toggle-historial {
   background: rgba(9, 27, 31, 0.22);
   color: #f4fffb;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   box-shadow: 0 10px 24px rgba(5, 20, 24, 0.18);
 }
 
 .historial-completo-header .btn-toggle-historial:hover {
   background: rgba(9, 27, 31, 0.34);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(59, 130, 246, 0.6);
 }
 
 .resumen-premios,
@@ -1151,13 +1151,13 @@
 
 .premios-table-header,
 .tabla-historial-header {
-  background: rgba(19, 201, 181, 0.08);
+  background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
 }
 
 .premio-row,
 .fila-historial {
-  background: rgba(18, 27, 46, 0.82);
+  background: var(--surface);
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -1170,8 +1170,8 @@
 .ganador-row:hover,
 .premio-row:hover,
 .fila-historial:hover {
-  background: rgba(20, 30, 52, 0.92);
-  border-color: rgba(19, 201, 181, 0.16);
+  background: var(--surface);
+  border-color: rgba(59, 130, 246, 0.16);
   box-shadow: none;
   transform: translateY(-1px);
 }
@@ -1198,8 +1198,8 @@
 }
 
 .ticket-numero-valor {
-  background: rgba(19, 201, 181, 0.08);
-  border-color: rgba(19, 201, 181, 0.12);
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.12);
   color: var(--accent-strong);
 }
 
@@ -1222,7 +1222,7 @@
 }
 
 .historial-resumen-filtros {
-  background: rgba(18, 27, 46, 0.82);
+  background: var(--surface);
 }
 
 @media (max-width: 768px) {
