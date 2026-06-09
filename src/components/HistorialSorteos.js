@@ -286,6 +286,30 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
       let premioTotal = 0;
       let mejorPremio = null;
 
+      // ── Manejo especial de pale ──
+      if (tipoApuesta === 'pale') {
+        const num1 = numeroTicketLimpio.slice(0, 2);
+        const num2 = numeroTicketLimpio.slice(2, 4);
+        if (num1.length === 2 && num2.length === 2) {
+          const pick2sDelDia = new Set();
+          ganadoresDelDia.forEach(ng => {
+            extenderNumerosGanadores([ng]).forEach(c => {
+              const n = String(c.numero || '').trim();
+              if (/^\d{2}$/.test(n)) pick2sDelDia.add(n);
+            });
+          });
+          if (pick2sDelDia.has(num1) && pick2sDelDia.has(num2)) {
+            const premio = monto * (premiosNormalizados?.pale?.straight ?? 700);
+            acc[ticketId] = { estado: 'gano', premio };
+          } else {
+            acc[ticketId] = { estado: 'perdio', premio: 0 };
+          }
+        } else {
+          acc[ticketId] = { estado: 'pendiente', premio: 0 };
+        }
+        return acc;
+      }
+
       candidatos.forEach(candidato => {
         const numeroGanadorStr = String(candidato.numero || '').trim();
         if (!numeroGanadorStr) return;
