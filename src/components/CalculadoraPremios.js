@@ -622,22 +622,26 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
       });
     });
 
-    // ── Pale: evaluar contra TODOS los números ganadores del mismo día ──
+    // ── Pale: evaluar contra TODOS los pick2 derivados del día ──
+    // Usamos la misma lógica que los directos (extenderNumerosGanadores):
+    //   pick3 "123"  → pick2 "23"  (últimos 2)
+    //   pick4 "1234" → pick2 "12" (primeros 2) Y "34" (últimos 2)
+    //   pick2 "23"   → pick2 "23" (igual)
     const fechaSorteoSeleccionado = obtenerClaveFecha(numeroGanador.fecha);
     const ganadoresMismoDia = loteria.numerosGanadores
       ? loteria.numerosGanadores.filter(
           ng => obtenerClaveFecha(ng.fecha) === fechaSorteoSeleccionado
         )
       : [];
-    // El pale compara contra los últimos 2 dígitos de cada número ganador del día.
-    // Ej: premio "132" → pick2 = "32"; "456" → "56"; "4567" → "67".
-    // Si el número ganador ya tiene 2 dígitos, slice(-2) lo devuelve igual.
-    const setGanadoresDia = new Set(
-      ganadoresMismoDia
-        .map(ng => String(ng.numero || '').trim())
-        .filter(n => n.length >= 2)
-        .map(n => n.slice(-2))
-    );
+    const pick2sDelDia = new Set();
+    ganadoresMismoDia.forEach(ng => {
+      extenderNumerosGanadores([ng]).forEach(c => {
+        const n = String(c.numero || '').trim();
+        if (/^\d{2}$/.test(n)) {
+          pick2sDelDia.add(n);
+        }
+      });
+    });
 
     const paletasLoteria = ticketsLoteria.filter(t =>
       (t.tipoApuesta || t.tipo || '').toLowerCase().trim() === 'pale'
@@ -652,7 +656,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
       const fechaTicket = obtenerClaveFecha(ticket.fecha);
       if (fechaTicket && fechaSorteoSeleccionado && fechaTicket !== fechaSorteoSeleccionado) return;
 
-      if (setGanadoresDia.has(num1) && setGanadoresDia.has(num2)) {
+      if (pick2sDelDia.has(num1) && pick2sDelDia.has(num2)) {
         const monto = parseFloat(ticket.monto) || 0;
         const premio = monto * premiosConfigurados.pale.straight;
         if (premio > 0) {
