@@ -1753,30 +1753,56 @@ const GeneradorNumeros = ({
                         {grupo.filas.length === 0 ? (
                           <div className="ticket-board__group-empty">Sin jugadas</div>
                         ) : (
-                          grupo.filas.map((item) => {
-                            const resumenItem = obtenerResumenLoterias(obtenerLoteriasOperablesDeItem(item));
+                          grupo.filas.flatMap((item) => {
+                            const loteriasItem = obtenerLoteriasOperablesDeItem(item);
+                            const numeroDisplay = item.tipo?.toLowerCase() === 'pale'
+                              ? formatearNumeroPale(item.numero)
+                              : item.numero;
+                            const tipoDisplay = obtenerEtiquetaTipo(item.tipo);
+                            const montoDisplay = `$${Number(item.monto || 0).toFixed(2)}`;
 
-                            return (
-                              <div key={item.id} className="ticket-board__item">
-                                <span className="ticket-board__lottery" title={resumenItem.detalle}>
-                                  {resumenItem.etiqueta}
+                            // Sin loterias disponibles (cerradas despues de agregar)
+                            if (loteriasItem.length === 0) {
+                              return [(
+                                <div key={item.id} className="ticket-board__item ticket-board__item--group-start">
+                                  <span className="ticket-board__lottery" title="Loteria no disponible">Sin loteria</span>
+                                  <div className="ticket-board__meta">
+                                    <strong>{numeroDisplay}</strong>
+                                    <small>{tipoDisplay}</small>
+                                  </div>
+                                  <span className="ticket-board__amount">{montoDisplay}</span>
+                                  <button className="btn-eliminar-item" onClick={() => eliminarDelHistorial(item.id)} title="Eliminar">x</button>
+                                </div>
+                              )];
+                            }
+
+                            // Una fila por loteria
+                            return loteriasItem.map((loteria, idx) => (
+                              <div
+                                key={`${item.id}-${loteria.id}`}
+                                className={`ticket-board__item ${idx === 0 ? 'ticket-board__item--group-start' : 'ticket-board__item--group-cont'}`}
+                              >
+                                <span className="ticket-board__lottery" title={loteria.nombre}>
+                                  {loteria.nombre}
                                 </span>
                                 <div className="ticket-board__meta">
-                                  <strong>{item.tipo?.toLowerCase() === 'pale' ? formatearNumeroPale(item.numero) : item.numero}</strong>
-                                  <small>{obtenerEtiquetaTipo(item.tipo)}</small>
+                                  <strong>{numeroDisplay}</strong>
+                                  <small>{tipoDisplay}</small>
                                 </div>
-                                <span className="ticket-board__amount">
-                                  ${Number(item.monto || 0).toFixed(2)}
-                                </span>
-                                <button
-                                  className="btn-eliminar-item"
-                                  onClick={() => eliminarDelHistorial(item.id)}
-                                  title="Eliminar"
-                                >
-                                  x
-                                </button>
+                                <span className="ticket-board__amount">{montoDisplay}</span>
+                                {idx === 0 ? (
+                                  <button
+                                    className="btn-eliminar-item"
+                                    onClick={() => eliminarDelHistorial(item.id)}
+                                    title={loteriasItem.length > 1 ? `Eliminar jugada (${loteriasItem.length} loterias)` : 'Eliminar'}
+                                  >
+                                    x
+                                  </button>
+                                ) : (
+                                  <span className="btn-eliminar-item btn-eliminar-item--placeholder" aria-hidden="true" />
+                                )}
                               </div>
-                            );
+                            ));
                           })
                         )}
                       </div>
