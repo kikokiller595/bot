@@ -96,6 +96,16 @@ function DashboardOperativo({ sorteos = [], loterias = [] }) {
     };
   }, [sorteosHoy, ticketsHoy]);
 
+  const ventaAcumuladaTotal = useMemo(() =>
+    sorteos.reduce((sum, s) => sum + (Number(s.monto) || 0), 0),
+  [sorteos]);
+
+  const premiosGenerales = useMemo(() =>
+    sorteos
+      .filter((s) => s.ganador === true)
+      .reduce((sum, s) => sum + (Number(s.premio) || 0), 0),
+  [sorteos]);
+
   const ventasPorLoteriaHoy = useMemo(() => {
     const mapa = new Map();
 
@@ -165,22 +175,38 @@ function DashboardOperativo({ sorteos = [], loterias = [] }) {
     {
       label: 'Ventas del dia',
       value: `$${resumenHoy.totalVendido.toFixed(2)}`,
-      note: `${resumenHoy.totalJugadas} jugadas procesadas`
+      note: `${resumenHoy.totalJugadas} jugadas procesadas`,
+      acento: 'azul'
     },
     {
       label: 'Tickets activos',
       value: resumenHoy.totalTickets,
-      note: 'Resumen del turno actual'
+      note: 'Resumen del turno actual',
+      acento: 'azul'
+    },
+    {
+      label: 'Venta general',
+      value: `$${ventaAcumuladaTotal.toFixed(2)}`,
+      note: `${sorteos.length} jugadas en total`,
+      acento: 'verde'
+    },
+    {
+      label: 'Premios generales',
+      value: `$${premiosGenerales.toFixed(2)}`,
+      note: `${sorteos.filter(s => s.ganador).length} tickets ganadores`,
+      acento: 'amarillo'
     },
     {
       label: 'Loterias en movimiento',
       value: loterias.length,
-      note: 'Catalogo visible hoy'
+      note: 'Catalogo visible hoy',
+      acento: 'azul'
     },
     {
       label: user?.rol === 'admin' ? 'Locales con actividad' : 'Sesion activa',
       value: user?.rol === 'admin' ? puntosActivos : user?.username || 'Sin usuario',
-      note: user?.rol === 'admin' ? 'Puntos con movimiento' : user?.puntoVentaNombre || 'Punto central'
+      note: user?.rol === 'admin' ? 'Puntos con movimiento' : user?.puntoVentaNombre || 'Punto central',
+      acento: 'azul'
     }
   ];
 
@@ -205,7 +231,7 @@ function DashboardOperativo({ sorteos = [], loterias = [] }) {
 
         <div className="dashboard-cards">
           {tarjetas.map((tarjeta) => (
-            <article key={tarjeta.label} className="dashboard-stat">
+            <article key={tarjeta.label} className={`dashboard-stat dashboard-stat--${tarjeta.acento || 'azul'}`}>
               <span className="stat-label">{tarjeta.label}</span>
               <strong className="stat-value">{tarjeta.value}</strong>
               <small className="stat-note">{tarjeta.note}</small>
