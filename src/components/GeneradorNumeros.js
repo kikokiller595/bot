@@ -543,10 +543,9 @@ const GeneradorNumeros = ({
 
     if (esSupervisor && !esAdmin) {
       const fechaHoy = obtenerFechaActualLocal();
-      const fechaManana = obtenerFechaManana();
-      if (fechaSeleccionada !== fechaHoy && fechaSeleccionada !== fechaManana) {
+      if (fechaSeleccionada < fechaHoy) {
         setFechaSeleccionada(fechaHoy);
-        alert('El supervisor solo puede registrar tickets para hoy o mañana.');
+        alert('El supervisor solo puede registrar tickets desde hoy en adelante.');
         return false;
       }
     }
@@ -1657,12 +1656,11 @@ const GeneradorNumeros = ({
                   onChange={(e) => setFechaSeleccionada(e.target.value)}
                   className="input-fecha-ticket"
                   min={esSupervisor && !esAdmin ? obtenerFechaActualLocal() : undefined}
-                  max={esSupervisor && !esAdmin ? obtenerFechaManana() : undefined}
                 />
                 <small className="campo-fecha-ayuda">
                   {esAdmin
                     ? 'Administrador: puedes registrar tickets para cualquier fecha.'
-                    : 'Supervisor: puedes registrar tickets para hoy o mañana.'}
+                    : 'Supervisor: puedes registrar tickets desde hoy en adelante, incluso loterias cerradas.'}
                 </small>
               </div>
             )}

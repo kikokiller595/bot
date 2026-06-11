@@ -82,10 +82,7 @@ const fechaPermitidaParaUsuario = (usuario, fecha) => {
   const claveFecha = obtenerClaveFechaOperativa(fecha, ZONA_HORARIA_OPERATIVA);
 
   if (rol === 'supervisor') {
-    const manana = new Date();
-    manana.setDate(manana.getDate() + 1);
-    const claveManana = obtenerClaveFechaOperativa(manana, ZONA_HORARIA_OPERATIVA);
-    return claveFecha === claveHoy || claveFecha === claveManana;
+    return claveFecha >= claveHoy;
   }
 
   return claveFecha === claveHoy;
