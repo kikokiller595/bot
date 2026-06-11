@@ -201,7 +201,7 @@ const GeneradorNumeros = ({
   }, [esAdmin, esSupervisor, fechaSeleccionada]);
 
   useEffect(() => {
-    if (!esAdmin) {
+    if (!esAdminOSupervisor) {
       if (puntoVentaDestinoId) {
         setPuntoVentaDestinoId('');
       }
@@ -216,7 +216,7 @@ const GeneradorNumeros = ({
     ) {
       setPuntoVentaDestinoId('');
     }
-  }, [esAdmin, puntoVentaDestinoId, puntosVentaActivos]);
+  }, [esAdminOSupervisor, puntoVentaDestinoId, puntosVentaActivos]);
 
   useEffect(() => {
     try {
@@ -1266,8 +1266,8 @@ const GeneradorNumeros = ({
           grupoId: timestampBase,
           loteriaId: loteria.id,
           loteriaNombre: loteria.nombre,
-          puntoVentaDestinoId: esAdmin ? puntoVentaDestinoId || undefined : undefined,
-          puntoVentaDestinoNombre: esAdmin
+          puntoVentaDestinoId: esAdminOSupervisor ? puntoVentaDestinoId || undefined : undefined,
+          puntoVentaDestinoNombre: esAdminOSupervisor
             ? puntoVentaDestinoSeleccionado?.nombre || 'Administracion Central'
             : user?.puntoVentaNombre || ''
         });
@@ -1308,7 +1308,7 @@ const GeneradorNumeros = ({
       jugadas: jugadasConLoterias,
       tickets: tickets,
       loterias: resumenTicketTemporal.loterias.map(l => l.nombre),
-      puntoVentaDestinoNombre: esAdmin
+      puntoVentaDestinoNombre: esAdminOSupervisor
         ? puntoVentaDestinoSeleccionado?.nombre || 'Administracion Central'
         : user?.puntoVentaNombre || ''
     };
