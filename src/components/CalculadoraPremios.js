@@ -395,7 +395,7 @@ const filtrarPorFecha = (lista = [], fechaFiltro = '') => {
 };
 
 const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isSupervisor } = useAuth();
   const [pestañaActiva, setPestañaActiva] = useState('calcular'); // 'calcular' o 'ganadores'
   const [loteriaSeleccionada, setLoteriaSeleccionada] = useState('');
   const [numeroGanadorSeleccionado, setNumeroGanadorSeleccionado] = useState('');
@@ -414,6 +414,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
   const [ordenHistorial, setOrdenHistorial] = useState('monto'); // 'monto' o 'conteo'
   const [tipoApuestaFiltro, setTipoApuestaFiltro] = useState(''); // '', 'straight', 'box'
   const [fechaFiltroHistorial, setFechaFiltroHistorial] = useState(''); // Filtro por fecha en formato YYYY-MM-DD
+  const [puntoVentaFiltroHistorial, setPuntoVentaFiltroHistorial] = useState('');
 
   const formatearPosicion = (valor) => {
     if (!valor) return '-';
@@ -960,6 +961,13 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
           return;
         }
       }
+
+      // Si hay filtro de punto de venta, solo incluir tickets de ese punto
+      if (puntoVentaFiltroHistorial) {
+        if (String(ticket.puntoVentaId || '') !== puntoVentaFiltroHistorial) {
+          return;
+        }
+      }
       
       const numeroTicket = String(ticket.numero || '').trim();
       if (!numeroTicket) return;
@@ -1154,7 +1162,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
     });
 
     return resultados;
-  }, [sorteos, loteriaFiltroHistorial, juegoFiltroHistorial, tipoFiltroHistorial, ordenHistorial, tipoApuestaFiltro, fechaFiltroHistorial]);
+  }, [sorteos, loteriaFiltroHistorial, juegoFiltroHistorial, tipoFiltroHistorial, ordenHistorial, tipoApuestaFiltro, fechaFiltroHistorial, puntoVentaFiltroHistorial]);
 
   const obtenerEtiquetaTipo = (tipo = '') => {
     const valor = tipo.toLowerCase();
@@ -1714,8 +1722,22 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                 className="input-fecha-historial"
                 placeholder="Filtrar por fecha"
               />
-              <button 
-                className="btn-toggle-historial" 
+              {(isAdmin() || isSupervisor()) && puntosVentaDisponibles.length > 0 && (
+                <select
+                  value={puntoVentaFiltroHistorial}
+                  onChange={(e) => setPuntoVentaFiltroHistorial(e.target.value)}
+                  className="select-loteria-historial"
+                >
+                  <option value="">Todos los puntos</option>
+                  {puntosVentaDisponibles.map((punto) => (
+                    <option key={punto.id} value={punto.id}>
+                      {punto.nombre}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button
+                className="btn-toggle-historial"
                 onClick={() => setMostrarHistorialCompleto(!mostrarHistorialCompleto)}
               >
                 {mostrarHistorialCompleto ? 'Ocultar' : 'Mostrar'} Historial
