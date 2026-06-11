@@ -1785,14 +1785,19 @@ const GeneradorNumeros = ({
               <div className="ticket-anterior-content">
                 <div className="ticket-anterior-info">
                   <span className="ticket-anterior-label">Ultimo ticket generado</span>
-                  <strong className="ticket-id">
-                    #{ticketAnterior.ticketId}
-                    {ticketAnterior.grupoId && (
-                      <span className="ticket-serie-badge" title="Número de serie para copiar este ticket">
-                        Serie: {String(ticketAnterior.grupoId).slice(-8)}
-                      </span>
-                    )}
-                  </strong>
+                  <strong className="ticket-id">#{ticketAnterior.ticketId}</strong>
+                  {ticketAnterior.grupoId && (
+                    <button
+                      type="button"
+                      className="ticket-serie-badge"
+                      title="Clic para copiar el número de serie"
+                      onClick={() => {
+                        navigator.clipboard?.writeText(String(ticketAnterior.grupoId));
+                      }}
+                    >
+                      Serie #{ticketAnterior.grupoId}
+                    </button>
+                  )}
                   <div className="ticket-anterior-chips">
                     {ticketAnterior.loterias && ticketAnterior.loterias.length > 0 && (
                       <span className="ticket-loterias">
