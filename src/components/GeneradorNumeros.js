@@ -274,6 +274,22 @@ const GeneradorNumeros = ({
     return totalMinutosActual >= totalMinutosCierre;
   }, [horaActual, obtenerMinutosCierre]);
 
+  const obtenerEtiquetaTiempo = useCallback((loteria) => {
+    if (!loteria || !loteria.horaCierre) return null;
+    const minutosCierre = obtenerMinutosCierre(loteria);
+    if (!Number.isFinite(minutosCierre)) return null;
+    const minutosActual = horaActual.getHours() * 60 + horaActual.getMinutes();
+    const restantes = minutosCierre - minutosActual;
+    if (restantes <= 0) return null; // ya cerrada, el chip lo indica
+    if (restantes >= 60) {
+      const h = Math.floor(restantes / 60);
+      const m = restantes % 60;
+      return { texto: m > 0 ? `${h}h ${m}m` : `${h}h`, urgencia: 'normal' };
+    }
+    if (restantes >= 30) return { texto: `${restantes}m`, urgencia: 'pronto' };
+    return { texto: `${restantes}m`, urgencia: 'urgente' };
+  }, [horaActual, obtenerMinutosCierre]);
+
   useEffect(() => {
     if (esAdmin || loteriasSeleccionadas.length === 0) {
       return;
@@ -1643,6 +1659,7 @@ const GeneradorNumeros = ({
                     const idStr = loteria.id.toString();
                     const seleccionada = loteriasSeleccionadas.includes(idStr);
                     const cerrada = loteriaEstaCerrada(loteria);
+                    const tiempo = !cerrada ? obtenerEtiquetaTiempo(loteria) : null;
                     return (
                       <label
                         key={loteria.id}
@@ -1664,9 +1681,14 @@ const GeneradorNumeros = ({
                           }}
                         />
                         <span>{loteria.nombre}</span>
-                        {cerrada && (
-                          <span className="etiqueta-cerrada">Cerrada</span>
-                        )}
+                        {cerrada
+                          ? <span className="etiqueta-cerrada">Cerrada</span>
+                          : tiempo && (
+                              <span className={`etiqueta-tiempo etiqueta-tiempo--${tiempo.urgencia}`}>
+                                {tiempo.texto}
+                              </span>
+                            )
+                        }
                       </label>
                     );
                   })}
