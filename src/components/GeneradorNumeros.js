@@ -316,7 +316,7 @@ const GeneradorNumeros = ({
   }, [horaActual, obtenerMinutosCierre]);
 
   useEffect(() => {
-    if (esAdmin || loteriasSeleccionadas.length === 0) {
+    if (esAdminOSupervisor || loteriasSeleccionadas.length === 0) {
       return;
     }
 
@@ -330,7 +330,7 @@ const GeneradorNumeros = ({
       const filtradas = prev.filter((id) => loteriasDisponibles.has(String(id)));
       return filtradas.length === prev.length ? prev : filtradas;
     });
-  }, [esAdmin, loterias, loteriasSeleccionadas.length, loteriaEstaCerrada]);
+  }, [esAdminOSupervisor, loterias, loteriasSeleccionadas.length, loteriaEstaCerrada]);
 
   const loteriasOrdenadas = useMemo(() => {
     return [...loterias].sort((loteriaA, loteriaB) => {
