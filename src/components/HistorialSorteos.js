@@ -181,7 +181,7 @@ const formatearHoraIngreso = (createdAt) => {
   if (!createdAt) return null;
   const fecha = new Date(createdAt);
   if (isNaN(fecha.getTime())) return null;
-  return fecha.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', hour12: true });
+  return fecha.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 };
 
 const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
