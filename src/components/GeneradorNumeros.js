@@ -148,6 +148,8 @@ const GeneradorNumeros = ({
   const [fechaSeleccionada, setFechaSeleccionada] = useState(obtenerFechaLocal());
   const [mostrarAyudaIngreso, setMostrarAyudaIngreso] = useState(false);
   const [mostrarAyudaGanadores, setMostrarAyudaGanadores] = useState(false);
+  const [buscarSerie, setBuscarSerie] = useState('');
+  const [buscarSerieError, setBuscarSerieError] = useState('');
   const puntosVentaActivos = useMemo(
     () =>
       esAdmin
@@ -593,6 +595,51 @@ const GeneradorNumeros = ({
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+
+  const cargarPorSerie = useCallback(() => {
+    const termino = buscarSerie.trim();
+    if (!termino) return;
+    setBuscarSerieError('');
+
+    // Buscar sorteos cuyo grupoId coincida (exacto o por sufijo de 6-13 dígitos)
+    const encontrados = sorteos.filter((s) => {
+      const gid = String(s.grupoId || '');
+      return gid === termino || gid.endsWith(termino);
+    });
+
+    if (encontrados.length === 0) {
+      setBuscarSerieError(`No se encontró ningún ticket con el serial "${termino}".`);
+      return;
+    }
+
+    // Agrupar por número + monto + tipo para reconstruir historialTemporal
+    const grupos = new Map();
+    encontrados.forEach((s) => {
+      const clave = `${s.numero}|${s.monto}|${s.tipoApuesta}`;
+      if (!grupos.has(clave)) {
+        grupos.set(clave, { numero: s.numero, monto: s.monto, tipo: s.tipoApuesta, loterias: [] });
+      }
+      grupos.get(clave).loterias.push({ id: String(s.loteriaId), nombre: s.loteriaNombre });
+    });
+
+    const capitalizar = (str = '') => str.charAt(0).toUpperCase() + str.slice(1);
+
+    const nuevosItems = Array.from(grupos.values()).map((g, idx) => ({
+      id: Date.now() + idx,
+      numero: g.numero,
+      monto: g.monto,
+      tipo: capitalizar(g.tipo),
+      loterias: g.loterias
+    }));
+
+    // Actualizar loterias seleccionadas globalmente con las del ticket encontrado
+    const loteriasIds = [...new Set(encontrados.map((s) => String(s.loteriaId)))];
+    setLoteriasSeleccionadas(loteriasIds);
+
+    setHistorialTemporal(nuevosItems);
+    setBuscarSerie('');
+    setBuscarSerieError('');
+  }, [buscarSerie, sorteos, setLoteriasSeleccionadas]);
 
   const imprimirTicket = useCallback((ticket) => {
     if (!ticket) return;
@@ -1203,6 +1250,7 @@ const GeneradorNumeros = ({
     const nuevoTicket = {
       id: ticketId,
       ticketId: ticketId,
+      grupoId: timestampBase,
       fecha: fechaTicket,
       montoTotal: montoTotalConLoterias,
       jugadas: jugadasConLoterias,
@@ -1679,7 +1727,14 @@ const GeneradorNumeros = ({
               <div className="ticket-anterior-content">
                 <div className="ticket-anterior-info">
                   <span className="ticket-anterior-label">Ultimo ticket generado</span>
-                  <strong className="ticket-id">#{ticketAnterior.ticketId}</strong>
+                  <strong className="ticket-id">
+                    #{ticketAnterior.ticketId}
+                    {ticketAnterior.grupoId && (
+                      <span className="ticket-serie-badge" title="Número de serie para copiar este ticket">
+                        Serie: {String(ticketAnterior.grupoId).slice(-8)}
+                      </span>
+                    )}
+                  </strong>
                   <div className="ticket-anterior-chips">
                     {ticketAnterior.loterias && ticketAnterior.loterias.length > 0 && (
                       <span className="ticket-loterias">
@@ -1716,6 +1771,29 @@ const GeneradorNumeros = ({
               </div>
             </aside>
           )}
+
+          {/* Buscar ticket por serie */}
+          <div className="buscar-serie">
+            <div className="buscar-serie__inner">
+              <span className="buscar-serie__label">Cargar ticket por serie</span>
+              <div className="buscar-serie__row">
+                <input
+                  type="text"
+                  className="buscar-serie__input"
+                  placeholder="Ej: 488002 o número completo"
+                  value={buscarSerie}
+                  onChange={(e) => { setBuscarSerie(e.target.value); setBuscarSerieError(''); }}
+                  onKeyDown={(e) => e.key === 'Enter' && cargarPorSerie()}
+                />
+                <button className="buscar-serie__btn" onClick={cargarPorSerie}>
+                  Cargar
+                </button>
+              </div>
+              {buscarSerieError && (
+                <span className="buscar-serie__error">{buscarSerieError}</span>
+              )}
+            </div>
+          </div>
 
           <section className="ticket-board">
             <div className="ticket-board__header">
