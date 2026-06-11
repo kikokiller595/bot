@@ -148,6 +148,7 @@ const GeneradorNumeros = ({
   const [fechaSeleccionada, setFechaSeleccionada] = useState(obtenerFechaLocal());
   const [mostrarAyudaIngreso, setMostrarAyudaIngreso] = useState(false);
   const [mostrarAyudaGanadores, setMostrarAyudaGanadores] = useState(false);
+  const [mostrarBuscarSerie, setMostrarBuscarSerie] = useState(false);
   const [buscarSerie, setBuscarSerie] = useState('');
   const [buscarSerieError, setBuscarSerieError] = useState('');
   const puntosVentaActivos = useMemo(
@@ -639,6 +640,7 @@ const GeneradorNumeros = ({
     setHistorialTemporal(nuevosItems);
     setBuscarSerie('');
     setBuscarSerieError('');
+    setMostrarBuscarSerie(false);
   }, [buscarSerie, sorteos, setLoteriasSeleccionadas]);
 
   const imprimirTicket = useCallback((ticket) => {
@@ -1479,6 +1481,14 @@ const GeneradorNumeros = ({
               >
                 {mostrarAyudaGanadores ? '✕ Ganadores' : '? Como gana'}
               </button>
+              <button
+                type="button"
+                className={`btn-ayuda-ingreso btn-cargar-serie ${mostrarBuscarSerie ? 'activo' : ''}`}
+                onClick={() => { setMostrarBuscarSerie((prev) => !prev); setBuscarSerieError(''); }}
+                aria-expanded={mostrarBuscarSerie}
+              >
+                {mostrarBuscarSerie ? '✕ Serie' : '↺ Cargar serie'}
+              </button>
             </div>
             <span className="impresion-estado">
               {impresionAutomatica ? 'Activada' : 'Desactivada'}
@@ -1555,6 +1565,32 @@ const GeneradorNumeros = ({
                   <span key={nota} className="ayuda-ingreso-nota">{nota}</span>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Popover buscar ticket por serie */}
+          {mostrarBuscarSerie && (
+            <div className="buscar-serie-popover">
+              <p className="buscar-serie-popover__desc">
+                Ingresa el número de serie del ticket que quieres copiar. Puedes usar los últimos 6–8 dígitos mostrados en el badge "Serie".
+              </p>
+              <div className="buscar-serie__row">
+                <input
+                  type="text"
+                  className="buscar-serie__input"
+                  placeholder="Ej: 488002 o número completo"
+                  value={buscarSerie}
+                  onChange={(e) => { setBuscarSerie(e.target.value); setBuscarSerieError(''); }}
+                  onKeyDown={(e) => e.key === 'Enter' && cargarPorSerie()}
+                  autoFocus
+                />
+                <button className="buscar-serie__btn" onClick={cargarPorSerie}>
+                  Cargar
+                </button>
+              </div>
+              {buscarSerieError && (
+                <span className="buscar-serie__error">{buscarSerieError}</span>
+              )}
             </div>
           )}
 
@@ -1771,29 +1807,6 @@ const GeneradorNumeros = ({
               </div>
             </aside>
           )}
-
-          {/* Buscar ticket por serie */}
-          <div className="buscar-serie">
-            <div className="buscar-serie__inner">
-              <span className="buscar-serie__label">Cargar ticket por serie</span>
-              <div className="buscar-serie__row">
-                <input
-                  type="text"
-                  className="buscar-serie__input"
-                  placeholder="Ej: 488002 o número completo"
-                  value={buscarSerie}
-                  onChange={(e) => { setBuscarSerie(e.target.value); setBuscarSerieError(''); }}
-                  onKeyDown={(e) => e.key === 'Enter' && cargarPorSerie()}
-                />
-                <button className="buscar-serie__btn" onClick={cargarPorSerie}>
-                  Cargar
-                </button>
-              </div>
-              {buscarSerieError && (
-                <span className="buscar-serie__error">{buscarSerieError}</span>
-              )}
-            </div>
-          </div>
 
           <section className="ticket-board">
             <div className="ticket-board__header">
