@@ -1,5 +1,5 @@
 ﻿.header {
-  padding: 0.65rem 0.75rem 0;
+  padding: 0.65rem 1.25rem 0;
   position: relative;
   z-index: 120;
 }
@@ -8,8 +8,7 @@
   position: relative;
   overflow: visible;
   z-index: 120;
-  max-width: 1680px;
-  margin: 0 auto;
+  max-width: 100%;
   padding: 0.6rem 0.85rem;
   border-radius: 8px;
   display: flex;
@@ -234,8 +233,12 @@
 }
 
 @media (min-width: 1200px) {
-  .header { padding: 0.4rem 0.7rem 0; }
+  .header { padding: 0.4rem 1.5rem 0; }
   .header-content { padding: 0.45rem 0.75rem; border-radius: var(--radius-md); }
   .header-brand-chip { font-size: 0.68rem; }
   .header-user-role { font-size: 0.62rem; }
+}
+
+@media (min-width: 1920px) {
+  .header { padding: 0.4rem 2.5rem 0; }
 }
