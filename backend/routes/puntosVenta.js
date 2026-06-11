@@ -444,17 +444,16 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
       });
     }
 
-    puntoVenta.activo = false;
-    await puntoVenta.save();
+    await Usuario.deleteMany({
+      puntoVenta: puntoVenta._id,
+      rol: { $in: ROLES_TERMINAL }
+    });
 
-    await Usuario.updateMany(
-      { puntoVenta: puntoVenta._id, rol: { $in: ROLES_TERMINAL } },
-      { $set: { activo: false } }
-    );
+    await puntoVenta.deleteOne();
 
     return res.json({
       success: true,
-      message: 'Punto de venta desactivado correctamente'
+      message: 'Punto de venta eliminado correctamente'
     });
   } catch (error) {
     console.error('Error al eliminar punto de venta:', error);

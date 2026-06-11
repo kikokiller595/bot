@@ -171,7 +171,7 @@ function GestionPuntosVenta({ puntosVentaExternos = null, onPuntosVentaChange = 
     }
 
     try {
-      await puntosVentaService.deletePuntoVenta(id);
+      await puntosVentaService.updatePuntoVenta(id, { activo: false });
       setPuntosVenta((prev) => {
         const nuevaLista = prev.map((item) => (item.id === id ? { ...item, activo: false } : item));
         onPuntosVentaChange?.(nuevaLista);
@@ -179,6 +179,23 @@ function GestionPuntosVenta({ puntosVentaExternos = null, onPuntosVentaChange = 
       });
     } catch (error) {
       alert(error.message || 'No se pudo desactivar la terminal');
+    }
+  };
+
+  const eliminar = async (id) => {
+    if (!window.confirm('Esto eliminara permanentemente la terminal y su usuario de acceso. Esta accion no se puede deshacer. Deseas continuar?')) {
+      return;
+    }
+
+    try {
+      await puntosVentaService.deletePuntoVenta(id);
+      setPuntosVenta((prev) => {
+        const nuevaLista = prev.filter((item) => item.id !== id);
+        onPuntosVentaChange?.(nuevaLista);
+        return nuevaLista;
+      });
+    } catch (error) {
+      alert(error.message || 'No se pudo eliminar la terminal');
     }
   };
 
@@ -359,10 +376,13 @@ function GestionPuntosVenta({ puntosVentaExternos = null, onPuntosVentaChange = 
                 <div className="tabla-acciones terminal-card-actions">
                   <button onClick={() => editar(puntoVenta)}>Editar</button>
                   {puntoVenta.activo && (
-                    <button className="danger" onClick={() => desactivar(puntoVenta.id)}>
+                    <button className="warning" onClick={() => desactivar(puntoVenta.id)}>
                       Desactivar
                     </button>
                   )}
+                  <button className="danger" onClick={() => eliminar(puntoVenta.id)}>
+                    Eliminar
+                  </button>
                 </div>
               </article>
             ))}

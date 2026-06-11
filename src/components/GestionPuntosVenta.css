@@ -49,16 +49,33 @@
 
 .btn-agregar-punto,
 .punto-form-actions button:not(.secondary),
-.tabla-acciones button:not(.danger) {
+.tabla-acciones button:not(.danger):not(.warning) {
   background: var(--accent-strong);
   color: var(--text-inverse);
 }
 
 .punto-form-actions .secondary,
-.tabla-acciones .danger,
 .terminal-toggle.inactivo {
   background: rgba(59, 130, 246, 0.12);
   color: var(--text-main);
+}
+
+.tabla-acciones .warning {
+  background: rgba(251, 146, 60, 0.12);
+  color: #c2560a;
+}
+
+.tabla-acciones .warning:hover {
+  background: rgba(251, 146, 60, 0.22);
+}
+
+.tabla-acciones .danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+.tabla-acciones .danger:hover {
+  background: rgba(239, 68, 68, 0.2);
 }
 
 .terminal-toggle.activo {
