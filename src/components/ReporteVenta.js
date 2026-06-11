@@ -170,7 +170,8 @@ const obtenerClavePuntoVenta = (ticket = {}) => {
 };
 
 const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
-  const { isAdmin, user } = useAuth();
+  const { isAdmin, isSupervisor, user } = useAuth();
+  const esAdminOSupervisor = isAdmin() || isSupervisor();
   const [fechaInicio, setFechaInicio] = useState(obtenerFechaLocal());
   const [fechaFin, setFechaFin] = useState(obtenerFechaLocal());
   const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
@@ -890,23 +891,23 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
       return resolverPuntoVenta(puntoVentaFiltro, etiquetaPuntoVentaSeleccionado);
     }
 
-    if (!isAdmin() && Array.isArray(puntosVenta) && puntosVenta.length > 0) {
+    if (!esAdminOSupervisor && Array.isArray(puntosVenta) && puntosVenta.length > 0) {
       return puntosVenta[0];
     }
 
-    if (!isAdmin() && user?.puntoVentaId) {
+    if (!esAdminOSupervisor && user?.puntoVentaId) {
       return resolverPuntoVenta(`id:${String(user.puntoVentaId).trim()}`, user?.puntoVentaNombre);
     }
 
     return null;
-  }, [puntoVentaFiltro, etiquetaPuntoVentaSeleccionado, isAdmin, puntosVenta, user, puntosVentaMap]);
+  }, [puntoVentaFiltro, etiquetaPuntoVentaSeleccionado, esAdminOSupervisor, puntosVenta, user, puntosVentaMap]);
 
   const resumenSocio = useMemo(() => {
     const porcentajeSeleccionado = Number(configuracionPuntoActual?.porcentajeSocio) || 0;
     const montoSeleccionado =
       configuracionPuntoActual && puntoVentaFiltro
         ? calcularMontoSocio(estadisticas.totalVenta, porcentajeSeleccionado)
-        : (!isAdmin() && configuracionPuntoActual)
+        : (!esAdminOSupervisor && configuracionPuntoActual)
         ? calcularMontoSocio(estadisticas.totalVenta, porcentajeSeleccionado)
         : ventasPorPuntoVenta.reduce((sum, item) => sum + item.montoSocio, 0);
 
@@ -915,7 +916,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
       montoSeleccionado,
       puntosConfigurados: ventasPorPuntoVenta.filter((item) => item.porcentajeSocio > 0).length
     };
-  }, [configuracionPuntoActual, puntoVentaFiltro, estadisticas.totalVenta, isAdmin, ventasPorPuntoVenta]);
+  }, [configuracionPuntoActual, puntoVentaFiltro, estadisticas.totalVenta, esAdminOSupervisor, ventasPorPuntoVenta]);
 
   const ventaNeta = useMemo(
     () => estadisticas.totalVenta - resumenSocio.montoSeleccionado,
@@ -932,17 +933,17 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
       return configuracionPuntoActual.nombre;
     }
 
-    if (puntoVentaFiltro && isAdmin()) {
+    if (puntoVentaFiltro && esAdminOSupervisor) {
       const encontrado = opcionesPuntoVenta.find((opcion) => opcion.value === puntoVentaFiltro);
       return encontrado?.label || 'Punto filtrado';
     }
 
-    if (isAdmin()) {
+    if (esAdminOSupervisor) {
       return 'Todos los puntos';
     }
 
     return user?.puntoVentaNombre || user?.username || 'Punto actual';
-  }, [configuracionPuntoActual, puntoVentaFiltro, isAdmin, opcionesPuntoVenta, user]);
+  }, [configuracionPuntoActual, puntoVentaFiltro, esAdminOSupervisor, opcionesPuntoVenta, user]);
 
   const resumenTabla = useMemo(() => ([
     { label: 'Balance actual', value: `$${montoRestante.toFixed(2)}`, tone: montoRestante >= 0 ? 'success' : 'danger' },
@@ -1055,7 +1056,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                 className="input-fecha"
               />
             </div>
-            {isAdmin() && (
+            {esAdminOSupervisor && (
               <div className="filtro-item filtro-punto-venta">
                 <label>Punto de venta:</label>
                 <select
@@ -1201,7 +1202,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             </div>
           </div>
 
-          {isAdmin() && ventasPorPuntoVenta.length > 0 && (
+          {esAdminOSupervisor && ventasPorPuntoVenta.length > 0 && (
             <div className="puntos-venta-resumen">
               <h3>Ventas por Punto de Venta</h3>
               <div className="puntos-venta-grid">
@@ -1275,7 +1276,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
                       <div key={ticket.id} className="ticket-row">
                         <div className="col-id">
                           <div>{ticket.ticketId || ticket.id}</div>
-                          {isAdmin() && (ticket.puntoVentaNombre || ticket.usuarioNombre) && (
+                          {esAdminOSupervisor && (ticket.puntoVentaNombre || ticket.usuarioNombre) && (
                             <div className="ticket-meta-origen">
                               {ticket.puntoVentaNombre && <span>{ticket.puntoVentaNombre}</span>}
                               {ticket.usuarioNombre && <span>{ticket.usuarioNombre}</span>}
