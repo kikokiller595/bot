@@ -2378,6 +2378,121 @@
   }
 }
 
+/* ─── Selector de terminal con buscador ─── */
+.terminal-selector {
+  position: relative;
+}
+
+.terminal-selector__input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.terminal-selector__input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.terminal-selector__input {
+  flex: 1;
+  padding: 0.72rem 0.9rem;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.terminal-selector__input::placeholder {
+  color: var(--text-soft);
+  opacity: 0.5;
+}
+
+.terminal-selector__clear {
+  padding: 0 0.65rem;
+  background: transparent;
+  border: none;
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.terminal-selector__clear:hover { color: var(--danger); }
+
+.terminal-selector__caret {
+  padding: 0 0.75rem;
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.terminal-selector__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  max-height: 260px;
+  overflow-y: auto;
+  border-radius: 8px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.terminal-selector__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.62rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.90rem;
+  transition: background 0.1s;
+  border-bottom: 1px solid var(--line);
+}
+
+.terminal-selector__option:last-child { border-bottom: none; }
+
+.terminal-selector__option:hover {
+  background: rgba(59, 130, 246, 0.07);
+}
+
+.terminal-selector__option.selected {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.terminal-selector__nombre {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.terminal-selector__codigo {
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  flex-shrink: 0;
+}
+
+.terminal-selector__empty {
+  padding: 0.75rem 0.9rem;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  text-align: center;
+}
+
 /* ─── Buscar ticket por serie ─── */
 .btn-cargar-serie {
   border-color: rgba(59, 130, 246, 0.3) !important;

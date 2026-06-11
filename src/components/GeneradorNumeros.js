@@ -151,6 +151,20 @@ const GeneradorNumeros = ({
   const [mostrarBuscarSerie, setMostrarBuscarSerie] = useState(false);
   const [buscarSerie, setBuscarSerie] = useState('');
   const [buscarSerieError, setBuscarSerieError] = useState('');
+  const [terminalBusqueda, setTerminalBusqueda] = useState('');
+  const [terminalDropdownAbierto, setTerminalDropdownAbierto] = useState(false);
+  const terminalRef = useRef(null);
+
+  useEffect(() => {
+    const cerrar = (e) => {
+      if (terminalRef.current && !terminalRef.current.contains(e.target)) {
+        setTerminalDropdownAbierto(false);
+      }
+    };
+    document.addEventListener('mousedown', cerrar);
+    return () => document.removeEventListener('mousedown', cerrar);
+  }, []);
+
   const puntosVentaActivos = useMemo(
     () =>
       esAdmin
@@ -1629,20 +1643,65 @@ const GeneradorNumeros = ({
             )}
 
             {esAdmin && (
-              <div className="campo-terminal">
+              <div className="campo-terminal" ref={terminalRef}>
                 <label>Registrar venta para</label>
-                <select
-                  value={puntoVentaDestinoId}
-                  onChange={(e) => setPuntoVentaDestinoId(e.target.value)}
-                  className="input-terminal-ticket"
-                >
-                  <option value="">Administracion central</option>
-                  {puntosVentaActivos.map((puntoVenta) => (
-                    <option key={puntoVenta.id} value={puntoVenta.id}>
-                      {puntoVenta.nombre} ({puntoVenta.codigo})
-                    </option>
-                  ))}
-                </select>
+                <div className="terminal-selector">
+                  <div className="terminal-selector__input-wrap">
+                    <input
+                      type="text"
+                      className="terminal-selector__input"
+                      placeholder="Buscar terminal..."
+                      value={terminalDropdownAbierto
+                        ? terminalBusqueda
+                        : puntoVentaDestinoSeleccionado
+                          ? `${puntoVentaDestinoSeleccionado.nombre} (${puntoVentaDestinoSeleccionado.codigo})`
+                          : ''}
+                      onChange={(e) => setTerminalBusqueda(e.target.value)}
+                      onFocus={() => { setTerminalDropdownAbierto(true); setTerminalBusqueda(''); }}
+                    />
+                    {puntoVentaDestinoId && (
+                      <button
+                        type="button"
+                        className="terminal-selector__clear"
+                        onClick={() => { setPuntoVentaDestinoId(''); setTerminalBusqueda(''); setTerminalDropdownAbierto(false); }}
+                        title="Limpiar selección"
+                      >✕</button>
+                    )}
+                    <span className="terminal-selector__caret" onClick={() => setTerminalDropdownAbierto((p) => !p)}>▾</span>
+                  </div>
+                  {terminalDropdownAbierto && (
+                    <div className="terminal-selector__dropdown">
+                      <div
+                        className={`terminal-selector__option ${!puntoVentaDestinoId ? 'selected' : ''}`}
+                        onMouseDown={() => { setPuntoVentaDestinoId(''); setTerminalDropdownAbierto(false); setTerminalBusqueda(''); }}
+                      >
+                        Administracion central
+                      </div>
+                      {puntosVentaActivos
+                        .filter((pv) => {
+                          const q = terminalBusqueda.toLowerCase();
+                          return !q || pv.nombre.toLowerCase().includes(q) || pv.codigo.toLowerCase().includes(q);
+                        })
+                        .map((pv) => (
+                          <div
+                            key={pv.id}
+                            className={`terminal-selector__option ${String(puntoVentaDestinoId) === String(pv.id) ? 'selected' : ''}`}
+                            onMouseDown={() => { setPuntoVentaDestinoId(String(pv.id)); setTerminalDropdownAbierto(false); setTerminalBusqueda(''); }}
+                          >
+                            <span className="terminal-selector__nombre">{pv.nombre}</span>
+                            <span className="terminal-selector__codigo">{pv.codigo}</span>
+                          </div>
+                        ))
+                      }
+                      {puntosVentaActivos.filter((pv) => {
+                        const q = terminalBusqueda.toLowerCase();
+                        return !q || pv.nombre.toLowerCase().includes(q) || pv.codigo.toLowerCase().includes(q);
+                      }).length === 0 && (
+                        <div className="terminal-selector__empty">Sin resultados para "{terminalBusqueda}"</div>
+                      )}
+                    </div>
+                  )}
+                </div>
                 <small className="campo-fecha-ayuda">
                   {puntoVentaDestinoSeleccionado
                     ? `Los tickets se guardaran bajo ${puntoVentaDestinoSeleccionado.nombre}.`
