@@ -177,8 +177,15 @@ const obtenerFechaReferenciaEliminacion = (ticket) => {
   return null;
 };
 
+const formatearHoraIngreso = (createdAt) => {
+  if (!createdAt) return null;
+  const fecha = new Date(createdAt);
+  if (isNaN(fecha.getTime())) return null;
+  return fecha.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', hour12: true });
+};
+
 const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isSupervisor } = useAuth();
   const [fechaDesde, setFechaDesde] = useState(() => obtenerFechaLocalHoy());
   const [fechaHasta, setFechaHasta] = useState(() => obtenerFechaLocalHoy());
   const [textoBusqueda, setTextoBusqueda] = useState('');
@@ -811,6 +818,11 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
               const grupoKey = grupo.id || `grupo-${grupoIndex}`;
               const grupoPuedeEliminarse = puedeEliminarGrupo(grupo);
 
+              const primerTicket = grupo.tickets[0];
+              const horaIngreso = formatearHoraIngreso(primerTicket?.createdAt);
+              const quienIngreso = primerTicket?.usuarioNombre || primerTicket?.vendedorNombre || null;
+              const esElevado = isAdmin() || isSupervisor();
+
               return (
                 <div key={grupoKey} className="sorteo-item">
                   <div className="sorteo-header">
@@ -820,6 +832,12 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                           <span className="sorteo-ticket-id">#{grupo.ticketId}</span>
                         )}
                         <span className="sorteo-fecha">{grupo.fecha}</span>
+                        {esElevado && (quienIngreso || horaIngreso) && (
+                          <span className="sorteo-ingresado-por">
+                            {quienIngreso && <span className="ingresado-nombre">{quienIngreso}</span>}
+                            {horaIngreso && <span className="ingresado-hora">{horaIngreso}</span>}
+                          </span>
+                        )}
                       </div>
                       <div className="sorteo-loterias">
                         {loteriasGrupo.map(nombre => (
@@ -871,19 +889,22 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                       <span className="resumen-titulo">Jugadas</span>
                       <span className="resumen-valor">{totalTickets}</span>
                     </div>
-                    {isAdmin() && (
+                    {esElevado && (
                       <div className="resumen-block">
                         <span className="resumen-titulo">Punto de venta</span>
                         <span className="resumen-valor resumen-texto">
-                          {grupo.tickets[0]?.puntoVentaNombre || 'Sin punto'}
+                          {primerTicket?.puntoVentaNombre || 'Sin punto'}
                         </span>
                       </div>
                     )}
-                    {isAdmin() && (
+                    {esElevado && (
                       <div className="resumen-block">
-                        <span className="resumen-titulo">Usuario</span>
+                        <span className="resumen-titulo">Ingresado por</span>
                         <span className="resumen-valor resumen-texto">
-                          {grupo.tickets[0]?.usuarioNombre || grupo.tickets[0]?.vendedorNombre || 'Sin usuario'}
+                          {quienIngreso || 'Sin usuario'}
+                          {horaIngreso && (
+                            <span className="resumen-hora-ingreso"> · {horaIngreso}</span>
+                          )}
                         </span>
                       </div>
                     )}
@@ -901,12 +922,12 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
 
                   {gruposExpandido[grupoKey] && (
                     <div className="sorteo-detalle-expandido">
-                      <div className={`detalle-table-header ${isAdmin() ? 'admin-view' : ''}`}>
+                      <div className={`detalle-table-header ${esElevado ? 'admin-view' : ''}`}>
                         <span>Número</span>
                         <span>Tipo</span>
                         <span>Monto</span>
-                        {isAdmin() && <span>Punto</span>}
-                        {isAdmin() && <span>Usuario</span>}
+                        {esElevado && <span>Punto</span>}
+                        {esElevado && <span>Ingresado por</span>}
                         <span>Premio</span>
                         <span>Resultado</span>
                       </div>
@@ -914,13 +935,20 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                         {grupo.tickets.map((ticket, index) => {
                           const resultadoTicket = resultadoTicketsMapa[normalizarId(ticket)] || { estado: 'pendiente', premio: 0 };
                           const numeroTicket = ticket.numero || (ticket.numeros && ticket.numeros[0]) || 'N/A';
+                          const horaTicket = formatearHoraIngreso(ticket.createdAt);
+                          const nombreTicket = ticket.usuarioNombre || ticket.vendedorNombre || 'Sin usuario';
                           return (
-                            <div key={ticket.id || index} className={`detalle-row ${isAdmin() ? 'admin-view' : ''}`}>
+                            <div key={ticket.id || index} className={`detalle-row ${esElevado ? 'admin-view' : ''}`}>
                               <span>{formatearNumeroTicket(numeroTicket, ticket.tipoApuesta)}</span>
                               <span>{ticket.tipoApuesta ? getTipoApuestaLabel(ticket.tipoApuesta) : getTipoLabel(ticket.tipo)}</span>
                               <span>${(ticket.monto || 1).toFixed(2)}</span>
-                              {isAdmin() && <span>{ticket.puntoVentaNombre || 'Sin punto'}</span>}
-                              {isAdmin() && <span>{ticket.usuarioNombre || ticket.vendedorNombre || 'Sin usuario'}</span>}
+                              {esElevado && <span>{ticket.puntoVentaNombre || 'Sin punto'}</span>}
+                              {esElevado && (
+                                <span>
+                                  {nombreTicket}
+                                  {horaTicket && <span className="detalle-hora-ingreso"> · {horaTicket}</span>}
+                                </span>
+                              )}
                               <span>${resultadoTicket.premio.toFixed(2)}</span>
                               <span className={`estado-badge estado-${resultadoTicket.estado}`}>
                                 {resultadoTicket.estado === 'gano'

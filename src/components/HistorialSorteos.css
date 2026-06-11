@@ -189,6 +189,39 @@
   font-size: 0.9rem;
 }
 
+.sorteo-ingresado-por {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  background: rgba(99, 102, 241, 0.07);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+
+.ingresado-nombre {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.ingresado-hora::before {
+  content: '·';
+  margin-right: 0.25rem;
+  opacity: 0.5;
+}
+
+.resumen-hora-ingreso {
+  color: var(--text-soft);
+  font-size: 0.82em;
+}
+
+.detalle-hora-ingreso {
+  color: var(--text-soft);
+  font-size: 0.82em;
+}
+
 .sorteo-loterias {
   display: flex;
   flex-wrap: wrap;
