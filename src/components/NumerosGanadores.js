@@ -412,13 +412,6 @@ const NumerosGanadores = ({
                                 {item.numerosVisibles.map((numero) => (
                                   <div key={numero.id} className="resultado-chip">
                                     <span className="resultado-chip-numero">{numero.numero}</span>
-                                    <span
-                                      className={`resultado-chip-fuente ${
-                                        numero.fuente === 'bot' ? 'bot' : 'manual'
-                                      }`}
-                                    >
-                                      {numero.fuente === 'bot' ? 'Bot' : 'Manual'}
-                                    </span>
                                     {Number(numero.premio) > 0 && (
                                       <span className="resultado-chip-premio">
                                         ${Number(numero.premio).toFixed(2)}
@@ -473,13 +466,6 @@ const NumerosGanadores = ({
                           <div className="numero-ganador-info">
                             <div className="numero-ganador-header">
                               <span className="numero-ganador-valor">{numero.numero}</span>
-                              <span
-                                className={`numero-ganador-fuente ${
-                                  numero.fuente === 'bot' ? 'bot' : 'manual'
-                                }`}
-                              >
-                                {numero.fuente === 'bot' ? 'Bot' : 'Manual'}
-                              </span>
                               {Number(numero.premio) > 0 && (
                                 <span className="numero-ganador-premio">
                                   ${Number(numero.premio).toFixed(2)}
