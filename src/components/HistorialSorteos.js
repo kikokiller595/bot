@@ -199,6 +199,8 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
   const [moverPuntoVentaId, setMoverPuntoVentaId] = useState('');
   const [moviendoGrupo, setMoviendoGrupo] = useState(false);
   const [puntosExcluidos, setPuntosExcluidos] = useState(new Set());
+  const [menuExcluirAbierto, setMenuExcluirAbierto] = useState(false);
+  const menuExcluirRef = React.useRef(null);
 
   const toggleExcluirPunto = (claveId) => {
     setPuntosExcluidos(prev => {
@@ -219,6 +221,17 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
 
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!menuExcluirAbierto) return;
+    const cerrar = (e) => {
+      if (menuExcluirRef.current && !menuExcluirRef.current.contains(e.target)) {
+        setMenuExcluirAbierto(false);
+      }
+    };
+    document.addEventListener('mousedown', cerrar);
+    return () => document.removeEventListener('mousedown', cerrar);
+  }, [menuExcluirAbierto]);
 
   const loteriasPorId = useMemo(() => {
     const mapa = new Map();
@@ -714,21 +727,40 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
             </div>
           )}
           {(isAdmin() || isSupervisor()) && opcionesPuntosVenta.length > 0 && (
-            <div className="filtros-column filtros-excluir-puntos">
+            <div className="filtros-column filtros-excluir-puntos" ref={menuExcluirRef}>
               <label>Ocultar puntos</label>
-              <div className="excluir-puntos-chips">
-                {opcionesPuntosVenta.map((opcion) => (
-                  <button
-                    key={opcion.id}
-                    className={`chip-excluir${puntosExcluidos.has(opcion.id) ? ' excluido' : ''}`}
-                    onClick={() => toggleExcluirPunto(opcion.id)}
-                    title={puntosExcluidos.has(opcion.id) ? 'Clic para mostrar' : 'Clic para ocultar'}
-                  >
-                    {opcion.nombre}
-                    {puntosExcluidos.has(opcion.id) && <span className="chip-excluir-x">✕</span>}
-                  </button>
-                ))}
-              </div>
+              <button
+                className={`btn-menu-excluir${puntosExcluidos.size > 0 ? ' tiene-excluidos' : ''}`}
+                onClick={() => setMenuExcluirAbierto(prev => !prev)}
+              >
+                <span>{puntosExcluidos.size > 0 ? `${puntosExcluidos.size} oculto${puntosExcluidos.size > 1 ? 's' : ''}` : 'Seleccionar'}</span>
+                <span className="menu-excluir-chevron">{menuExcluirAbierto ? '▲' : '▼'}</span>
+              </button>
+              {menuExcluirAbierto && (
+                <div className="menu-excluir-dropdown">
+                  {opcionesPuntosVenta.map((opcion) => {
+                    const excluido = puntosExcluidos.has(opcion.id);
+                    return (
+                      <label key={opcion.id} className={`menu-excluir-item${excluido ? ' excluido' : ''}`}>
+                        <input
+                          type="checkbox"
+                          checked={excluido}
+                          onChange={() => toggleExcluirPunto(opcion.id)}
+                        />
+                        <span>{opcion.nombre}</span>
+                      </label>
+                    );
+                  })}
+                  {puntosExcluidos.size > 0 && (
+                    <button
+                      className="menu-excluir-limpiar"
+                      onClick={() => { setPuntosExcluidos(new Set()); setMenuExcluirAbierto(false); }}
+                    >
+                      Mostrar todos
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
           <div className="filtros-column">

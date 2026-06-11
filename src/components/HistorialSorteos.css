@@ -154,49 +154,92 @@
 }
 
 .filtros-excluir-puntos {
-  grid-column: 1 / -1;
+  position: relative;
 }
 
-.excluir-puntos-chips {
+.btn-menu-excluir {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: 0.1rem;
-}
-
-.chip-excluir {
-  display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  background: rgba(59, 130, 246, 0.06);
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.12);
+  background: var(--surface);
   color: var(--text-soft);
-  transition: background 0.15s, color 0.15s;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
 }
 
-.chip-excluir:hover {
-  background: rgba(244, 63, 94, 0.08);
-  border-color: rgba(244, 63, 94, 0.25);
+.btn-menu-excluir.tiene-excluidos {
+  border-color: rgba(244, 63, 94, 0.35);
   color: var(--danger);
+  background: rgba(244, 63, 94, 0.06);
 }
 
-.chip-excluir.excluido {
-  background: rgba(244, 63, 94, 0.12);
-  border-color: rgba(244, 63, 94, 0.3);
+.menu-excluir-chevron {
+  font-size: 0.65rem;
+  opacity: 0.6;
+}
+
+.menu-excluir-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  min-width: 180px;
+}
+
+.menu-excluir-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  transition: background 0.12s;
+}
+
+.menu-excluir-item:hover {
+  background: rgba(59, 130, 246, 0.07);
+}
+
+.menu-excluir-item.excluido {
   color: var(--danger);
-  text-decoration: line-through;
-  opacity: 0.85;
+  background: rgba(244, 63, 94, 0.05);
 }
 
-.chip-excluir-x {
-  font-size: 0.7rem;
-  font-weight: 900;
-  opacity: 0.75;
+.menu-excluir-item input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--danger);
+  cursor: pointer;
+}
+
+.menu-excluir-limpiar {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid rgba(59, 130, 246, 0.1);
+  background: transparent;
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+
+.menu-excluir-limpiar:hover {
+  background: rgba(59, 130, 246, 0.07);
 }
 
 .historial-resumen {
