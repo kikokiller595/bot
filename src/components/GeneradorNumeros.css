@@ -1755,7 +1755,7 @@
 
 .resumen-item-header label {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: rgba(248, 251, 255, 0.75);
   text-transform: uppercase;
@@ -1767,11 +1767,11 @@
   border: 1px solid rgba(59, 130, 246, 0.2);
   color: var(--text-main);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.18rem;
   text-align: center;
-  padding: 0.25rem 0.6rem;
+  padding: 0.28rem 0.6rem;
   border-radius: 6px;
-  width: 110px;
+  width: 120px;
 }
 
 .ticket-board__header p {
@@ -2200,7 +2200,7 @@
   }
 
   .ticket-board__header h3 {
-    font-size: 1rem;
+    font-size: 1.18rem;
   }
 
   .ticket-board__content {
@@ -2221,7 +2221,7 @@
   }
 
   .ticket-board__group-header h4 {
-    font-size: 0.92rem;
+    font-size: 1.08rem;
   }
 
   .ticket-board__group-columns {
@@ -2229,7 +2229,7 @@
     grid-template-columns: 1.1fr 1fr 0.55fr 24px;
     gap: 0.35rem;
     padding: 0 0.85rem 0.35rem;
-    font-size: 0.76rem;
+    font-size: 0.88rem;
     font-weight: 700;
     color: #667587;
     text-transform: uppercase;
@@ -2247,17 +2247,17 @@
 
   .ticket-board__group-empty {
     min-height: 15rem;
-    font-size: 0.88rem;
+    font-size: 1rem;
   }
 
   .ticket-board__item {
     display: grid;
     grid-template-columns: 1.1fr 1fr 0.55fr 24px;
     align-items: center;
-    padding: 0.3rem 0.5rem;
+    padding: 0.38rem 0.55rem;
     gap: 0.4rem;
     border-radius: 8px;
-    min-height: 2.2rem;
+    min-height: 2.4rem;
   }
 
   .ticket-board__item--group-start {
@@ -2282,7 +2282,7 @@
     padding: 0;
     background: transparent;
     border-radius: 0;
-    font-size: 0.82rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-soft);
   }
@@ -2290,35 +2290,35 @@
   .ticket-board__meta {
     flex-direction: row;
     align-items: baseline;
-    gap: 0.22rem;
+    gap: 0.25rem;
   }
 
   .ticket-board__meta strong {
-    font-size: 1rem;
+    font-size: 1.15rem;
     letter-spacing: 0.02rem;
   }
 
   .ticket-board__meta small {
-    font-size: 0.74rem;
+    font-size: 0.86rem;
     white-space: nowrap;
   }
 
   .ticket-board__amount {
-    font-size: 0.92rem;
+    font-size: 1.06rem;
     text-align: right;
   }
 
   .btn-eliminar-item {
     width: 20px;
     height: 20px;
-    font-size: 0.76rem;
+    font-size: 0.82rem;
     justify-self: end;
   }
 
   .ticket-board__group-total {
     margin: 0 0.85rem 0.85rem;
-    padding: 0.45rem 0.7rem;
-    font-size: 0.82rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.95rem;
     border-radius: 4px;
   }
 
