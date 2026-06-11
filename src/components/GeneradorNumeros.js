@@ -352,10 +352,10 @@ const GeneradorNumeros = ({
 
   const loteriasVisiblesSeleccion = useMemo(
     () =>
-      esAdmin
+      esAdminOSupervisor
         ? loteriasOrdenadas
         : loteriasOrdenadas.filter((loteria) => !loteriaEstaCerrada(loteria)),
-    [esAdmin, loteriasOrdenadas, loteriaEstaCerrada]
+    [esAdminOSupervisor, loteriasOrdenadas, loteriaEstaCerrada]
   );
 
   const loteriasSeleccionadasObjs = useMemo(
@@ -384,10 +384,10 @@ const GeneradorNumeros = ({
   );
 
   const noHaySeleccion = loteriasSeleccionadasObjs.length === 0;
-  const loteriasOperables = esAdmin ? loteriasSeleccionadasObjs : loteriasAbiertas;
-  const todasCerradas = !noHaySeleccion && !esAdmin && loteriasAbiertas.length === 0;
-  const deshabilitarAcciones = noHaySeleccion || (!esAdmin && todasCerradas);
-  const sinLoteriasAbiertasParaVenta = !esAdmin && loterias.length > 0 && loteriasVisiblesSeleccion.length === 0;
+  const loteriasOperables = esAdminOSupervisor ? loteriasSeleccionadasObjs : loteriasAbiertas;
+  const todasCerradas = !noHaySeleccion && !esAdminOSupervisor && loteriasAbiertas.length === 0;
+  const deshabilitarAcciones = noHaySeleccion || (!esAdminOSupervisor && todasCerradas);
+  const sinLoteriasAbiertasParaVenta = !esAdminOSupervisor && loterias.length > 0 && loteriasVisiblesSeleccion.length === 0;
 
   const obtenerResumenLoterias = useCallback((listaLoterias = []) => {
     const nombres = listaLoterias.map((loteria) => loteria.nombre).filter(Boolean);
@@ -422,8 +422,8 @@ const GeneradorNumeros = ({
 
     return loteriasGuardadas
       .map((loteriaGuardada) => loteriasPorId.get(String(loteriaGuardada.id)))
-      .filter((loteria) => loteria && (esAdmin || !loteriaEstaCerrada(loteria)));
-  }, [esAdmin, loteriasOperables, loteriasPorId, loteriaEstaCerrada]);
+      .filter((loteria) => loteria && (esAdminOSupervisor || !loteriaEstaCerrada(loteria)));
+  }, [esAdminOSupervisor, loteriasOperables, loteriasPorId, loteriaEstaCerrada]);
 
   const resumenTicketTemporal = useMemo(() => {
     const loteriasResumen = new Map();
@@ -868,7 +868,7 @@ const GeneradorNumeros = ({
     }
 
     if (todasCerradas) {
-      alert('Todas las loterías seleccionadas están cerradas. Podrás ingresar números nuevamente mañana.');
+      alert('Todas las loterías seleccionadas están cerradas.');
       return;
     }
 
@@ -1215,7 +1215,7 @@ const GeneradorNumeros = ({
     }
 
     if (todasCerradas && jugadasConLoterias === 0) {
-      alert('Todas las loterías seleccionadas están cerradas. Podrás generar tickets nuevamente mañana.');
+      alert('Todas las loterías seleccionadas están cerradas.');
       return;
     }
 
@@ -1552,7 +1552,7 @@ const GeneradorNumeros = ({
             <span className="aviso-inline aviso-info">Selecciona al menos una lotería para registrar tus jugadas.</span>
           )}
           {todasCerradas && (
-            <span className="aviso-inline aviso-cerrada">⚠ Todas las loterías están cerradas. Continúa mañana.</span>
+            <span className="aviso-inline aviso-cerrada">⚠ Todas las loterías están cerradas.</span>
           )}
           {!todasCerradas && loteriasCerradas.length > 0 && (
             <span className="aviso-inline aviso-parcial">Cerradas: {loteriasCerradas.map(l => l.nombre).join(', ')}</span>
