@@ -198,6 +198,19 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
   const [moverGrupoId, setMoverGrupoId] = useState(null);
   const [moverPuntoVentaId, setMoverPuntoVentaId] = useState('');
   const [moviendoGrupo, setMoviendoGrupo] = useState(false);
+  const [puntosExcluidos, setPuntosExcluidos] = useState(new Set());
+
+  const toggleExcluirPunto = (claveId) => {
+    setPuntosExcluidos(prev => {
+      const nuevo = new Set(prev);
+      if (nuevo.has(claveId)) {
+        nuevo.delete(claveId);
+      } else {
+        nuevo.add(claveId);
+      }
+      return nuevo;
+    });
+  };
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -429,6 +442,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
 
       if (loteriaFiltro && String(ticket.loteriaId) !== loteriaFiltro) return false;
       if ((isAdmin() || isSupervisor()) && puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) return false;
+      if ((isAdmin() || isSupervisor()) && puntosExcluidos.size > 0 && puntosExcluidos.has(obtenerClavePuntoVenta(ticket))) return false;
 
       if (tipoFiltro) {
         const tipoComparar = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase();
@@ -463,10 +477,12 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
     textoBusqueda,
     loteriaFiltro,
     puntoVentaFiltro,
+    puntosExcluidos,
     tipoFiltro,
     resultadoFiltro,
     resultadoTicketsMapa,
-    isAdmin
+    isAdmin,
+    isSupervisor
   ]);
 
   const resumen = useMemo(() => {
@@ -572,7 +588,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
   const gruposTickets = useMemo(agruparTickets, [sorteosFiltrados]);
 
   const hayFiltroActivo = Boolean(
-    fechaDesde || fechaHasta || textoBusqueda || loteriaFiltro || puntoVentaFiltro || tipoFiltro || resultadoFiltro
+    fechaDesde || fechaHasta || textoBusqueda || loteriaFiltro || puntoVentaFiltro || puntosExcluidos.size > 0 || tipoFiltro || resultadoFiltro
   );
 
   const toggleGrupo = (grupoId) => {
@@ -697,6 +713,24 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
               </select>
             </div>
           )}
+          {(isAdmin() || isSupervisor()) && opcionesPuntosVenta.length > 0 && (
+            <div className="filtros-column filtros-excluir-puntos">
+              <label>Ocultar puntos</label>
+              <div className="excluir-puntos-chips">
+                {opcionesPuntosVenta.map((opcion) => (
+                  <button
+                    key={opcion.id}
+                    className={`chip-excluir${puntosExcluidos.has(opcion.id) ? ' excluido' : ''}`}
+                    onClick={() => toggleExcluirPunto(opcion.id)}
+                    title={puntosExcluidos.has(opcion.id) ? 'Clic para mostrar' : 'Clic para ocultar'}
+                  >
+                    {opcion.nombre}
+                    {puntosExcluidos.has(opcion.id) && <span className="chip-excluir-x">✕</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="filtros-column">
             <label>Tipo</label>
             <select value={tipoFiltro} onChange={(e) => setTipoFiltro(e.target.value)}>
@@ -730,6 +764,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                 setTextoBusqueda('');
                 setLoteriaFiltro('');
                 setPuntoVentaFiltro('');
+                setPuntosExcluidos(new Set());
                 setTipoFiltro('');
                 setResultadoFiltro('');
               }}
