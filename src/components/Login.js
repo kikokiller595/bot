@@ -30,7 +30,7 @@ function Login() {
     const logoutReason = authService.consumeLogoutReason();
     if (logoutReason === 'inactivity') {
       setSessionNotice(
-        'La sesion se cerro automaticamente por inactividad. Vuelve a entrar para continuar.'
+        'Session closed automatically due to inactivity. Sign in again to continue.'
       );
     }
 
@@ -50,7 +50,7 @@ function Login() {
         const data = await response.json();
         setBackendStatus('online');
         setDatabaseStatus(data?.database || 'unknown');
-      } catch (requestError) {
+      } catch {
         if (active) {
           setBackendStatus('offline');
           setDatabaseStatus('offline');
@@ -75,111 +75,79 @@ function Login() {
     try {
       await login(username, password);
     } catch (submitError) {
-      setError(submitError.message || 'No se pudo iniciar sesion');
+      setError(submitError.message || 'Could not sign in');
     } finally {
       setLoading(false);
     }
   };
 
+  const statusText = () => {
+    if (backendStatus === 'online' && databaseStatus === 'connected') return 'System ready';
+    if (backendStatus === 'online') return 'Server online — database connecting...';
+    if (backendStatus === 'checking') return 'Connecting...';
+    return 'Server unavailable';
+  };
+
   return (
     <div className="login-container">
-      <div className="login-shell">
-        <aside className="login-poster">
-          <div className="login-poster-top">
-            <span className="login-poster-tag">TBY SISTEMAS</span>
-            <span className="login-poster-signal">centro operativo</span>
+      <div className="login-card">
+
+        {/* Brand */}
+        <div className="login-brand">
+          <span className="login-brand-mark">TBY</span>
+          <div className="login-brand-copy">
+            <strong>TBY SYSTEMS</strong>
+            <span>Lottery Management Platform</span>
+          </div>
+        </div>
+
+        {/* Status */}
+        <div className={`login-status login-status-${backendStatus}`}>
+          <span className="login-status-dot" />
+          <span>{statusText()}</span>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="login-form">
+          {sessionNotice && <div className="login-notice">{sessionNotice}</div>}
+          {error && <div className="login-error">{error}</div>}
+
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              required
+              disabled={loading}
+              autoComplete="username"
+            />
           </div>
 
-          <div className="login-poster-copy">
-            <h1>Controla ventas, resultados y terminales desde una cabina mucho mas clara.</h1>
-            <p>
-              Una interfaz nueva para administrar la red completa, registrar tickets
-              y consultar resultados sin perder el foco en la operacion.
-            </p>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+              disabled={loading}
+              autoComplete="current-password"
+            />
           </div>
 
-          <div className="login-poster-panels">
-            <article className="login-poster-panel accent-blue">
-              <span>Operacion</span>
-              <strong>Venta en tiempo real</strong>
-              <small>Lectura rapida del movimiento diario, tickets y loterias visibles.</small>
-            </article>
-            <article className="login-poster-panel accent-red">
-              <span>Red</span>
-              <strong>Locales conectados</strong>
-              <small>Paneles coordinados para puntos remotos y administracion central.</small>
-            </article>
-            <article className="login-poster-panel accent-dark">
-              <span>Estado</span>
-              <strong>Una sola cabina</strong>
-              <small>Servicio, sesiones y resultados viviendo dentro del mismo sistema.</small>
-            </article>
-          </div>
-        </aside>
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
 
-        <section className="login-box">
-          <div className="login-box-head">
-            <span className="login-box-kicker">Ingreso seguro</span>
-            <div className="login-box-mark">TBY</div>
-          </div>
-
-          <div className="login-header">
-            <h1>Entrar a la cabina</h1>
-            <h2>Abre tu panel de trabajo y sigue operando desde tu rol asignado.</h2>
-          </div>
-
-          <div className={`login-status login-status-${backendStatus}`}>
-            {backendStatus === 'online' && databaseStatus === 'connected' && (
-              <span>Servidor listo</span>
-            )}
-            {backendStatus === 'online' && databaseStatus !== 'connected' && (
-              <span>Servidor activo, pero la base de datos aun no esta conectada.</span>
-            )}
-            {backendStatus === 'checking' && <span>Verificando servidor...</span>}
-            {backendStatus === 'offline' && (
-              <span>No se pudo conectar con el servidor.</span>
-            )}
-          </div>
-
-          <form onSubmit={handleSubmit} className="login-form">
-            {sessionNotice && <div className="login-notice">{sessionNotice}</div>}
-            {error && <div className="login-error">{error}</div>}
-
-            <div className="form-group">
-              <label htmlFor="username">Usuario</label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-                placeholder="Ej: centro01"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Contrasena</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Ingresa tu contrasena"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <button type="submit" className="login-button" disabled={loading}>
-              {loading ? 'Entrando...' : 'Iniciar sesion'}
-            </button>
-          </form>
-
-          <div className="login-footnote">
-            Acceso renovado para que la operacion se sienta mas limpia, mas rapida y mejor organizada.
-          </div>
-        </section>
+        <p className="login-footnote">
+          TBY Systems &mdash; Lottery operations platform
+        </p>
       </div>
     </div>
   );
