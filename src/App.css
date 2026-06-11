@@ -29,11 +29,13 @@
 
 .studio-shell-full,
 .app-admin .studio-shell,
+.app-supervisor .studio-shell,
 .app-punto-venta .studio-shell {
   grid-template-columns: minmax(0, 1fr);
 }
 
 .app-admin .studio-sidebar,
+.app-supervisor .studio-sidebar,
 .app-punto-venta .studio-sidebar {
   display: none !important;
 }

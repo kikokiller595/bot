@@ -92,7 +92,7 @@ router.post(
     body('password')
       .isLength({ min: 12 })
       .withMessage('La contrasena debe tener al menos 12 caracteres'),
-    body('rol').isIn(['admin', 'punto_venta']).withMessage('Rol invalido'),
+    body('rol').isIn(['admin', 'supervisor', 'punto_venta']).withMessage('Rol invalido'),
     body('puntoVentaId')
       .optional({ nullable: true, checkFalsy: true })
       .isMongoId()
@@ -292,7 +292,7 @@ router.put(
       .withMessage('La contrasena debe tener al menos 12 caracteres'),
     body('rol')
       .optional({ checkFalsy: true })
-      .isIn(['admin', 'punto_venta'])
+      .isIn(['admin', 'supervisor', 'punto_venta'])
       .withMessage('Rol invalido'),
     body('puntoVentaId')
       .optional({ nullable: true, checkFalsy: true })

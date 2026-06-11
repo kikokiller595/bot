@@ -177,6 +177,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAdmin = () => user?.rol === 'admin';
+  const isSupervisor = () => user?.rol === 'supervisor';
   const isPuntoVenta = () => user?.rol === 'punto_venta';
 
   return (
@@ -187,6 +188,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         isAdmin,
+        isSupervisor,
         isPuntoVenta,
         isAuthenticated: !!user
       }}

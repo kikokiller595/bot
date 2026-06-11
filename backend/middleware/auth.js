@@ -1,9 +1,12 @@
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
 
+const ROLES_VALIDOS = new Set(['admin', 'supervisor', 'punto_venta']);
+
 const normalizarRol = (rol) => {
   const valor = String(rol || '').trim().toLowerCase();
-  return valor === 'vendedor' ? 'punto_venta' : valor;
+  if (valor === 'vendedor') return 'punto_venta';
+  return ROLES_VALIDOS.has(valor) ? valor : valor;
 };
 
 exports.protect = async (req, res, next) => {

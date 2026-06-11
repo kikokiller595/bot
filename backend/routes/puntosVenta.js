@@ -130,7 +130,7 @@ router.get('/mi', protect, async (req, res) => {
   }
 });
 
-router.get('/', protect, authorize('admin'), async (req, res) => {
+router.get('/', protect, authorize('admin', 'supervisor'), async (req, res) => {
   try {
     const puntosVenta = await PuntoVenta.find().sort({ nombre: 1 });
     const mapaUsuarios = await obtenerMapaUsuariosPorPuntoVenta(

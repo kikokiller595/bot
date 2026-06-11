@@ -41,6 +41,11 @@ const esPuntoVenta = (rol) => {
   return valor === 'punto_venta' || valor === 'vendedor';
 };
 
+const esAdminOSupervisor = (rol) => {
+  const valor = String(rol || '').trim().toLowerCase();
+  return valor === 'admin' || valor === 'supervisor';
+};
+
 const LIMITE_ELIMINACION_PUNTO_VENTA_MS = 5 * 60 * 1000;
 
 const obtenerFechaReferenciaEliminacion = (sorteo) => {
@@ -110,10 +115,10 @@ const resolverPuntoVentaDestino = async (usuario, puntoVentaDestinoId) => {
     return null;
   }
 
-  if (String(usuario?.rol || '').trim().toLowerCase() !== 'admin') {
+  if (!esAdminOSupervisor(usuario?.rol)) {
     throw crearErrorHttp(
       403,
-      'Solo el administrador puede registrar ventas hacia otra terminal'
+      'Solo el administrador o supervisor puede registrar ventas hacia otra terminal'
     );
   }
 
@@ -291,15 +296,15 @@ router.get('/', protect, async (req, res) => {
       query.loteria = loteria;
     }
 
-    if (req.user.rol === 'admin' && vendedor) {
+    if (esAdminOSupervisor(req.user.rol) && vendedor) {
       query.vendedor = vendedor;
     }
 
-    if (req.user.rol === 'admin' && usuario) {
+    if (esAdminOSupervisor(req.user.rol) && usuario) {
       query.usuario = usuario;
     }
 
-    if (req.user.rol === 'admin' && puntoVenta) {
+    if (esAdminOSupervisor(req.user.rol) && puntoVenta) {
       query.puntoVenta = puntoVenta;
     }
 
@@ -345,7 +350,7 @@ router.get('/reporte', protect, async (req, res) => {
       query.loteria = loteria;
     }
 
-    if (req.user.rol === 'admin' && puntoVenta) {
+    if (esAdminOSupervisor(req.user.rol) && puntoVenta) {
       query.puntoVenta = puntoVenta;
     }
 
@@ -377,7 +382,7 @@ router.get('/reporte', protect, async (req, res) => {
 
     const porVendedor = {};
     const porPuntoVenta = {};
-    if (req.user.rol === 'admin') {
+    if (esAdminOSupervisor(req.user.rol)) {
       sorteos.forEach(sorteo => {
         const nombreVendedor = sorteo.vendedorNombre;
         if (!porVendedor[nombreVendedor]) {

@@ -72,6 +72,45 @@ function App() {
     }
   ];
 
+  const panelesSupervisor = [
+    {
+      id: 'venta',
+      label: 'Punto de venta',
+      code: '01',
+      summary: 'Registra jugadas para cualquier terminal de la red.'
+    },
+    {
+      id: 'historial',
+      label: 'Historial de tickets',
+      code: '02',
+      summary: 'Consulta tickets de toda la red de puntos de venta.'
+    },
+    {
+      id: 'reportes',
+      label: 'Reportes',
+      code: '03',
+      summary: 'Analiza ventas y resultados de toda la red.'
+    },
+    {
+      id: 'premios',
+      label: 'Premios',
+      code: '04',
+      summary: 'Consulta ganadores y balances de premios.'
+    },
+    {
+      id: 'resumen',
+      label: 'Pulso general',
+      code: '05',
+      summary: 'Panorama de actividad y ventas de toda la red.'
+    },
+    {
+      id: 'ganadores',
+      label: 'Numeros ganadores',
+      code: '06',
+      summary: 'Consulta los resultados cargados para cada loteria.'
+    }
+  ];
+
   const panelesPuntoVenta = [
     {
       id: 'venta',
@@ -180,7 +219,7 @@ function App() {
         const [loteriasData, sorteosData, puntosVentaData] = await Promise.all([
           loteriasService.obtenerLoterias(),
           sorteosService.obtenerSorteos(),
-          user?.rol === 'admin'
+          (user?.rol === 'admin' || user?.rol === 'supervisor')
             ? puntosVentaService.getPuntosVenta()
             : puntosVentaService.getMiPuntoVenta().then((data) => (data ? [data] : []))
         ]);
@@ -415,16 +454,19 @@ function App() {
   }
 
   const esAdmin = user.rol === 'admin';
-  const panelesDisponibles = esAdmin ? panelesAdmin : panelesPuntoVenta;
+  const esSupervisor = user.rol === 'supervisor';
+  const panelesDisponibles = esAdmin ? panelesAdmin : esSupervisor ? panelesSupervisor : panelesPuntoVenta;
   const mostrarNavegacion = panelesDisponibles.length > 1;
-  const mostrarResumenSuperior = esAdmin && panelActivo === 'resumen';
+  const mostrarResumenSuperior = (esAdmin || esSupervisor) && panelActivo === 'resumen';
   const mostrarSidebar = false;
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
-  const nombrePanel = esAdmin ? 'Panel Administrador' : 'Panel Punto de Venta';
+  const nombrePanel = esAdmin ? 'Panel Administrador' : esSupervisor ? 'Panel Supervisor' : 'Panel Punto de Venta';
   const descripcionPanel = esAdmin
     ? 'Control general del sistema, reportes, premios y configuracion.'
+    : esSupervisor
+    ? 'Supervision de la red, ventas, reportes y registro de tickets para cualquier terminal.'
     : 'Terminal de venta dedicada para registrar jugadas del local sin mezclar otras areas.';
-  const resumenHero = esAdmin
+  const resumenHero = (esAdmin || esSupervisor)
     ? [
         {
           label: 'Venta del dia',
@@ -538,6 +580,82 @@ function App() {
     );
   };
 
+  const renderPanelSupervisor = () => {
+    if (panelActivo === 'resumen') {
+      return <DashboardOperativo sorteos={sorteos} loterias={loterias} />;
+    }
+
+    if (panelActivo === 'venta') {
+      return (
+        <div className="content-grid panel-single">
+          <GeneradorNumeros
+            guardarSorteo={guardarSorteo}
+            guardarMultiplesSorteos={guardarMultiplesSorteos}
+            loterias={loterias}
+            sorteos={sorteos}
+            puntosVenta={puntosVenta}
+          />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'historial') {
+      return (
+        <div className="content-grid panel-single">
+          <HistorialSorteos
+            sorteos={sorteos}
+            loterias={loterias}
+            eliminarSorteo={eliminarSorteo}
+          />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'reportes') {
+      return (
+        <div className="content-grid panel-single">
+          <ReporteVenta sorteos={sorteos} loterias={loterias} puntosVenta={puntosVenta} />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'premios') {
+      return (
+        <div className="content-grid panel-single">
+          <CalculadoraPremios
+            sorteos={sorteos}
+            loterias={loterias}
+            marcarPagoTicket={marcarPagoTicket}
+          />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'ganadores') {
+      return (
+        <div className="content-grid panel-single">
+          <NumerosGanadores
+            loterias={loterias}
+            setLoterias={actualizarLoterias}
+            soloLectura
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="content-grid panel-single">
+        <GeneradorNumeros
+          guardarSorteo={guardarSorteo}
+          guardarMultiplesSorteos={guardarMultiplesSorteos}
+          loterias={loterias}
+          sorteos={sorteos}
+          puntosVenta={puntosVenta}
+        />
+      </div>
+    );
+  };
+
   const renderPanelPuntoVenta = () => {
     if (panelActivo === 'historial') {
       return (
@@ -585,7 +703,7 @@ function App() {
   };
 
   return (
-    <div className={`App ${esAdmin ? 'app-admin' : 'app-punto-venta'}`}>
+    <div className={`App ${esAdmin ? 'app-admin' : esSupervisor ? 'app-supervisor' : 'app-punto-venta'}`}>
       <Header
         mostrarNavegacion={mostrarNavegacion}
         menuRapidoAbierto={menuRapidoAbierto}
@@ -696,7 +814,7 @@ function App() {
             )}
 
             <section className="stage-body">
-              {esAdmin ? renderPanelAdmin() : renderPanelPuntoVenta()}
+              {esAdmin ? renderPanelAdmin() : esSupervisor ? renderPanelSupervisor() : renderPanelPuntoVenta()}
             </section>
           </main>
         </div>

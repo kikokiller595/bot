@@ -181,7 +181,7 @@ function GestionUsuarios() {
     setGuardando(true);
 
     try {
-      if (formulario.rol === 'admin') {
+      if (formulario.rol === 'admin' || formulario.rol === 'supervisor') {
         await guardarAdmin();
       } else {
         await guardarTerminal();
@@ -197,9 +197,9 @@ function GestionUsuarios() {
   };
 
   const editar = (usuario) => {
-    if (usuario.rol === 'admin') {
+    if (usuario.rol === 'admin' || usuario.rol === 'supervisor') {
       setFormulario({
-        rol: 'admin',
+        rol: usuario.rol,
         username: usuario.username || '',
         password: '',
         nombre: usuario.nombre || '',
@@ -232,7 +232,7 @@ function GestionUsuarios() {
     }
 
     try {
-      if (usuario.rol === 'admin' || !usuario.puntoVentaId) {
+      if (usuario.rol === 'admin' || usuario.rol === 'supervisor' || !usuario.puntoVentaId) {
         await authService.deleteUsuario(usuario.id);
       } else {
         await puntosVentaService.deletePuntoVenta(usuario.puntoVentaId);
@@ -274,21 +274,30 @@ function GestionUsuarios() {
                 type="button"
                 className={formulario.rol === 'punto_venta' ? 'active' : ''}
                 onClick={() => actualizarCampo('rol', 'punto_venta')}
-                disabled={guardando || Boolean(editandoId && usuarioEditando?.rol === 'admin')}
+                disabled={guardando || Boolean(editandoId && usuarioEditando?.rol !== 'punto_venta')}
               >
                 Punto de venta
               </button>
               <button
                 type="button"
+                className={formulario.rol === 'supervisor' ? 'active' : ''}
+                onClick={() => actualizarCampo('rol', 'supervisor')}
+                disabled={guardando || Boolean(editandoId && usuarioEditando?.rol !== 'supervisor')}
+              >
+                Supervisor
+              </button>
+              <button
+                type="button"
                 className={formulario.rol === 'admin' ? 'active' : ''}
                 onClick={() => actualizarCampo('rol', 'admin')}
-                disabled={guardando || Boolean(editandoId && usuarioEditando?.rol === 'punto_venta')}
+                disabled={guardando || Boolean(editandoId && usuarioEditando?.rol !== 'admin')}
               >
                 Administrador
               </button>
             </div>
 
             {formulario.rol === 'punto_venta' ? (
+              /* Terminal — requiere datos extra de punto de venta */
               <div className="usuario-grid usuario-grid-terminal">
                 <label className="usuario-field">
                   <span>Nombre de usuario</span>
@@ -419,14 +428,18 @@ function GestionUsuarios() {
               <tbody>
                 {usuariosOrdenados.map((usuario) => {
                   const puntoVenta = puntosPorId[usuario.puntoVentaId] || {};
-                  const esAdmin = usuario.rol === 'admin';
+                  const esAdminRow = usuario.rol === 'admin';
+                  const esSupervisorRow = usuario.rol === 'supervisor';
+                  const esElevado = esAdminRow || esSupervisorRow;
 
                   return (
                     <tr key={usuario.id}>
                       <td>{usuario.username || usuario.nombre || 'Sin usuario'}</td>
-                      <td>{esAdmin ? 'Administrador' : puntoVenta.tipo || 'Punto de venta'}</td>
-                      <td>{esAdmin ? 'Central' : puntoVenta.ubicacion || 'Sin direccion'}</td>
-                      <td>{esAdmin ? '-' : puntoVenta.telefono || 'Sin numero'}</td>
+                      <td>
+                        {esAdminRow ? 'Administrador' : esSupervisorRow ? 'Supervisor' : puntoVenta.tipo || 'Punto de venta'}
+                      </td>
+                      <td>{esElevado ? 'Central' : puntoVenta.ubicacion || 'Sin direccion'}</td>
+                      <td>{esElevado ? '-' : puntoVenta.telefono || 'Sin numero'}</td>
                       <td>
                         <span className={`estado-badge ${usuario.activo ? 'activo' : 'inactivo'}`}>
                           {usuario.activo ? 'Activo' : 'Inactivo'}

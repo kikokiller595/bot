@@ -39,7 +39,7 @@ const Header = ({
             <div className="header-user">
               <div className="header-user-meta">
                 <span className="header-user-role">
-                  {user.rol === 'admin' ? 'Administrador' : 'Punto de venta'}
+                  {user.rol === 'admin' ? 'Administrador' : user.rol === 'supervisor' ? 'Supervisor' : 'Punto de venta'}
                 </span>
                 <div className="header-user-copy">
                   <strong>{user.nombre}</strong>

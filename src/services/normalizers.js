@@ -157,10 +157,10 @@ export const normalizeUser = (user) => {
     nombre: String(user.nombre || '').trim(),
     username: String(user.username || '').trim().toLowerCase(),
     email: String(user.email || '').trim(),
-    rol:
-      String(user.rol || '').trim().toLowerCase() === 'vendedor'
-        ? 'punto_venta'
-        : String(user.rol || '').trim().toLowerCase(),
+    rol: (() => {
+      const r = String(user.rol || '').trim().toLowerCase();
+      return r === 'vendedor' ? 'punto_venta' : r;
+    })(),
     activo: typeof user.activo === 'boolean' ? user.activo : true,
     puntoVentaId: toId(
       user.puntoVentaId || puntoVentaRef?.id || user.puntoVenta,

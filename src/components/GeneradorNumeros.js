@@ -119,6 +119,8 @@ const GeneradorNumeros = ({
 }) => {
   const { user } = useAuth();
   const esAdmin = user?.rol === 'admin';
+  const esSupervisor = user?.rol === 'supervisor';
+  const esAdminOSupervisor = esAdmin || esSupervisor;
   const [numero, setNumero] = useState('');
   const [monto, setMonto] = useState('');
   const [loteriasSeleccionadas, setLoteriasSeleccionadas] = useState([]);
@@ -167,10 +169,10 @@ const GeneradorNumeros = ({
 
   const puntosVentaActivos = useMemo(
     () =>
-      esAdmin
+      esAdminOSupervisor
         ? puntosVenta.filter((puntoVenta) => puntoVenta?.activo !== false)
         : [],
-    [esAdmin, puntosVenta]
+    [esAdminOSupervisor, puntosVenta]
   );
   const puntoVentaDestinoSeleccionado = useMemo(
     () =>
@@ -1642,7 +1644,7 @@ const GeneradorNumeros = ({
               </div>
             )}
 
-            {esAdmin && (
+            {esAdminOSupervisor && (
               <div className="campo-terminal" ref={terminalRef}>
                 <label>Registrar venta para</label>
                 <div className="terminal-selector">

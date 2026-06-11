@@ -29,7 +29,7 @@ const usuarioSchema = new mongoose.Schema(
     },
     rol: {
       type: String,
-      enum: ['admin', 'punto_venta', 'vendedor'],
+      enum: ['admin', 'supervisor', 'punto_venta', 'vendedor'],
       default: 'punto_venta'
     },
     puntoVenta: {
