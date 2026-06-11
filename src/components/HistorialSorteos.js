@@ -428,7 +428,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
       if (fechaHasta && (!fechaTicket || fechaTicket > hastaDate)) return false;
 
       if (loteriaFiltro && String(ticket.loteriaId) !== loteriaFiltro) return false;
-      if (isAdmin() && puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) return false;
+      if ((isAdmin() || isSupervisor()) && puntoVentaFiltro && obtenerClavePuntoVenta(ticket) !== puntoVentaFiltro) return false;
 
       if (tipoFiltro) {
         const tipoComparar = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase();
@@ -684,7 +684,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
               ))}
             </select>
           </div>
-          {isAdmin() && (
+          {(isAdmin() || isSupervisor()) && (
             <div className="filtros-column">
               <label>Punto de venta</label>
               <select value={puntoVentaFiltro} onChange={(e) => setPuntoVentaFiltro(e.target.value)}>
