@@ -98,15 +98,9 @@ function App() {
       summary: 'Consulta ganadores y balances de premios.'
     },
     {
-      id: 'resumen',
-      label: 'Pulso general',
-      code: '05',
-      summary: 'Panorama de actividad y ventas de toda la red.'
-    },
-    {
       id: 'ganadores',
       label: 'Numeros ganadores',
-      code: '06',
+      code: '05',
       summary: 'Consulta los resultados cargados para cada loteria.'
     }
   ];
@@ -457,7 +451,7 @@ function App() {
   const esSupervisor = user.rol === 'supervisor';
   const panelesDisponibles = esAdmin ? panelesAdmin : esSupervisor ? panelesSupervisor : panelesPuntoVenta;
   const mostrarNavegacion = panelesDisponibles.length > 1;
-  const mostrarResumenSuperior = (esAdmin || esSupervisor) && panelActivo === 'resumen';
+  const mostrarResumenSuperior = esAdmin && panelActivo === 'resumen';
   const mostrarSidebar = false;
   const panelActivoData = panelesDisponibles.find((panel) => panel.id === panelActivo) || panelesDisponibles[0];
   const nombrePanel = esAdmin ? 'Panel Administrador' : esSupervisor ? 'Panel Supervisor' : 'Panel Punto de Venta';
@@ -581,10 +575,6 @@ function App() {
   };
 
   const renderPanelSupervisor = () => {
-    if (panelActivo === 'resumen') {
-      return <DashboardOperativo sorteos={sorteos} loterias={loterias} />;
-    }
-
     if (panelActivo === 'venta') {
       return (
         <div className="content-grid panel-single">

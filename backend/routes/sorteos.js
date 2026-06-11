@@ -73,12 +73,22 @@ const estaDentroVentanaEliminacion = (sorteo) => {
 const ZONA_HORARIA_OPERATIVA = obtenerZonaHorariaOperativa();
 
 const fechaPermitidaParaUsuario = (usuario, fecha) => {
-  if (String(usuario?.rol || '').trim().toLowerCase() === 'admin') {
+  const rol = String(usuario?.rol || '').trim().toLowerCase();
+  if (rol === 'admin') {
     return true;
   }
 
-  return obtenerClaveFechaOperativa(fecha, ZONA_HORARIA_OPERATIVA) ===
-    obtenerClaveFechaOperativa(new Date(), ZONA_HORARIA_OPERATIVA);
+  const claveHoy = obtenerClaveFechaOperativa(new Date(), ZONA_HORARIA_OPERATIVA);
+  const claveFecha = obtenerClaveFechaOperativa(fecha, ZONA_HORARIA_OPERATIVA);
+
+  if (rol === 'supervisor') {
+    const manana = new Date();
+    manana.setDate(manana.getDate() + 1);
+    const claveManana = obtenerClaveFechaOperativa(manana, ZONA_HORARIA_OPERATIVA);
+    return claveFecha === claveHoy || claveFecha === claveManana;
+  }
+
+  return claveFecha === claveHoy;
 };
 
 const numeroSeguro = (valor, fallback) => {
@@ -135,7 +145,7 @@ const resolverPuntoVentaDestino = async (usuario, puntoVentaDestinoId) => {
 };
 
 const asegurarLoteriaAbiertaParaVenta = (usuario, loteria) => {
-  if (String(usuario?.rol || '').trim().toLowerCase() === 'admin') {
+  if (esAdminOSupervisor(usuario?.rol)) {
     return;
   }
 
@@ -476,7 +486,7 @@ router.post(
       if (!fechaPermitidaParaUsuario(req.user, fechaSorteo)) {
         return res.status(403).json({
           success: false,
-          message: 'Solo el administrador puede registrar tickets para una fecha distinta a hoy'
+          message: 'Fecha no permitida para su rol'
         });
       }
 
@@ -551,7 +561,7 @@ router.post('/multiple', protect, async (req, res) => {
       if (!fechaPermitidaParaUsuario(req.user, fechaSorteo)) {
         return res.status(403).json({
           success: false,
-          message: 'Solo el administrador puede registrar tickets para una fecha distinta a hoy'
+          message: 'Fecha no permitida para su rol'
         });
       }
 

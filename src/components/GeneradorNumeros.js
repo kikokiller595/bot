@@ -182,14 +182,23 @@ const GeneradorNumeros = ({
     [puntosVentaActivos, puntoVentaDestinoId]
   );
 
+  const obtenerFechaManana = () => {
+    const manana = new Date();
+    manana.setDate(manana.getDate() + 1);
+    const y = manana.getFullYear();
+    const m = String(manana.getMonth() + 1).padStart(2, '0');
+    const d = String(manana.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
   useEffect(() => {
-    if (!esAdmin) {
+    if (!esAdmin && !esSupervisor) {
       const fechaHoy = obtenerFechaActualLocal();
       if (fechaSeleccionada !== fechaHoy) {
         setFechaSeleccionada(fechaHoy);
       }
     }
-  }, [esAdmin, fechaSeleccionada]);
+  }, [esAdmin, esSupervisor, fechaSeleccionada]);
 
   useEffect(() => {
     if (!esAdmin) {
@@ -523,7 +532,7 @@ const GeneradorNumeros = ({
       return false;
     }
 
-    if (!esAdmin) {
+    if (!esAdmin && !esSupervisor) {
       const fechaHoy = obtenerFechaActualLocal();
       if (fechaSeleccionada !== fechaHoy) {
         setFechaSeleccionada(fechaHoy);
@@ -532,8 +541,18 @@ const GeneradorNumeros = ({
       }
     }
 
+    if (esSupervisor && !esAdmin) {
+      const fechaHoy = obtenerFechaActualLocal();
+      const fechaManana = obtenerFechaManana();
+      if (fechaSeleccionada !== fechaHoy && fechaSeleccionada !== fechaManana) {
+        setFechaSeleccionada(fechaHoy);
+        alert('El supervisor solo puede registrar tickets para hoy o mañana.');
+        return false;
+      }
+    }
+
     return true;
-  }, [esAdmin, fechaSeleccionada]);
+  }, [esAdmin, esSupervisor, fechaSeleccionada]);
 
   const numeroBaseActual = useMemo(() => numero.trim().replace(/[^0-9]/g, ''), [numero]);
 
@@ -1629,7 +1648,7 @@ const GeneradorNumeros = ({
           {/* Área de entrada */}
           <div className="area-entrada">
 
-            {esAdmin && (
+            {(esAdmin || esSupervisor) && (
               <div className="campo-fecha">
                 <label>Fecha del Ticket</label>
                 <input
@@ -1637,9 +1656,13 @@ const GeneradorNumeros = ({
                   value={fechaSeleccionada}
                   onChange={(e) => setFechaSeleccionada(e.target.value)}
                   className="input-fecha-ticket"
+                  min={esSupervisor && !esAdmin ? obtenerFechaActualLocal() : undefined}
+                  max={esSupervisor && !esAdmin ? obtenerFechaManana() : undefined}
                 />
                 <small className="campo-fecha-ayuda">
-                  Administrador: puedes registrar tickets para cualquier fecha.
+                  {esAdmin
+                    ? 'Administrador: puedes registrar tickets para cualquier fecha.'
+                    : 'Supervisor: puedes registrar tickets para hoy o mañana.'}
                 </small>
               </div>
             )}
