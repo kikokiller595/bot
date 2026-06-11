@@ -415,6 +415,23 @@
   background: rgba(59, 130, 246, 0.08);
   color: var(--accent-strong);
   font-size: 0.82rem;
+  gap: 0.3rem;
+}
+
+.chip-tipo-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: rgba(245, 158, 11, 0.18);
+  color: #f59e0b;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+}
+
+.chip-monto-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-soft);
 }
 
 .sorteo-detalle-expandido {

@@ -616,6 +616,20 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
     return numero || 'N/A';
   };
 
+  const getTipoCorto = (tipo) => {
+    const t = (tipo || '').toLowerCase();
+    if (t === 'box') return 'BOX';
+    if (t === 'pale') return 'PALE';
+    if (t === 'bolita1') return 'BOL1';
+    if (t === 'bolita2') return 'BOL2';
+    if (t === 'singulation') return 'SIN';
+    if (t === 'pick4head3box') return 'F3+';
+    if (t === 'pick4head3') return 'F3';
+    if (t === 'pick4tail3box') return 'B3+';
+    if (t === 'pick4tail3') return 'B3';
+    return 'STR';
+  };
+
   const puedeEliminarGrupo = (grupo) => {
     if (isAdmin()) return true;
 
@@ -784,22 +798,23 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                 new Set(grupo.tickets.map(t => t.loteriaNombre).filter(Boolean))
               );
 
-              const todosNumerosSet = new Set();
+              const jugadasMapa = new Map();
               grupo.tickets.forEach((t) => {
-                const numero = t.numero || (t.numeros && t.numeros[0]);
-                if (numero) {
-                  todosNumerosSet.add(String(numero).trim());
+                const numero = String(t.numero || (t.numeros && t.numeros[0]) || '').trim();
+                if (!numero) return;
+                const tipo = (t.tipoApuesta || t.tipo || 'straight').toLowerCase();
+                const clave = `${numero}|${tipo}`;
+                if (!jugadasMapa.has(clave)) {
+                  jugadasMapa.set(clave, { numero, tipo, monto: 0 });
                 }
+                jugadasMapa.get(clave).monto += parseFloat(t.monto) || 0;
               });
-              const todosNumeros = Array.from(todosNumerosSet)
-                .filter(n => n && n.length > 0)
+              const todasJugadas = Array.from(jugadasMapa.values())
                 .sort((a, b) => {
-                  const numA = parseInt(a, 10);
-                  const numB = parseInt(b, 10);
-                  if (!isNaN(numA) && !isNaN(numB)) {
-                    return numA - numB;
-                  }
-                  return a.localeCompare(b);
+                  const numA = parseInt(a.numero, 10);
+                  const numB = parseInt(b.numero, 10);
+                  if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                  return a.numero.localeCompare(b.numero);
                 });
 
               const estadosGrupo = grupo.tickets.map(t => {
@@ -969,11 +984,15 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                       </div>
                     )}
                     <div className="resumen-block numeros">
-                      <span className="resumen-titulo">Números ({todosNumeros.length})</span>
+                      <span className="resumen-titulo">Jugadas ({todasJugadas.length})</span>
                       <div className="resumen-numeros">
-                        {todosNumeros.map((numero, index) => (
-                          <span key={`${grupoKey}-num-${index}`} className="chip-numero">
-                            {numero}
+                        {todasJugadas.map((jugada, index) => (
+                          <span key={`${grupoKey}-jug-${index}`} className="chip-numero">
+                            {jugada.numero}
+                            {jugada.tipo !== 'straight' && (
+                              <span className="chip-tipo-badge">{getTipoCorto(jugada.tipo)}</span>
+                            )}
+                            <span className="chip-monto-badge">${jugada.monto.toFixed(2)}</span>
                           </span>
                         ))}
                       </div>
