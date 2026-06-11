@@ -574,6 +574,7 @@ function App() {
           <CalculadoraPremios
             sorteos={sorteos}
             loterias={loterias}
+            puntosVenta={puntosVenta}
             marcarPagoTicket={marcarPagoTicket}
           />
         </div>
@@ -635,6 +636,7 @@ function App() {
           <CalculadoraPremios
             sorteos={sorteos}
             loterias={loterias}
+            puntosVenta={puntosVenta}
             marcarPagoTicket={marcarPagoTicket}
           />
         </div>

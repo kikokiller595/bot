@@ -394,7 +394,7 @@ const filtrarPorFecha = (lista = [], fechaFiltro = '') => {
   });
 };
 
-const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
+const CalculadoraPremios = ({ sorteos, loterias, puntosVenta = [], marcarPagoTicket }) => {
   const { isAdmin, isSupervisor } = useAuth();
   const [pestañaActiva, setPestañaActiva] = useState('calcular'); // 'calcular' o 'ganadores'
   const [loteriaSeleccionada, setLoteriaSeleccionada] = useState('');
@@ -714,19 +714,12 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
   }, [numeroGanadorSeleccionado, sorteos, loteriaSeleccionada]);
 
   const puntosVentaDisponibles = useMemo(() => {
-    const mapa = new Map();
-
-    sorteos.forEach((ticket) => {
-      const id = String(ticket.puntoVentaId || '');
-      const nombre = String(ticket.puntoVentaNombre || '').trim();
-      if (!id || !nombre || mapa.has(id)) return;
-      mapa.set(id, { id, nombre });
-    });
-
-    return Array.from(mapa.values()).sort((a, b) =>
-      a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })
-    );
-  }, [sorteos]);
+    return (puntosVenta || [])
+      .filter(pv => pv.activo !== false)
+      .map(pv => ({ id: String(pv.id || pv._id || ''), nombre: String(pv.nombre || '').trim() }))
+      .filter(pv => pv.id && pv.nombre)
+      .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+  }, [puntosVenta]);
 
   const aplicarFiltrosPremios = (lista = []) => {
     let resultado = filtrarPorFecha(lista, fechaFiltro);
