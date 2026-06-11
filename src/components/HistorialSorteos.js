@@ -184,7 +184,7 @@ const formatearHoraIngreso = (createdAt) => {
   return fecha.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 };
 
-const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
+const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosVenta = [], transferirGrupo }) => {
   const { isAdmin, isSupervisor } = useAuth();
   const [fechaDesde, setFechaDesde] = useState(() => obtenerFechaLocalHoy());
   const [fechaHasta, setFechaHasta] = useState(() => obtenerFechaLocalHoy());
@@ -195,6 +195,9 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
   const [resultadoFiltro, setResultadoFiltro] = useState('');
   const [gruposExpandido, setGruposExpandido] = useState({});
   const [ahora, setAhora] = useState(() => Date.now());
+  const [moverGrupoId, setMoverGrupoId] = useState(null);
+  const [moverPuntoVentaId, setMoverPuntoVentaId] = useState('');
+  const [moviendoGrupo, setMoviendoGrupo] = useState(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -847,6 +850,23 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                     </div>
                     <div className="sorteo-acciones">
                       <span className={`estado-badge estado-${estadoGrupo}`}>{estadoGrupoLabel}</span>
+                      {esElevado && transferirGrupo && grupo.tickets[0]?.grupoId && (
+                        <button
+                          className="btn-mover"
+                          onClick={() => {
+                            const gId = grupo.tickets[0].grupoId;
+                            if (moverGrupoId === gId) {
+                              setMoverGrupoId(null);
+                              setMoverPuntoVentaId('');
+                            } else {
+                              setMoverGrupoId(gId);
+                              setMoverPuntoVentaId(grupo.tickets[0]?.puntoVentaId || '');
+                            }
+                          }}
+                        >
+                          Mover
+                        </button>
+                      )}
                       <button
                         className="btn-toggle"
                         onClick={() => toggleGrupo(grupoKey)}
@@ -875,6 +895,46 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                       </button>
                     </div>
                   </div>
+
+                  {moverGrupoId === grupo.tickets[0]?.grupoId && (
+                    <div className="mover-grupo-panel">
+                      <span className="mover-grupo-label">Transferir a:</span>
+                      <select
+                        className="mover-grupo-select"
+                        value={moverPuntoVentaId}
+                        onChange={(e) => setMoverPuntoVentaId(e.target.value)}
+                      >
+                        <option value="">Administracion Central</option>
+                        {puntosVenta.filter(pv => pv.activo !== false).map(pv => (
+                          <option key={pv.id} value={pv.id}>{pv.nombre} ({pv.codigo})</option>
+                        ))}
+                      </select>
+                      <button
+                        className="mover-grupo-confirmar"
+                        disabled={moviendoGrupo}
+                        onClick={async () => {
+                          setMoviendoGrupo(true);
+                          const pvSeleccionado = puntosVenta.find(pv => String(pv.id) === String(moverPuntoVentaId));
+                          await transferirGrupo(
+                            grupo.tickets[0].grupoId,
+                            moverPuntoVentaId || null,
+                            pvSeleccionado?.nombre || 'Administracion Central'
+                          );
+                          setMoverGrupoId(null);
+                          setMoverPuntoVentaId('');
+                          setMoviendoGrupo(false);
+                        }}
+                      >
+                        {moviendoGrupo ? 'Moviendo...' : 'Confirmar'}
+                      </button>
+                      <button
+                        className="mover-grupo-cancelar"
+                        onClick={() => { setMoverGrupoId(null); setMoverPuntoVentaId(''); }}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  )}
 
                   <div className="sorteo-resumen">
                     <div className="resumen-block">

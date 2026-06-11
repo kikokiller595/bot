@@ -75,6 +75,11 @@ const sorteosService = {
     return normalizeSorteo(extractData(response.data));
   },
 
+  transferirGrupo: async (grupoId, puntoVentaId) => {
+    const response = await api.put('/sorteos/transferir-grupo', { grupoId, puntoVentaId });
+    return response.data;
+  },
+
   marcarTicketPagado: async ({ id, ticketId, grupoId, pagado }) => {
     const response = await api.put('/sorteos/ticket/pagado', {
       id,

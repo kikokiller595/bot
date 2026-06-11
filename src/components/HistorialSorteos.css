@@ -29,7 +29,8 @@
 
 .btn-limpiar-filtro,
 .btn-toggle,
-.btn-eliminar {
+.btn-eliminar,
+.btn-mover {
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
@@ -37,6 +38,80 @@
 
 .btn-eliminar:hover {
   background: rgba(244, 63, 94, 0.18);
+}
+
+.btn-mover {
+  background: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.btn-mover:hover {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.mover-grupo-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 8px;
+}
+
+.mover-grupo-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+.mover-grupo-select {
+  flex: 1;
+  min-width: 180px;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text-main);
+  font-size: 0.85rem;
+}
+
+.mover-grupo-confirmar {
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.mover-grupo-confirmar:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.28);
+}
+
+.mover-grupo-confirmar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mover-grupo-cancelar {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.mover-grupo-cancelar:hover {
+  color: var(--text-main);
 }
 
 .historial-filtros {

@@ -605,6 +605,37 @@ router.post('/multiple', protect, async (req, res) => {
   }
 });
 
+router.put('/transferir-grupo', protect, authorize('admin', 'supervisor'), async (req, res) => {
+  try {
+    const { grupoId, puntoVentaId } = req.body || {};
+
+    if (!grupoId) {
+      return res.status(400).json({ success: false, message: 'grupoId es requerido' });
+    }
+
+    let puntoVenta = null;
+    let puntoVentaNombre = 'Administracion Central';
+
+    if (puntoVentaId) {
+      puntoVenta = await PuntoVenta.findById(puntoVentaId);
+      if (!puntoVenta) {
+        return res.status(404).json({ success: false, message: 'Punto de venta no encontrado' });
+      }
+      puntoVentaNombre = puntoVenta.nombre;
+    }
+
+    await Sorteo.updateMany(
+      { grupoId: String(grupoId) },
+      { $set: { puntoVenta: puntoVenta?._id || null, puntoVentaNombre } }
+    );
+
+    return res.json({ success: true, message: 'Tickets transferidos correctamente', puntoVentaNombre });
+  } catch (error) {
+    console.error('Error al transferir grupo:', error);
+    return res.status(500).json({ success: false, message: 'Error al transferir tickets' });
+  }
+});
+
   router.put('/ticket/pagado', protect, async (req, res) => {
     try {
       const { ticketId, grupoId, id, pagado } = req.body || {};

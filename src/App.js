@@ -359,6 +359,22 @@ function App() {
     }
   };
 
+  const transferirGrupo = async (grupoId, puntoVentaId, puntoVentaNombre) => {
+    try {
+      await sorteosService.transferirGrupo(grupoId, puntoVentaId);
+      setSorteos(prev =>
+        prev.map(s =>
+          String(s.grupoId) === String(grupoId)
+            ? { ...s, puntoVentaId: puntoVentaId || null, puntoVentaNombre: puntoVentaNombre || 'Administracion Central' }
+            : s
+        )
+      );
+    } catch (error) {
+      console.error('Error al transferir grupo:', error);
+      alert(error?.response?.data?.message || 'Error al transferir los tickets.');
+    }
+  };
+
   const marcarPagoTicket = async ({ id, ticketId, grupoId, pagado }) => {
     try {
       const actualizados = await sorteosService.marcarTicketPagado({
@@ -537,6 +553,8 @@ function App() {
             sorteos={sorteos}
             loterias={loterias}
             eliminarSorteo={eliminarSorteo}
+            puntosVenta={puntosVenta}
+            transferirGrupo={transferirGrupo}
           />
         </div>
       );
@@ -596,6 +614,8 @@ function App() {
             sorteos={sorteos}
             loterias={loterias}
             eliminarSorteo={eliminarSorteo}
+            puntosVenta={puntosVenta}
+            transferirGrupo={transferirGrupo}
           />
         </div>
       );
@@ -654,6 +674,8 @@ function App() {
             sorteos={sorteos}
             loterias={loterias}
             eliminarSorteo={eliminarSorteo}
+            puntosVenta={puntosVenta}
+            transferirGrupo={transferirGrupo}
           />
         </div>
       );
