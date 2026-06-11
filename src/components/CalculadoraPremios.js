@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import './CalculadoraPremios.css';
 import { calcularPremio, numeroCoincide } from '../utils/calcularPremios';
 import { normalizarPremios } from '../utils/premiosDefault';
@@ -414,7 +414,17 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
   const [ordenHistorial, setOrdenHistorial] = useState('monto'); // 'monto' o 'conteo'
   const [tipoApuestaFiltro, setTipoApuestaFiltro] = useState(''); // '', 'straight', 'box'
   const [fechaFiltroHistorial, setFechaFiltroHistorial] = useState(''); // Filtro por fecha en formato YYYY-MM-DD
-  const [puntoVentaFiltroHistorial, setPuntoVentaFiltroHistorial] = useState('');
+  const [puntosExcluidosHistorial, setPuntosExcluidosHistorial] = useState(new Set());
+  const [menuExcluirHistorialAbierto, setMenuExcluirHistorialAbierto] = useState(false);
+  const menuExcluirHistorialRef = useRef(null);
+
+  const toggleExcluirPuntoHistorial = (id) => {
+    setPuntosExcluidosHistorial(prev => {
+      const nuevo = new Set(prev);
+      if (nuevo.has(id)) nuevo.delete(id); else nuevo.add(id);
+      return nuevo;
+    });
+  };
 
   const formatearPosicion = (valor) => {
     if (!valor) return '-';
@@ -937,6 +947,17 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
     });
   }, [premiosCalculados, todosTicketsGanadores, pagosCargados]);
 
+  useEffect(() => {
+    if (!menuExcluirHistorialAbierto) return;
+    const cerrar = (e) => {
+      if (menuExcluirHistorialRef.current && !menuExcluirHistorialRef.current.contains(e.target)) {
+        setMenuExcluirHistorialAbierto(false);
+      }
+    };
+    document.addEventListener('mousedown', cerrar);
+    return () => document.removeEventListener('mousedown', cerrar);
+  }, [menuExcluirHistorialAbierto]);
+
   // El filtro de lotería para historial se inicializa vacío por defecto (todas las loterías)
 
   // Historial completo de todos los números jugados
@@ -962,11 +983,9 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
         }
       }
 
-      // Si hay filtro de punto de venta, solo incluir tickets de ese punto
-      if (puntoVentaFiltroHistorial) {
-        if (String(ticket.puntoVentaId || '') !== puntoVentaFiltroHistorial) {
-          return;
-        }
+      // Si hay puntos excluidos, omitir tickets de esos puntos
+      if (puntosExcluidosHistorial.size > 0 && puntosExcluidosHistorial.has(String(ticket.puntoVentaId || ''))) {
+        return;
       }
       
       const numeroTicket = String(ticket.numero || '').trim();
@@ -1162,7 +1181,7 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
     });
 
     return resultados;
-  }, [sorteos, loteriaFiltroHistorial, juegoFiltroHistorial, tipoFiltroHistorial, ordenHistorial, tipoApuestaFiltro, fechaFiltroHistorial, puntoVentaFiltroHistorial]);
+  }, [sorteos, loteriaFiltroHistorial, juegoFiltroHistorial, tipoFiltroHistorial, ordenHistorial, tipoApuestaFiltro, fechaFiltroHistorial, puntosExcluidosHistorial]);
 
   const obtenerEtiquetaTipo = (tipo = '') => {
     const valor = tipo.toLowerCase();
@@ -1723,18 +1742,40 @@ const CalculadoraPremios = ({ sorteos, loterias, marcarPagoTicket }) => {
                 placeholder="Filtrar por fecha"
               />
               {(isAdmin() || isSupervisor()) && puntosVentaDisponibles.length > 0 && (
-                <select
-                  value={puntoVentaFiltroHistorial}
-                  onChange={(e) => setPuntoVentaFiltroHistorial(e.target.value)}
-                  className="select-loteria-historial"
-                >
-                  <option value="">Todos los puntos</option>
-                  {puntosVentaDisponibles.map((punto) => (
-                    <option key={punto.id} value={punto.id}>
-                      {punto.nombre}
-                    </option>
-                  ))}
-                </select>
+                <div className="historial-excluir-wrapper" ref={menuExcluirHistorialRef}>
+                  <button
+                    className={`btn-menu-excluir-historial${puntosExcluidosHistorial.size > 0 ? ' tiene-excluidos' : ''}`}
+                    onClick={() => setMenuExcluirHistorialAbierto(prev => !prev)}
+                  >
+                    <span>{puntosExcluidosHistorial.size > 0 ? `${puntosExcluidosHistorial.size} oculto${puntosExcluidosHistorial.size > 1 ? 's' : ''}` : 'Ocultar puntos'}</span>
+                    <span className="menu-excluir-chevron">{menuExcluirHistorialAbierto ? '▲' : '▼'}</span>
+                  </button>
+                  {menuExcluirHistorialAbierto && (
+                    <div className="menu-excluir-dropdown-historial">
+                      {puntosVentaDisponibles.map((punto) => {
+                        const excluido = puntosExcluidosHistorial.has(punto.id);
+                        return (
+                          <label key={punto.id} className={`menu-excluir-item${excluido ? ' excluido' : ''}`}>
+                            <input
+                              type="checkbox"
+                              checked={excluido}
+                              onChange={() => toggleExcluirPuntoHistorial(punto.id)}
+                            />
+                            <span>{punto.nombre}</span>
+                          </label>
+                        );
+                      })}
+                      {puntosExcluidosHistorial.size > 0 && (
+                        <button
+                          className="menu-excluir-limpiar"
+                          onClick={() => { setPuntosExcluidosHistorial(new Set()); setMenuExcluirHistorialAbierto(false); }}
+                        >
+                          Mostrar todos
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
               <button
                 className="btn-toggle-historial"

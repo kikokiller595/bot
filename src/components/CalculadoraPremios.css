@@ -671,6 +671,48 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.historial-excluir-wrapper {
+  position: relative;
+}
+
+.btn-menu-excluir-historial {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-menu-excluir-historial.tiene-excluidos {
+  border-color: rgba(244, 63, 94, 0.5);
+  color: var(--danger);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+.btn-menu-excluir-historial:hover {
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.menu-excluir-dropdown-historial {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 200;
+  background: var(--surface);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  min-width: 200px;
+}
+
 .historial-completo-content {
   padding: 2rem;
   max-height: 800px;
