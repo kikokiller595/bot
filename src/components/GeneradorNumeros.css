@@ -2152,25 +2152,25 @@
   }
 
   .loteria-opcion {
-    padding: 0.42rem 0.85rem;
+    padding: 0.52rem 1.05rem;
     border-radius: 6px;
-    font-size: 0.85rem;
-    gap: 0.42rem;
+    font-size: 1.00rem;
+    gap: 0.5rem;
   }
 
   .loteria-opcion input {
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
   }
 
   .etiqueta-cerrada {
-    font-size: 0.58rem;
-    padding: 0.04rem 0.22rem;
+    font-size: 0.74rem;
+    padding: 0.08rem 0.32rem;
   }
 
   .etiqueta-tiempo {
-    font-size: 0.58rem;
-    padding: 0.04rem 0.22rem;
+    font-size: 0.74rem;
+    padding: 0.08rem 0.32rem;
   }
 
   .input-numero-grande,
