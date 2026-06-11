@@ -1679,7 +1679,7 @@ const GeneradorNumeros = ({
               <div className="campo-terminal" ref={terminalRef}>
                 <label>
                   Registrar venta para
-                  {esSupervisor && !esAdmin && <span className="campo-requerido"> *requerido</span>}
+                  {esSupervisor && !esAdmin && !puntoVentaDestinoId && <span className="campo-requerido"> *requerido</span>}
                 </label>
                 <div className="terminal-selector">
                   <div className="terminal-selector__input-wrap">
