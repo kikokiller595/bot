@@ -514,6 +514,18 @@
   line-height: 1.4;
 }
 
+.campo-fecha-ayuda.campo-ayuda-requerido {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.campo-requerido {
+  font-size: 0.75em;
+  color: var(--danger);
+  font-weight: 600;
+  margin-left: 0.3rem;
+}
+
 .tipo-indicador {
   display: inline-block;
   padding: 0.25rem 0.75rem;

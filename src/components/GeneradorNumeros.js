@@ -858,6 +858,11 @@ const GeneradorNumeros = ({
       return;
     }
 
+    if (esSupervisor && !esAdmin && !puntoVentaDestinoId) {
+      alert('El supervisor debe seleccionar un punto de venta antes de ingresar jugadas.');
+      return;
+    }
+
     if (noHaySeleccion) {
       alert('Selecciona al menos una lotería para registrar la jugada.');
       return;
@@ -1209,6 +1214,11 @@ const GeneradorNumeros = ({
   };
 
   const generarTicket = () => {
+    if (esSupervisor && !esAdmin && !puntoVentaDestinoId) {
+      alert('El supervisor debe seleccionar un punto de venta antes de generar un ticket.');
+      return;
+    }
+
     if (noHaySeleccion && historialTemporal.length === 0) {
       alert('Selecciona al menos una lotería para generar el ticket.');
       return;
@@ -1667,7 +1677,10 @@ const GeneradorNumeros = ({
 
             {esAdminOSupervisor && (
               <div className="campo-terminal" ref={terminalRef}>
-                <label>Registrar venta para</label>
+                <label>
+                  Registrar venta para
+                  {esSupervisor && !esAdmin && <span className="campo-requerido"> *requerido</span>}
+                </label>
                 <div className="terminal-selector">
                   <div className="terminal-selector__input-wrap">
                     <input
@@ -1725,10 +1738,12 @@ const GeneradorNumeros = ({
                     </div>
                   )}
                 </div>
-                <small className="campo-fecha-ayuda">
+                <small className={esSupervisor && !esAdmin && !puntoVentaDestinoId ? 'campo-fecha-ayuda campo-ayuda-requerido' : 'campo-fecha-ayuda'}>
                   {puntoVentaDestinoSeleccionado
                     ? `Los tickets se guardaran bajo ${puntoVentaDestinoSeleccionado.nombre}.`
-                    : 'Si no eliges una terminal, la venta quedara en Administracion Central.'}
+                    : esSupervisor && !esAdmin
+                      ? 'Debes seleccionar un punto de venta para continuar.'
+                      : 'Si no eliges una terminal, la venta quedara en Administracion Central.'}
                 </small>
               </div>
             )}
