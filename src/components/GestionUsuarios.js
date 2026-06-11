@@ -161,7 +161,7 @@ function GestionUsuarios() {
     const payload = {
       nombre: formulario.nombre.trim(),
       username: formulario.username.trim().toLowerCase(),
-      rol: 'admin',
+      rol: formulario.rol,
       activo: formulario.activo
     };
 
