@@ -206,10 +206,8 @@
   color: var(--text-main);
 }
 
-.ingresado-hora::before {
-  content: '·';
-  margin-right: 0.25rem;
-  opacity: 0.5;
+.ingresado-hora {
+  opacity: 0.75;
 }
 
 .resumen-hora-ingreso {

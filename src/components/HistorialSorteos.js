@@ -832,10 +832,10 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                           <span className="sorteo-ticket-id">#{grupo.ticketId}</span>
                         )}
                         <span className="sorteo-fecha">{grupo.fecha}</span>
-                        {esElevado && (quienIngreso || horaIngreso) && (
+                        {horaIngreso && (
                           <span className="sorteo-ingresado-por">
-                            {quienIngreso && <span className="ingresado-nombre">{quienIngreso}</span>}
-                            {horaIngreso && <span className="ingresado-hora">{horaIngreso}</span>}
+                            {esElevado && quienIngreso && <span className="ingresado-nombre">{quienIngreso}</span>}
+                            <span className="ingresado-hora">{horaIngreso}</span>
                           </span>
                         )}
                       </div>
@@ -897,13 +897,13 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                         </span>
                       </div>
                     )}
-                    {esElevado && (
+                    {(esElevado || horaIngreso) && (
                       <div className="resumen-block">
-                        <span className="resumen-titulo">Ingresado por</span>
+                        <span className="resumen-titulo">{esElevado ? 'Ingresado por' : 'Hora de ingreso'}</span>
                         <span className="resumen-valor resumen-texto">
-                          {quienIngreso || 'Sin usuario'}
+                          {esElevado && (quienIngreso || 'Sin usuario')}
                           {horaIngreso && (
-                            <span className="resumen-hora-ingreso"> · {horaIngreso}</span>
+                            <span className="resumen-hora-ingreso">{esElevado ? ' · ' : ''}{horaIngreso}</span>
                           )}
                         </span>
                       </div>
@@ -927,7 +927,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                         <span>Tipo</span>
                         <span>Monto</span>
                         {esElevado && <span>Punto</span>}
-                        {esElevado && <span>Ingresado por</span>}
+                        {esElevado ? <span>Ingresado por</span> : <span>Hora</span>}
                         <span>Premio</span>
                         <span>Resultado</span>
                       </div>
@@ -943,12 +943,10 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo }) => {
                               <span>{ticket.tipoApuesta ? getTipoApuestaLabel(ticket.tipoApuesta) : getTipoLabel(ticket.tipo)}</span>
                               <span>${(ticket.monto || 1).toFixed(2)}</span>
                               {esElevado && <span>{ticket.puntoVentaNombre || 'Sin punto'}</span>}
-                              {esElevado && (
-                                <span>
-                                  {nombreTicket}
-                                  {horaTicket && <span className="detalle-hora-ingreso"> · {horaTicket}</span>}
-                                </span>
-                              )}
+                              <span>
+                                {esElevado && nombreTicket}
+                                {horaTicket && <span className="detalle-hora-ingreso">{esElevado ? ' · ' : ''}{horaTicket}</span>}
+                              </span>
                               <span>${resultadoTicket.premio.toFixed(2)}</span>
                               <span className={`estado-badge estado-${resultadoTicket.estado}`}>
                                 {resultadoTicket.estado === 'gano'
