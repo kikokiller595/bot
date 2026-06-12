@@ -427,6 +427,21 @@
   color: #f59e0b;
 }
 
+.btn-reimprimir {
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(16, 185, 129, 0.10);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.20);
+  font-size: 0.85rem;
+}
+
+.btn-reimprimir:hover {
+  background: rgba(16, 185, 129, 0.20);
+}
+
 .btn-toggle {
   padding: 0.65rem 0.95rem;
   background: rgba(59, 130, 246, 0.08);

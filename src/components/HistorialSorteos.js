@@ -669,6 +669,96 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
     return ahora - fechaGrupo.getTime() <= LIMITE_ELIMINACION_PUNTO_VENTA_MS;
   };
 
+  const reimprimirGrupo = (grupo) => {
+    if (!grupo) return;
+
+    const escapar = (valor) => String(valor ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    const ventana = window.open('', '_blank', 'width=420,height=720');
+    if (!ventana) {
+      alert('No se pudo abrir la ventana de impresion. Revisa si el navegador esta bloqueando ventanas emergentes.');
+      return;
+    }
+
+    const primerTicket = grupo.tickets[0];
+    const loteriasTexto = Array.from(new Set(grupo.tickets.map(t => t.loteriaNombre).filter(Boolean))).join(', ') || 'Sin loterias';
+    const totalMonto = grupo.tickets.reduce((sum, t) => sum + (parseFloat(t.monto) || 0), 0);
+
+    const detalleJugadas = grupo.tickets.map((item) => `
+      <tr>
+        <td>${escapar(item.loteriaNombre || 'Sin loteria')}</td>
+        <td>${escapar(item.numero || 'N/A')}</td>
+        <td>${escapar(getTipoApuestaLabel(item.tipoApuesta || item.tipo))}</td>
+        <td>$${Number(item.monto || 0).toFixed(2)}</td>
+      </tr>
+    `).join('');
+
+    ventana.document.write(`
+      <!DOCTYPE html>
+      <html lang="es">
+        <head>
+          <meta charset="UTF-8" />
+          <title>Ticket ${escapar(grupo.ticketId)}</title>
+          <style>
+            body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; padding: 16px; color: #111827; background: #ffffff; }
+            .ticket { max-width: 360px; margin: 0 auto; border: 1px dashed #9ca3af; border-radius: 12px; padding: 16px; }
+            .encabezado { text-align: center; margin-bottom: 12px; }
+            .encabezado h1 { font-size: 22px; margin: 0 0 4px; }
+            .encabezado p { margin: 2px 0; font-size: 13px; }
+            .reimpresion-badge { display: inline-block; margin-top: 4px; padding: 2px 10px; background: #fef3c7; color: #92400e; border-radius: 999px; font-size: 11px; font-weight: 700; }
+            .meta { background: #f3f4f6; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 13px; }
+            .meta div { margin-bottom: 4px; }
+            .meta strong { display: inline-block; min-width: 72px; }
+            table { width: 100%; border-collapse: collapse; font-size: 13px; }
+            th, td { padding: 8px 4px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+            th { font-size: 12px; text-transform: uppercase; color: #4b5563; }
+            .totales { margin-top: 12px; padding-top: 12px; border-top: 2px solid #111827; font-size: 14px; }
+            .totales div { display: flex; justify-content: space-between; margin-bottom: 6px; }
+            .pie { margin-top: 16px; text-align: center; font-size: 12px; color: #6b7280; }
+            @media print { body { padding: 0; } .ticket { border: none; border-radius: 0; padding: 8px; } }
+          </style>
+        </head>
+        <body>
+          <div class="ticket">
+            <div class="encabezado">
+              <h1>TBY Sistemas</h1>
+              <p>Ticket de venta</p>
+              <div class="reimpresion-badge">REIMPRESION</div>
+            </div>
+            <div class="meta">
+              <div><strong>Ticket:</strong> ${escapar(grupo.ticketId)}</div>
+              <div><strong>Fecha:</strong> ${escapar(grupo.fecha)}</div>
+              <div><strong>Destino:</strong> ${escapar(primerTicket?.puntoVentaNombre || 'Administracion Central')}</div>
+              <div><strong>Loterias:</strong> ${escapar(loteriasTexto)}</div>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Loteria</th><th>Numero</th><th>Tipo</th><th>Monto</th></tr>
+              </thead>
+              <tbody>${detalleJugadas}</tbody>
+            </table>
+            <div class="totales">
+              <div><span>Jugadas</span><strong>${grupo.tickets.length}</strong></div>
+              <div><span>Total</span><strong>$${totalMonto.toFixed(2)}</strong></div>
+            </div>
+            <div class="pie">Gracias por su compra</div>
+          </div>
+          <script>
+            window.onload = function () {
+              window.print();
+              window.onafterprint = function () { window.close(); };
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    ventana.document.close();
+  };
+
   return (
     <div className="historial-container">
       <div className="historial-card">
@@ -949,6 +1039,13 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                           Mover
                         </button>
                       )}
+                      <button
+                        className="btn-reimprimir"
+                        onClick={() => reimprimirGrupo(grupo)}
+                        title="Reimprimir ticket"
+                      >
+                        Reimprimir
+                      </button>
                       <button
                         className="btn-toggle"
                         onClick={() => toggleGrupo(grupoKey)}
