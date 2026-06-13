@@ -745,20 +745,27 @@ const CalculadoraPremios = ({ sorteos, loterias, puntosVenta = [], marcarPagoTic
   // Obtener todos los tickets ganadores de todas las loterías
   const todosTicketsGanadores = useMemo(() => {
     if (!loterias || loterias.length === 0) return [];
-    
+
     const ticketsGanadores = [];
-    
+
+    // Pre-agrupar los sorteos por loteria una sola vez en lugar de filtrar
+    // todos los sorteos por cada numero ganador (evita O(loterias x candidatos x sorteos)).
+    const sorteosPorLoteria = new Map();
+    sorteos.forEach(ticket => {
+      if (!ticket.loteriaId) return;
+      const clave = ticket.loteriaId.toString();
+      if (!sorteosPorLoteria.has(clave)) sorteosPorLoteria.set(clave, []);
+      sorteosPorLoteria.get(clave).push(ticket);
+    });
+
     loterias.forEach(loteria => {
       if (!loteria.numerosGanadores || loteria.numerosGanadores.length === 0) return;
       const premiosConfigurados = loteria.premios ? normalizarPremios(loteria.premios) : normalizarPremios();
-      
+
       const candidatos = extenderNumerosGanadores(loteria.numerosGanadores);
+      const ticketsLoteria = sorteosPorLoteria.get(loteria.id.toString()) || [];
 
       candidatos.forEach(numeroGanador => {
-        const ticketsLoteria = sorteos.filter(ticket => 
-          ticket.loteriaId && ticket.loteriaId.toString() === loteria.id.toString()
-        );
-        
         ticketsLoteria.forEach(ticket => {
           // Detectar tipo de apuesta - usar tipoApuesta si existe, sino detectar del formato
           let tipoApuestaDetectado = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase().trim();

@@ -518,11 +518,23 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
     const fechaFinDate = new Date(`${fechaFin}T23:59:59.999`);
     const resultados = [];
 
+    // Pre-agrupar los tickets del rango por loteria: evita recorrer todos
+    // los tickets por cada numero ganador candidato.
+    const ticketsPorLoteria = new Map();
+    ticketsEnRango.forEach(ticket => {
+      if (!ticket.loteriaId) return;
+      const clave = ticket.loteriaId.toString();
+      if (!ticketsPorLoteria.has(clave)) ticketsPorLoteria.set(clave, []);
+      ticketsPorLoteria.get(clave).push(ticket);
+    });
+
     loterias.forEach(loteria => {
       if (!loteria || !loteria.numerosGanadores || loteria.numerosGanadores.length === 0) return;
 
       const premiosLoteria = normalizarPremios(loteria.premios);
       const numerosCandidatos = extenderNumerosGanadores(loteria.numerosGanadores);
+      const ticketsLoteria = ticketsPorLoteria.get(loteria.id.toString()) || [];
+      if (ticketsLoteria.length === 0) return;
 
       numerosCandidatos.forEach(numeroGanador => {
         const fechaGanadorDate = numeroGanador.fecha ? parsearFecha(numeroGanador.fecha) : null;
@@ -534,13 +546,7 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
 
         const claveFechaGanador = obtenerClaveFecha(numeroGanador.fecha);
 
-        let ticketsProcesados = 0;
-        let ticketsCoinciden = 0;
-
-        ticketsEnRango.forEach(ticket => {
-          ticketsProcesados++;
-          if (!ticket.loteriaId || ticket.loteriaId.toString() !== loteria.id.toString()) return;
-
+        ticketsLoteria.forEach(ticket => {
           // Detectar tipo de apuesta - usar tipoApuesta si existe, sino detectar del formato
           let tipoApuestaDetectado = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase().trim();
           
@@ -632,7 +638,6 @@ const ReporteVenta = ({ sorteos, loterias = [], puntosVenta = [] }) => {
             fuenteDerivada: numeroGanador.fuenteDerivada,
             longitudTicket: numeroTicketLimpio.length 
           })) {
-            ticketsCoinciden++;
             const monto = parseFloat(ticket.monto) || 0;
             if (monto <= 0) return;
 

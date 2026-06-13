@@ -266,6 +266,24 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
     if (!sorteos || sorteos.length === 0) return {};
 
     const cachePremios = new Map();
+    // Cache de ganadores y candidatos por loteria+fecha: evita re-filtrar y
+    // re-expandir los numeros ganadores por cada ticket (gran ahorro a escala).
+    const cacheCandidatos = new Map();
+    const obtenerEntradaGanadores = (loteria, fechaClave) => {
+      const claveCache = `${loteria.id}|${fechaClave}`;
+      let entrada = cacheCandidatos.get(claveCache);
+      if (!entrada) {
+        const ganadoresDelDia = (loteria.numerosGanadores || []).filter(
+          n => obtenerClaveFecha(n.fecha) === fechaClave
+        );
+        entrada = {
+          ganadoresDelDia,
+          candidatos: ganadoresDelDia.length ? extenderNumerosGanadores(ganadoresDelDia) : []
+        };
+        cacheCandidatos.set(claveCache, entrada);
+      }
+      return entrada;
+    };
 
     return sorteos.reduce((acc, ticket) => {
       const ticketId = normalizarId(ticket);
@@ -278,16 +296,15 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
       }
 
       const fechaClave = obtenerClaveFecha(ticket.fecha);
-      const ganadoresDelDia = (loteria.numerosGanadores || []).filter(
-        n => obtenerClaveFecha(n.fecha) === fechaClave
-      );
+      const entradaGanadores = obtenerEntradaGanadores(loteria, fechaClave);
+      const ganadoresDelDia = entradaGanadores.ganadoresDelDia;
 
       if (!ganadoresDelDia || ganadoresDelDia.length === 0) {
         acc[ticketId] = { estado: 'pendiente', premio: 0 };
         return acc;
       }
 
-      const candidatos = extenderNumerosGanadores(ganadoresDelDia);
+      const candidatos = entradaGanadores.candidatos;
       
       // Detectar tipo de apuesta - usar tipoApuesta si existe, sino detectar del formato
       let tipoApuestaDetectado = (ticket.tipoApuesta || ticket.tipo || '').toLowerCase().trim();
