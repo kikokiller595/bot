@@ -396,7 +396,7 @@ const filtrarPorFecha = (lista = [], fechaFiltro = '') => {
 
 const CalculadoraPremios = ({ sorteos, loterias, puntosVenta = [], marcarPagoTicket }) => {
   const { isAdmin, isSupervisor } = useAuth();
-  const [pestañaActiva, setPestañaActiva] = useState('calcular'); // 'calcular' o 'ganadores'
+  const pestañaActiva = 'ganadores'; // Vista unica: solo Tickets Ganadores
   const [loteriaSeleccionada, setLoteriaSeleccionada] = useState('');
   const [numeroGanadorSeleccionado, setNumeroGanadorSeleccionado] = useState('');
   const [premiosCalculados, setPremiosCalculados] = useState([]);
@@ -1225,25 +1225,9 @@ const CalculadoraPremios = ({ sorteos, loterias, puntosVenta = [], marcarPagoTic
   return (
     <div className="calculadora-premios-container">
       <div className="calculadora-premios-card">
-        <h2 className="card-title">Calculadora de Premios</h2>
+        <h2 className="card-title">Tickets Ganadores</h2>
 
-        {/* Pestañas */}
-        <div className="tabs-container">
-          <button
-            className={`tab-button ${pestañaActiva === 'calcular' ? 'active' : ''}`}
-            onClick={() => setPestañaActiva('calcular')}
-          >
-            Calcular Premios
-          </button>
-          <button
-            className={`tab-button ${pestañaActiva === 'ganadores' ? 'active' : ''}`}
-            onClick={() => setPestañaActiva('ganadores')}
-          >
-            Tickets Ganadores ({todosTicketsFiltrados.length})
-          </button>
-        </div>
-
-        {pestañaActiva === 'calcular' && (
+        {false && (
           <>
             {loterias.length === 0 ? (
               <div className="sin-loterias">
