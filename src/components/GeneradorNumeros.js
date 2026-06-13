@@ -652,11 +652,20 @@ const GeneradorNumeros = ({
     if (!termino) return;
     setBuscarSerieError('');
 
-    // Buscar sorteos cuyo grupoId coincida (exacto o por sufijo de 6-13 dígitos)
-    const encontrados = sorteos.filter((s) => {
-      const gid = String(s.grupoId || '');
-      return gid === termino || gid.endsWith(termino);
-    });
+    // Solo digitos del termino, para tolerar prefijos como "TKT-" o "30199-"
+    const terminoDigitos = termino.replace(/[^0-9]/g, '');
+
+    const coincide = (valor) => {
+      const v = String(valor || '');
+      if (!v) return false;
+      if (v === termino || v.endsWith(termino)) return true;
+      if (!terminoDigitos) return false;
+      const vDigitos = v.replace(/[^0-9]/g, '');
+      return vDigitos === terminoDigitos || vDigitos.endsWith(terminoDigitos);
+    };
+
+    // Buscar por grupoId o por ticketId (exacto, por sufijo o solo digitos)
+    const encontrados = sorteos.filter((s) => coincide(s.grupoId) || coincide(s.ticketId));
 
     if (encontrados.length === 0) {
       setBuscarSerieError(`No se encontró ningún ticket con el serial "${termino}".`);
@@ -886,7 +895,11 @@ const GeneradorNumeros = ({
       loterias: loteriasSnapshot
     });
 
-    const numeroInput = numero.trim().toLowerCase();
+    let numeroInput = numero.trim().toLowerCase();
+    // El sufijo "-" marca el numero como straight (derecho): 12- / 123- / 1234- == 12 / 123 / 1234
+    if (/^\d{2,4}-$/.test(numeroInput)) {
+      numeroInput = numeroInput.slice(0, -1);
+    }
     const bolitaMatch = numeroInput.match(/^(\d{2})\+(1|2)$/);
     const paleMatch = numeroInput.match(/^(\d{2})(\d{2})p$/);
     const pick4Head3BoxMatch = numeroInput.match(/^(\d{3})f\+$/);
@@ -1337,9 +1350,21 @@ const GeneradorNumeros = ({
 
   const handleNumeroChange = (e) => {
     let valor = e.target.value.toLowerCase();
-    // Permitir números, + y q y p (pale)
-    valor = valor.replace(/[^0-9+qbfp]/gi, '');
-    
+    // Permitir números, + , q , p (pale) y - (straight / derecho)
+    valor = valor.replace(/[^0-9+qbfp-]/gi, '');
+
+    // El "-" indica straight (derecho): solo digitos + "-" al final (max 4 digitos),
+    // sin combinar con otros sufijos.
+    if (valor.includes('-')) {
+      const soloDigitos = valor.replace(/[^0-9]/g, '').slice(0, 4);
+      setNumero(soloDigitos + '-');
+      // Pick 3/4 derecho ya esta listo: saltar al monto
+      if (soloDigitos.length >= 3) {
+        setTimeout(() => inputMontoRef.current?.focus(), 0);
+      }
+      return;
+    }
+
     const tieneMas = valor.includes('+');
     const tieneQ = valor.includes('q');
     const tieneB = valor.includes('b');
@@ -1463,8 +1488,20 @@ const GeneradorNumeros = ({
     if (valor.length > 6) {
       valor = valor.slice(0, 6);
     }
-    
+
     setNumero(valor);
+
+    // Si el numero quedo completo con un sufijo definitorio (+, q, bolita,
+    // pale, primeros/ultimos 3 box), saltar automaticamente al campo de monto.
+    const esNumeroListo =
+      /^\d{3,4}\+$/.test(valor) ||   // box pick 3/4
+      /^\d{3,4}q$/.test(valor) ||    // todas las combinaciones
+      /^\d{2}\+[12]$/.test(valor) || // bolita
+      /^\d{4}p$/.test(valor) ||      // pale
+      /^\d{3}[fb]\+$/.test(valor);   // primeros / ultimos 3 box
+    if (esNumeroListo) {
+      setTimeout(() => inputMontoRef.current?.focus(), 0);
+    }
   };
 
   const handleKeyPressNumero = (e) => {
