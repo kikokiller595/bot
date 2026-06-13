@@ -109,6 +109,7 @@ const createApp = () => {
   app.use('/api/puntos-venta', require('./routes/puntosVenta'));
   app.use('/api/loterias', require('./routes/loterias'));
   app.use('/api/sorteos', require('./routes/sorteos'));
+  app.use('/api/recogidas', require('./routes/recogidas'));
   app.use('/api/resultados-bot', require('./routes/resultadosBot'));
 
   app.get('/api', (req, res) => {

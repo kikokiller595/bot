@@ -1,0 +1,317 @@
+.recogida-container {
+  height: 100%;
+}
+
+.recogida-card {
+  min-height: 100%;
+  padding: 1.45rem;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+}
+
+.recogida-header {
+  margin-bottom: 1.2rem;
+}
+
+.recogida-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.recogida-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+/* ── Navegador de semana ── */
+.recogida-semana-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+
+.semana-btn {
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.semana-btn:hover {
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.semana-rango {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.semana-rango-texto {
+  color: var(--text-main);
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: capitalize;
+}
+
+.semana-hoy {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.semana-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.semana-selector span {
+  color: var(--text-soft);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.semana-selector input {
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-main);
+  color-scheme: dark;
+  font-size: 0.82rem;
+}
+
+.recogida-error {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: var(--danger);
+  font-size: 0.88rem;
+}
+
+/* ── Totales ── */
+.recogida-totales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.2rem;
+}
+
+.total-card {
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.total-card--destacado {
+  background: rgba(59, 130, 246, 0.06);
+  border-color: var(--line-strong);
+}
+
+.total-label {
+  display: block;
+  color: var(--text-soft);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.total-value {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--text-main);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.total-verde { color: var(--success); }
+.total-rojo { color: var(--danger); }
+.total-amarillo { color: var(--accent-warm); }
+
+/* ── Tabla ── */
+.recogida-tabla-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.recogida-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.recogida-tabla thead th {
+  text-align: left;
+  padding: 0.85rem 1rem;
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.recogida-tabla thead th.col-accion {
+  text-align: right;
+}
+
+.recogida-tabla tbody tr {
+  border-top: 1px solid var(--line);
+}
+
+.recogida-tabla tbody td {
+  padding: 0.8rem 1rem;
+  color: var(--text-main);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.fila-recogida {
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.celda-punto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  white-space: normal;
+}
+
+.punto-nombre {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.punto-meta {
+  font-size: 0.72rem;
+  color: var(--text-soft);
+}
+
+.celda-rojo { color: var(--danger); }
+
+.celda-debe {
+  font-weight: 800;
+  color: var(--success);
+}
+
+.col-accion {
+  text-align: right;
+}
+
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-recogido {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--success);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-pendiente {
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--accent-warm);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-fecha {
+  font-weight: 600;
+  opacity: 0.8;
+  text-transform: none;
+}
+
+.btn-recoger,
+.btn-deshacer {
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-recoger {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--success);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.btn-recoger:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.24);
+}
+
+.btn-deshacer {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--danger);
+  border-color: rgba(244, 63, 94, 0.25);
+}
+
+.btn-deshacer:hover:not(:disabled) {
+  background: rgba(244, 63, 94, 0.2);
+}
+
+.btn-recoger:disabled,
+.btn-deshacer:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.recogida-vacio {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .recogida-card {
+    padding: 1rem;
+  }
+
+  .recogida-semana-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

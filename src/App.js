@@ -8,6 +8,7 @@ import ReporteVenta from './components/ReporteVenta';
 import PanelAdministracion from './components/PanelAdministracion';
 import CalculadoraPremios from './components/CalculadoraPremios';
 import NumerosGanadores from './components/NumerosGanadores';
+import RecogidaSocios from './components/RecogidaSocios';
 import { normalizarPremios } from './utils/premiosDefault';
 import { obtenerClaveFecha } from './utils/dateParser';
 import { useAuth } from './context/AuthContext';
@@ -62,15 +63,21 @@ function App() {
       summary: 'Consulta ganadores, pagos y balances de premios.'
     },
     {
+      id: 'recogida',
+      label: 'Recogida',
+      code: '05',
+      summary: 'Control semanal de cobros y recogida de dinero por punto de venta.'
+    },
+    {
       id: 'administracion',
       label: 'Configuracion',
-      code: '05',
+      code: '06',
       summary: 'Loterias, usuarios, puntos de venta y resultados.'
     },
     {
       id: 'resumen',
       label: 'Pulso general',
-      code: '06',
+      code: '07',
       summary: 'Ventas del dia, actividad y panorama de toda la red.'
     }
   ];
@@ -637,6 +644,14 @@ function App() {
             puntosVenta={puntosVenta}
             marcarPagoTicket={marcarPagoTicket}
           />
+        </div>
+      );
+    }
+
+    if (panelActivo === 'recogida') {
+      return (
+        <div className="content-grid panel-single">
+          <RecogidaSocios sorteos={sorteos} puntosVenta={puntosVenta} />
         </div>
       );
     }
