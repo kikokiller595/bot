@@ -25,6 +25,9 @@ function App() {
   const [panelActivo, setPanelActivo] = useState('venta');
   const [menuRapidoAbierto, setMenuRapidoAbierto] = useState(false);
   const menuRapidoRef = useRef(null);
+  const [periodoBoard, setPeriodoBoard] = useState('hoy'); // 'hoy' | 'semana' | 'personalizado'
+  const [boardDesde, setBoardDesde] = useState('');
+  const [boardHasta, setBoardHasta] = useState('');
 
 
   const formatearMoneda = (valor = 0) =>
@@ -159,6 +162,66 @@ function App() {
       .map((sorteo) => String(sorteo.ticketId || sorteo.grupoId || sorteo.id || ''))
       .filter(Boolean)
   ).size;
+
+  // ── Rango del board (Hoy / Semana lunes-domingo / Personalizado) ──
+  const obtenerRangoBoard = () => {
+    if (periodoBoard === 'semana') {
+      const hoy = new Date();
+      const dia = hoy.getDay(); // 0=domingo, 1=lunes...
+      const diffLunes = dia === 0 ? -6 : 1 - dia;
+      const lunes = new Date(hoy);
+      lunes.setDate(hoy.getDate() + diffLunes);
+      const domingo = new Date(lunes);
+      domingo.setDate(lunes.getDate() + 6);
+      return { desde: obtenerClaveFecha(lunes), hasta: obtenerClaveFecha(domingo) };
+    }
+    if (periodoBoard === 'personalizado') {
+      return { desde: boardDesde || null, hasta: boardHasta || null };
+    }
+    return { desde: hoyClave, hasta: hoyClave };
+  };
+  const rangoBoard = obtenerRangoBoard();
+
+  const sorteosPeriodo = sorteos.filter((sorteo) => {
+    const clave = obtenerClaveFecha(sorteo.fechaISO || sorteo.fecha);
+    if (!clave) return false;
+    if (rangoBoard.desde && clave < rangoBoard.desde) return false;
+    if (rangoBoard.hasta && clave > rangoBoard.hasta) return false;
+    return true;
+  });
+  const ventaPeriodo = sorteosPeriodo.reduce(
+    (total, sorteo) => total + (Number(sorteo.monto) || 0),
+    0
+  );
+  const premiosPeriodo = sorteosPeriodo
+    .filter((s) => s.ganador === true)
+    .reduce((total, s) => total + (Number(s.premio) || 0), 0);
+  const ticketsPeriodo = new Set(
+    sorteosPeriodo
+      .map((sorteo) => String(sorteo.ticketId || sorteo.grupoId || sorteo.id || ''))
+      .filter(Boolean)
+  ).size;
+
+  const formatearFechaCorta = (clave) => {
+    if (!clave) return '';
+    const partes = String(clave).split('-');
+    if (partes.length !== 3) return clave;
+    const fecha = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+    if (Number.isNaN(fecha.getTime())) return clave;
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).format(fecha);
+  };
+
+  let rangoBoardLabel;
+  if (periodoBoard === 'hoy') {
+    rangoBoardLabel = fechaPanel;
+  } else if (rangoBoard.desde && rangoBoard.hasta) {
+    rangoBoardLabel = `${formatearFechaCorta(rangoBoard.desde)} — ${formatearFechaCorta(rangoBoard.hasta)}`;
+  } else {
+    rangoBoardLabel = 'Selecciona las fechas';
+  }
+
+  const labelVentaPeriodo =
+    periodoBoard === 'hoy' ? 'Venta del dia' : periodoBoard === 'semana' ? 'Venta de la semana' : 'Venta del periodo';
   const puntosActivos = new Set(
     sorteos.map((sorteo) => String(sorteo.puntoVentaNombre || '').trim()).filter(Boolean)
   ).size;
@@ -788,17 +851,66 @@ function App() {
                   </div>
 
                   <div className="stage-masthead-board">
+                    <div className="board-periodo-selector">
+                      <button
+                        type="button"
+                        className={periodoBoard === 'hoy' ? 'activo' : ''}
+                        onClick={() => setPeriodoBoard('hoy')}
+                      >
+                        Hoy
+                      </button>
+                      <button
+                        type="button"
+                        className={periodoBoard === 'semana' ? 'activo' : ''}
+                        onClick={() => setPeriodoBoard('semana')}
+                      >
+                        Semana
+                      </button>
+                      <button
+                        type="button"
+                        className={periodoBoard === 'personalizado' ? 'activo' : ''}
+                        onClick={() => setPeriodoBoard('personalizado')}
+                      >
+                        Personalizado
+                      </button>
+                    </div>
+
+                    {periodoBoard === 'personalizado' && (
+                      <div className="board-fechas">
+                        <label>
+                          <span>Desde</span>
+                          <input
+                            type="date"
+                            value={boardDesde}
+                            onChange={(e) => setBoardDesde(e.target.value)}
+                          />
+                        </label>
+                        <label>
+                          <span>Hasta</span>
+                          <input
+                            type="date"
+                            value={boardHasta}
+                            onChange={(e) => setBoardHasta(e.target.value)}
+                          />
+                        </label>
+                      </div>
+                    )}
+
                     <div className="board-row">
-                      <span>Fecha de trabajo</span>
-                      <strong>{fechaPanel}</strong>
+                      <span>{periodoBoard === 'hoy' ? 'Fecha de trabajo' : 'Periodo'}</span>
+                      <strong>{rangoBoardLabel}</strong>
                     </div>
                     <div className="board-row">
-                      <span>Venta del dia</span>
-                      <strong>{formatearMoneda(ventaHoy)}</strong>
+                      <span>{labelVentaPeriodo}</span>
+                      <strong>{formatearMoneda(ventaPeriodo)}</strong>
                     </div>
                     <div className="board-row">
-                      <span>Tickets activos</span>
-                      <strong>{ticketsTotales}</strong>
+                      <span>Tickets del periodo</span>
+                      <strong>{ticketsPeriodo}</strong>
+                    </div>
+                    <div className="board-row">
+                      <span>Premios del periodo</span>
+                      <strong>{formatearMoneda(premiosPeriodo)}</strong>
                     </div>
                     <div className="board-row">
                       <span>Loterias visibles</span>

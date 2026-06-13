@@ -387,6 +387,71 @@
   gap: 0.4rem;
 }
 
+.board-periodo-selector {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.25rem;
+  background: rgba(59, 130, 246, 0.06);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.board-periodo-selector button {
+  flex: 1;
+  padding: 0.45rem 0.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-soft);
+  font-family: var(--font-code);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.board-periodo-selector button:hover {
+  color: var(--text-main);
+}
+
+.board-periodo-selector button.activo {
+  background: var(--accent-strong);
+  color: #fff;
+}
+
+.board-fechas {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.board-fechas label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.board-fechas label span {
+  color: var(--text-soft);
+  font-family: var(--font-code);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.board-fechas input {
+  padding: 0.45rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  color-scheme: dark;
+}
+
 .board-row {
   padding: 0.65rem 0.75rem;
   border-radius: var(--radius-md);
