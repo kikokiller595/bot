@@ -12,6 +12,23 @@ const obtenerLunes = (fecha) => {
   return d;
 };
 
+const claveAFecha = (clave) => {
+  const partes = String(clave || '').split('-');
+  if (partes.length !== 3) return null;
+  const fecha = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+  return Number.isNaN(fecha.getTime()) ? null : fecha;
+};
+
+const formatearSemanaLegible = (semanaInicio, semanaFin) => {
+  const ini = claveAFecha(semanaInicio);
+  const fin = claveAFecha(semanaFin);
+  if (!ini) return semanaInicio;
+  const opciones = { day: '2-digit', month: 'short' };
+  const iniTxt = new Intl.DateTimeFormat('es-ES', opciones).format(ini);
+  const finTxt = fin ? new Intl.DateTimeFormat('es-ES', opciones).format(fin) : '';
+  return finTxt ? `${iniTxt} — ${finTxt}` : iniTxt;
+};
+
 const formatearMoneda = (valor = 0) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(valor) || 0);
 
@@ -84,11 +101,88 @@ function RecogidaSocios({ sorteos = [], puntosVenta = [] }) {
           premios,
           comision,
           esperado,
-          recogida
+          recogida,
+          semanaInicio,
+          semanaFin
         };
       })
       .sort((a, b) => b.esperado - a.esperado);
   }, [sorteos, puntosVenta, recogidas, semanaInicio, semanaFin]);
+
+  // Pendientes de semanas ANTERIORES a la semana visible que no se marcaron como recogidas
+  const pendientesAnteriores = useMemo(() => {
+    const puntosMapa = new Map(
+      (puntosVenta || []).map((pv) => [String(pv.id || pv._id || ''), pv])
+    );
+
+    // semanaClave -> (puntoId -> { venta, premios, semanaFin, nombre })
+    const acum = new Map();
+    sorteos.forEach((s) => {
+      const claveDia = obtenerClaveFecha(s.fechaISO || s.fecha);
+      if (!claveDia) return;
+      const fechaDia = claveAFecha(claveDia);
+      if (!fechaDia) return;
+      const lunes = obtenerLunes(fechaDia);
+      const semanaClave = obtenerClaveFecha(lunes);
+      if (semanaClave >= semanaInicio) return; // solo semanas anteriores
+      const pvId = String(s.puntoVentaId || '');
+      if (!pvId) return;
+
+      if (!acum.has(semanaClave)) acum.set(semanaClave, new Map());
+      const semMap = acum.get(semanaClave);
+      if (!semMap.has(pvId)) {
+        const domingo = new Date(lunes);
+        domingo.setDate(domingo.getDate() + 6);
+        semMap.set(pvId, {
+          venta: 0,
+          premios: 0,
+          semanaFin: obtenerClaveFecha(domingo),
+          nombre: s.puntoVentaNombre || ''
+        });
+      }
+      const item = semMap.get(pvId);
+      item.venta += Number(s.monto) || 0;
+      if (s.ganador === true) item.premios += Number(s.premio) || 0;
+    });
+
+    const recogidasSet = new Set(
+      recogidas.map((r) => `${String(r.puntoVentaId)}|${r.semanaInicio}`)
+    );
+
+    const lista = [];
+    acum.forEach((semMap, semanaClave) => {
+      semMap.forEach((item, pvId) => {
+        const pv = puntosMapa.get(pvId);
+        const porcentaje = Number(pv?.porcentajeSocio) || 0;
+        const comision = (item.venta * porcentaje) / 100;
+        const esperado = item.venta - item.premios - comision;
+        const yaRecogido = recogidasSet.has(`${pvId}|${semanaClave}`);
+        if (!yaRecogido && esperado > 0.005) {
+          lista.push({
+            id: pvId,
+            nombre: pv?.nombre || item.nombre || 'Punto eliminado',
+            porcentaje,
+            venta: item.venta,
+            premios: item.premios,
+            comision,
+            esperado,
+            semanaInicio: semanaClave,
+            semanaFin: item.semanaFin
+          });
+        }
+      });
+    });
+
+    lista.sort(
+      (a, b) => a.semanaInicio.localeCompare(b.semanaInicio) || b.esperado - a.esperado
+    );
+    return lista;
+  }, [sorteos, puntosVenta, recogidas, semanaInicio]);
+
+  const totalPendienteAnterior = useMemo(
+    () => pendientesAnteriores.reduce((sum, p) => sum + p.esperado, 0),
+    [pendientesAnteriores]
+  );
 
   const totales = useMemo(() => {
     return filasPorPunto.reduce(
@@ -110,14 +204,14 @@ function RecogidaSocios({ sorteos = [], puntosVenta = [] }) {
   }, [filasPorPunto]);
 
   const marcarRecogido = async (fila) => {
-    setGuardando(fila.id);
+    setGuardando(`${fila.id}|${fila.semanaInicio}`);
     setError(null);
     try {
       await recogidasService.registrarRecogida({
         puntoVentaId: fila.id,
         puntoVentaNombre: fila.nombre,
-        semanaInicio,
-        semanaFin,
+        semanaInicio: fila.semanaInicio,
+        semanaFin: fila.semanaFin,
         montoVenta: fila.venta,
         montoPremios: fila.premios,
         montoComision: fila.comision,
@@ -134,7 +228,7 @@ function RecogidaSocios({ sorteos = [], puntosVenta = [] }) {
 
   const deshacerRecogido = async (fila) => {
     if (!fila.recogida) return;
-    setGuardando(fila.id);
+    setGuardando(`${fila.id}|${fila.semanaInicio}`);
     setError(null);
     try {
       await recogidasService.eliminarRecogida(fila.recogida.id);
@@ -204,6 +298,47 @@ function RecogidaSocios({ sorteos = [], puntosVenta = [] }) {
 
         {error && <div className="recogida-error">{error}</div>}
 
+        {pendientesAnteriores.length > 0 && (
+          <div className="pendientes-atrasados">
+            <div className="pendientes-atrasados-header">
+              <div className="pendientes-atrasados-titulo">
+                <span className="pendientes-icono">⚠</span>
+                <div>
+                  <h3>Pendientes de semanas anteriores</h3>
+                  <p>Cobros de semanas pasadas que aún no marcaste como recogidos.</p>
+                </div>
+              </div>
+              <div className="pendientes-total">
+                <span>Total atrasado</span>
+                <strong>{formatearMoneda(totalPendienteAnterior)}</strong>
+              </div>
+            </div>
+            <div className="pendientes-lista">
+              {pendientesAnteriores.map((p) => {
+                const enProceso = guardando === `${p.id}|${p.semanaInicio}`;
+                return (
+                  <div key={`${p.id}-${p.semanaInicio}`} className="pendiente-item">
+                    <div className="pendiente-info">
+                      <span className="pendiente-nombre">{p.nombre}</span>
+                      <span className="pendiente-semana">
+                        Semana {formatearSemanaLegible(p.semanaInicio, p.semanaFin)}
+                      </span>
+                    </div>
+                    <span className="pendiente-monto">{formatearMoneda(p.esperado)}</span>
+                    <button
+                      className="btn-recoger"
+                      disabled={enProceso}
+                      onClick={() => marcarRecogido(p)}
+                    >
+                      {enProceso ? '…' : 'Marcar recogido'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="recogida-totales">
           <div className="total-card">
             <span className="total-label">Venta de la semana</span>
@@ -252,7 +387,7 @@ function RecogidaSocios({ sorteos = [], puntosVenta = [] }) {
               <tbody>
                 {filasPorPunto.map((fila) => {
                   const recogido = Boolean(fila.recogida);
-                  const enProceso = guardando === fila.id;
+                  const enProceso = guardando === `${fila.id}|${fila.semanaInicio}`;
                   return (
                     <tr key={fila.id || fila.nombre} className={recogido ? 'fila-recogida' : ''}>
                       <td className="celda-punto">

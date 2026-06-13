@@ -119,6 +119,110 @@
   font-size: 0.88rem;
 }
 
+/* ── Pendientes de semanas anteriores ── */
+.pendientes-atrasados {
+  margin-bottom: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.07);
+  overflow: hidden;
+}
+
+.pendientes-atrasados-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.pendientes-atrasados-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.pendientes-icono {
+  font-size: 1.4rem;
+  color: var(--accent-warm);
+}
+
+.pendientes-atrasados-titulo h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text-main);
+}
+
+.pendientes-atrasados-titulo p {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.pendientes-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.pendientes-total span {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.pendientes-total strong {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent-warm);
+}
+
+.pendientes-lista {
+  display: flex;
+  flex-direction: column;
+}
+
+.pendiente-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1.1rem;
+  border-top: 1px solid rgba(245, 158, 11, 0.12);
+}
+
+.pendiente-item:first-child {
+  border-top: none;
+}
+
+.pendiente-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.pendiente-nombre {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.pendiente-semana {
+  font-size: 0.76rem;
+  color: var(--text-soft);
+  text-transform: capitalize;
+}
+
+.pendiente-monto {
+  font-weight: 800;
+  color: var(--accent-warm);
+  white-space: nowrap;
+}
+
 /* ── Totales ── */
 .recogida-totales {
   display: grid;
