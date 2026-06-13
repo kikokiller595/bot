@@ -955,24 +955,35 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                 new Set(grupo.tickets.map(t => t.loteriaNombre).filter(Boolean))
               );
 
-              const jugadasMapa = new Map();
+              const jugadasPorLoteriaMapa = new Map();
               grupo.tickets.forEach((t) => {
                 const numero = String(t.numero || (t.numeros && t.numeros[0]) || '').trim();
                 if (!numero) return;
                 const tipo = (t.tipoApuesta || t.tipo || 'straight').toLowerCase();
-                const clave = `${numero}|${tipo}`;
-                if (!jugadasMapa.has(clave)) {
-                  jugadasMapa.set(clave, { numero, tipo, monto: 0 });
+                const loteriaNombre = t.loteriaNombre || 'Sin lotería';
+                const loteriaClave = String(t.loteriaId || loteriaNombre);
+                if (!jugadasPorLoteriaMapa.has(loteriaClave)) {
+                  jugadasPorLoteriaMapa.set(loteriaClave, { loteriaNombre, jugadas: new Map() });
                 }
-                jugadasMapa.get(clave).monto += parseFloat(t.monto) || 0;
+                const jugadasLot = jugadasPorLoteriaMapa.get(loteriaClave).jugadas;
+                const clave = `${numero}|${tipo}`;
+                if (!jugadasLot.has(clave)) {
+                  jugadasLot.set(clave, { numero, tipo, monto: 0 });
+                }
+                jugadasLot.get(clave).monto += parseFloat(t.monto) || 0;
               });
-              const todasJugadas = Array.from(jugadasMapa.values())
-                .sort((a, b) => {
-                  const numA = parseInt(a.numero, 10);
-                  const numB = parseInt(b.numero, 10);
-                  if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-                  return a.numero.localeCompare(b.numero);
-                });
+              const jugadasAgrupadas = Array.from(jugadasPorLoteriaMapa.values())
+                .map((g) => ({
+                  loteriaNombre: g.loteriaNombre,
+                  jugadas: Array.from(g.jugadas.values()).sort((a, b) => {
+                    const numA = parseInt(a.numero, 10);
+                    const numB = parseInt(b.numero, 10);
+                    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                    return a.numero.localeCompare(b.numero);
+                  })
+                }))
+                .sort((a, b) => a.loteriaNombre.localeCompare(b.loteriaNombre));
+              const totalJugadas = jugadasAgrupadas.reduce((sum, g) => sum + g.jugadas.length, 0);
 
               const estadosGrupo = grupo.tickets.map(t => {
                 const info = resultadoTicketsMapa[normalizarId(t)] || { estado: 'pendiente', premio: 0 };
@@ -1148,16 +1159,23 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                       </div>
                     )}
                     <div className="resumen-block numeros">
-                      <span className="resumen-titulo">Jugadas ({todasJugadas.length})</span>
-                      <div className="resumen-numeros">
-                        {todasJugadas.map((jugada, index) => (
-                          <span key={`${grupoKey}-jug-${index}`} className="chip-numero">
-                            {jugada.numero}
-                            {jugada.tipo !== 'straight' && (
-                              <span className="chip-tipo-badge">{getTipoCorto(jugada.tipo)}</span>
-                            )}
-                            <span className="chip-monto-badge">${jugada.monto.toFixed(2)}</span>
-                          </span>
+                      <span className="resumen-titulo">Jugadas ({totalJugadas})</span>
+                      <div className="jugadas-por-loteria">
+                        {jugadasAgrupadas.map((grupoLot, lotIndex) => (
+                          <div key={`${grupoKey}-lot-${lotIndex}`} className="jugadas-loteria-grupo">
+                            <span className="jugadas-loteria-nombre">{grupoLot.loteriaNombre}</span>
+                            <div className="resumen-numeros">
+                              {grupoLot.jugadas.map((jugada, index) => (
+                                <span key={`${grupoKey}-${lotIndex}-jug-${index}`} className="chip-numero">
+                                  {jugada.numero}
+                                  {jugada.tipo !== 'straight' && (
+                                    <span className="chip-tipo-badge">{getTipoCorto(jugada.tipo)}</span>
+                                  )}
+                                  <span className="chip-monto-badge">${jugada.monto.toFixed(2)}</span>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>

@@ -508,6 +508,26 @@
   color: var(--success);
 }
 
+.jugadas-por-loteria {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.jugadas-loteria-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.jugadas-loteria-nombre {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #f59e0b;
+  text-transform: uppercase;
+}
+
 .resumen-numeros {
   display: flex;
   flex-wrap: wrap;
