@@ -151,6 +151,12 @@ function App() {
 
   const hoyClave = obtenerClaveFecha(new Date());
 
+  // Tickets activos (sin los cancelados): base para todos los calculos de dinero.
+  const sorteosActivos = useMemo(
+    () => sorteos.filter((sorteo) => !sorteo.cancelado),
+    [sorteos]
+  );
+
   // Agregados generales: una sola pasada sobre los sorteos, memoizada para
   // no recalcular en cada render (p. ej. al navegar entre menus).
   const { sorteosHoy, ventaHoy, ventaAcumulada, ticketsTotales } = useMemo(() => {
@@ -159,7 +165,7 @@ function App() {
     const sHoy = [];
     const ticketsSet = new Set();
 
-    for (const sorteo of sorteos) {
+    for (const sorteo of sorteosActivos) {
       const monto = Number(sorteo.monto) || 0;
       vAcum += monto;
       const idTicket = String(sorteo.ticketId || sorteo.grupoId || sorteo.id || '');
@@ -171,7 +177,7 @@ function App() {
     }
 
     return { sorteosHoy: sHoy, ventaHoy: vHoy, ventaAcumulada: vAcum, ticketsTotales: ticketsSet.size };
-  }, [sorteos, hoyClave]);
+  }, [sorteosActivos, hoyClave]);
 
   // ── Rango del board (Hoy / Semana lunes-domingo / Personalizado) ──
   const rangoBoard = useMemo(() => {
@@ -197,7 +203,7 @@ function App() {
     let pPer = 0;
     const ticketsSet = new Set();
 
-    for (const sorteo of sorteos) {
+    for (const sorteo of sorteosActivos) {
       const clave = obtenerClaveFecha(sorteo.fechaISO || sorteo.fecha);
       if (!clave) continue;
       if (rangoBoard.desde && clave < rangoBoard.desde) continue;
@@ -209,7 +215,7 @@ function App() {
     }
 
     return { ventaPeriodo: vPer, premiosPeriodo: pPer, ticketsPeriodo: ticketsSet.size };
-  }, [sorteos, rangoBoard]);
+  }, [sorteosActivos, rangoBoard]);
 
   const formatearFechaCorta = (clave) => {
     if (!clave) return '';
@@ -234,9 +240,9 @@ function App() {
   const puntosActivos = useMemo(
     () =>
       new Set(
-        sorteos.map((sorteo) => String(sorteo.puntoVentaNombre || '').trim()).filter(Boolean)
+        sorteosActivos.map((sorteo) => String(sorteo.puntoVentaNombre || '').trim()).filter(Boolean)
       ).size,
-    [sorteos]
+    [sorteosActivos]
   );
 
   const normalizarHoraCierre = (valor) => {
@@ -424,14 +430,18 @@ function App() {
         await Promise.all(idsAEliminar.map(id => sorteosService.eliminarSorteo(id)));
       }
       
-      // Actualizar estado local
+      // Soft delete: marcar como cancelado en lugar de quitarlo del historial
       setSorteos(prevSorteos =>
-        prevSorteos.filter(sorteo => !idsAEliminar.includes(sorteo.id))
+        prevSorteos.map(sorteo =>
+          idsAEliminar.includes(sorteo.id)
+            ? { ...sorteo, cancelado: true }
+            : sorteo
+        )
       );
     } catch (error) {
-      console.error('Error al eliminar sorteo:', error);
+      console.error('Error al cancelar sorteo:', error);
       const mensajeServidor = error?.response?.data?.message;
-      alert(mensajeServidor || 'Error al eliminar el ticket. Por favor, intenta de nuevo.');
+      alert(mensajeServidor || 'Error al cancelar el ticket. Por favor, intenta de nuevo.');
     }
   };
 
@@ -605,7 +615,7 @@ function App() {
 
   const renderPanelAdmin = () => {
     if (panelActivo === 'resumen') {
-      return <DashboardOperativo sorteos={sorteos} loterias={loterias} />;
+      return <DashboardOperativo sorteos={sorteosActivos} loterias={loterias} />;
     }
 
     if (panelActivo === 'venta') {
@@ -615,7 +625,7 @@ function App() {
             guardarSorteo={guardarSorteo}
             guardarMultiplesSorteos={guardarMultiplesSorteos}
             loterias={loterias}
-            sorteos={sorteos}
+            sorteos={sorteosActivos}
             puntosVenta={puntosVenta}
           />
         </div>
@@ -639,7 +649,7 @@ function App() {
     if (panelActivo === 'reportes') {
       return (
         <div className="content-grid panel-single">
-          <ReporteVenta sorteos={sorteos} loterias={loterias} puntosVenta={puntosVenta} />
+          <ReporteVenta sorteos={sorteosActivos} loterias={loterias} puntosVenta={puntosVenta} />
         </div>
       );
     }
@@ -648,7 +658,7 @@ function App() {
       return (
         <div className="content-grid panel-single">
           <CalculadoraPremios
-            sorteos={sorteos}
+            sorteos={sorteosActivos}
             loterias={loterias}
             puntosVenta={puntosVenta}
             marcarPagoTicket={marcarPagoTicket}
@@ -660,7 +670,7 @@ function App() {
     if (panelActivo === 'recogida') {
       return (
         <div className="content-grid panel-single">
-          <RecogidaSocios sorteos={sorteos} puntosVenta={puntosVenta} />
+          <RecogidaSocios sorteos={sorteosActivos} puntosVenta={puntosVenta} />
         </div>
       );
     }
@@ -685,7 +695,7 @@ function App() {
             guardarSorteo={guardarSorteo}
             guardarMultiplesSorteos={guardarMultiplesSorteos}
             loterias={loterias}
-            sorteos={sorteos}
+            sorteos={sorteosActivos}
             puntosVenta={puntosVenta}
           />
         </div>
@@ -709,7 +719,7 @@ function App() {
     if (panelActivo === 'reportes') {
       return (
         <div className="content-grid panel-single">
-          <ReporteVenta sorteos={sorteos} loterias={loterias} puntosVenta={puntosVenta} />
+          <ReporteVenta sorteos={sorteosActivos} loterias={loterias} puntosVenta={puntosVenta} />
         </div>
       );
     }
@@ -718,7 +728,7 @@ function App() {
       return (
         <div className="content-grid panel-single">
           <CalculadoraPremios
-            sorteos={sorteos}
+            sorteos={sorteosActivos}
             loterias={loterias}
             puntosVenta={puntosVenta}
             marcarPagoTicket={marcarPagoTicket}
@@ -745,7 +755,7 @@ function App() {
           guardarSorteo={guardarSorteo}
           guardarMultiplesSorteos={guardarMultiplesSorteos}
           loterias={loterias}
-          sorteos={sorteos}
+          sorteos={sorteosActivos}
           puntosVenta={puntosVenta}
         />
       </div>
@@ -770,7 +780,7 @@ function App() {
     if (panelActivo === 'reportes') {
       return (
         <div className="content-grid panel-single">
-          <ReporteVenta sorteos={sorteos} loterias={loterias} puntosVenta={puntosVenta} />
+          <ReporteVenta sorteos={sorteosActivos} loterias={loterias} puntosVenta={puntosVenta} />
         </div>
       );
     }
@@ -793,7 +803,7 @@ function App() {
           guardarSorteo={guardarSorteo}
           guardarMultiplesSorteos={guardarMultiplesSorteos}
           loterias={loterias}
-          sorteos={sorteos}
+          sorteos={sorteosActivos}
           puntosVenta={puntosVenta}
         />
       </div>

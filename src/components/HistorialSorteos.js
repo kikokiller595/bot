@@ -535,15 +535,24 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
   ]);
 
   const resumen = useMemo(() => {
-    const totalSeleccion = sorteosFiltrados.length;
-    const totalMonto = sorteosFiltrados.reduce((sum, t) => sum + (parseFloat(t.monto) || 0), 0);
-
+    let totalSeleccion = 0;
+    let totalMonto = 0;
     let ganados = 0;
     let perdidos = 0;
     let pendientes = 0;
+    let cancelados = 0;
     let totalPremios = 0;
 
     sorteosFiltrados.forEach(ticket => {
+      // Los tickets cancelados no cuentan como venta ni premio
+      if (ticket.cancelado) {
+        cancelados += 1;
+        return;
+      }
+
+      totalSeleccion += 1;
+      totalMonto += parseFloat(ticket.monto) || 0;
+
       const resultado = resultadoTicketsMapa[normalizarId(ticket)] || { estado: 'pendiente', premio: 0 };
       totalPremios += resultado.premio || 0;
 
@@ -558,7 +567,8 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
       totalPremios,
       ganados,
       perdidos,
-      pendientes
+      pendientes,
+      cancelados
     };
   }, [sorteosFiltrados, resultadoTicketsMapa]);
 
@@ -697,10 +707,13 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
       });
     });
 
+    const cancelado = grupoSeleccionado.tickets.length > 0 && grupoSeleccionado.tickets.every((t) => t.cancelado);
+
     return {
       serial: grupoSeleccionado.ticketId,
       fecha: grupoSeleccionado.fecha,
       puntoVentaNombre: grupoSeleccionado.tickets[0]?.puntoVentaNombre || 'Sin punto',
+      cancelado,
       totalApostado,
       totalPremios,
       loterias: Array.from(porLoteria.values()).sort((a, b) => a.loteriaNombre.localeCompare(b.loteriaNombre))
@@ -845,17 +858,33 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
   };
 
   const obtenerResumenGrupo = (grupo) => {
+    const cancelado = grupo.tickets.length > 0 && grupo.tickets.every((t) => t.cancelado);
     const totalMonto = grupo.tickets.reduce((sum, t) => sum + (parseFloat(t.monto) || 0), 0);
-    const premioGrupo = grupo.tickets.reduce(
-      (sum, t) => sum + (resultadoTicketsMapa[normalizarId(t)]?.premio || 0),
-      0
-    );
-    const estados = grupo.tickets.map((t) => resultadoTicketsMapa[normalizarId(t)]?.estado || 'pendiente');
+    const premioGrupo = cancelado
+      ? 0
+      : grupo.tickets.reduce(
+          (sum, t) => sum + (resultadoTicketsMapa[normalizarId(t)]?.premio || 0),
+          0
+        );
+
     let estadoGrupo = 'pendiente';
-    if (estados.some((e) => e === 'gano')) estadoGrupo = 'gano';
-    else if (estados.length > 0 && estados.every((e) => e === 'perdio')) estadoGrupo = 'perdio';
-    const estadoGrupoLabel = estadoGrupo === 'gano' ? 'Ganó' : estadoGrupo === 'perdio' ? 'Perdió' : 'Pendiente';
-    return { totalMonto, premioGrupo, estadoGrupo, estadoGrupoLabel };
+    if (cancelado) {
+      estadoGrupo = 'cancelado';
+    } else {
+      const estados = grupo.tickets.map((t) => resultadoTicketsMapa[normalizarId(t)]?.estado || 'pendiente');
+      if (estados.some((e) => e === 'gano')) estadoGrupo = 'gano';
+      else if (estados.length > 0 && estados.every((e) => e === 'perdio')) estadoGrupo = 'perdio';
+    }
+
+    const estadoGrupoLabel =
+      estadoGrupo === 'cancelado'
+        ? 'Cancelado'
+        : estadoGrupo === 'gano'
+        ? 'Ganó'
+        : estadoGrupo === 'perdio'
+        ? 'Perdió'
+        : 'Pendiente';
+    return { totalMonto, premioGrupo, estadoGrupo, estadoGrupoLabel, cancelado };
   };
 
   const esElevado = isAdmin() || isSupervisor();
@@ -1025,6 +1054,10 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
             <span className="resumen-label">Pendientes</span>
             <span className="resumen-value resumen-pendientes">{resumen.pendientes}</span>
           </div>
+          <div className="resumen-card">
+            <span className="resumen-label">Cancelados</span>
+            <span className="resumen-value resumen-cancelados">{resumen.cancelados}</span>
+          </div>
         </div>
 
         {!sorteos || sorteos.length === 0 ? (
@@ -1065,7 +1098,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                       </thead>
                       <tbody>
                         {gruposPaginados.map((grupo) => {
-                          const { totalMonto, premioGrupo, estadoGrupo, estadoGrupoLabel } = obtenerResumenGrupo(grupo);
+                          const { totalMonto, premioGrupo, estadoGrupo, estadoGrupoLabel, cancelado } = obtenerResumenGrupo(grupo);
                           const grupoPuedeEliminarse = puedeEliminarGrupo(grupo);
                           const seleccionada = grupo.grupoKey === grupoSeleccionadoKey;
                           const serialStr = String(grupo.ticketId || '');
@@ -1107,20 +1140,26 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                                   </button>
                                   <button
                                     className="accion-btn accion-eliminar"
-                                    disabled={!grupoPuedeEliminarse}
+                                    disabled={!grupoPuedeEliminarse || cancelado}
                                     onClick={(e) => {
                                       e.stopPropagation();
+                                      if (cancelado) return;
                                       if (!grupoPuedeEliminarse) {
-                                        alert('Este ticket ya paso de 5 minutos. Solo administracion puede eliminarlo.');
+                                        alert('Este ticket ya paso de 5 minutos. Solo administracion puede cancelarlo.');
+                                        return;
+                                      }
+                                      if (!window.confirm('¿Cancelar este ticket? Quedará en el historial marcado como cancelado.')) {
                                         return;
                                       }
                                       const idsGrupo = grupo.tickets.map((ticket) => ticket.id);
                                       eliminarSorteo(idsGrupo, grupo.tickets[0]?.grupoId || '');
                                     }}
                                     title={
-                                      grupoPuedeEliminarse
-                                        ? 'Eliminar todos los tickets del grupo'
-                                        : 'Solo administracion puede eliminar tickets despues de 5 minutos'
+                                      cancelado
+                                        ? 'Este ticket ya esta cancelado'
+                                        : grupoPuedeEliminarse
+                                        ? 'Cancelar todos los tickets del grupo'
+                                        : 'Solo administracion puede cancelar tickets despues de 5 minutos'
                                     }
                                   >
                                     ✕
@@ -1165,6 +1204,9 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                 <div className="recibo">
                   <div className="recibo-encabezado">
                     <h3 className="recibo-titulo">TICKET: {detalleSeleccionado.serial}</h3>
+                    {detalleSeleccionado.cancelado && (
+                      <p className="recibo-cancelado-badge">TICKET CANCELADO</p>
+                    )}
                     <p className="recibo-fecha">{detalleSeleccionado.fecha}</p>
                     {esElevado && (
                       <p className="recibo-punto">

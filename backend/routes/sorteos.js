@@ -745,17 +745,22 @@ router.delete('/:id', protect, async (req, res) => {
       }
     }
 
-    await sorteo.deleteOne();
+    // Soft delete: se marca como cancelado y queda en el historial
+    sorteo.cancelado = true;
+    sorteo.canceladoPor = req.user?.nombre || req.user?.username || '';
+    sorteo.fechaCancelacion = new Date();
+    await sorteo.save();
 
     res.json({
       success: true,
-      message: 'Sorteo eliminado correctamente'
+      message: 'Ticket cancelado correctamente',
+      data: { id: String(sorteo._id), cancelado: true }
     });
   } catch (error) {
-    console.error('Error al eliminar sorteo:', error);
+    console.error('Error al cancelar sorteo:', error);
     res.status(500).json({
       success: false,
-      message: 'Error al eliminar sorteo'
+      message: 'Error al cancelar sorteo'
     });
   }
 });
@@ -794,19 +799,27 @@ router.delete('/grupo/:grupoId', protect, async (req, res) => {
       });
     }
 
-    const result = await Sorteo.deleteMany({
-      _id: { $in: sorteosGrupo.map((sorteo) => sorteo._id) }
-    });
+    // Soft delete del grupo: se marcan como cancelados y quedan en el historial
+    const result = await Sorteo.updateMany(
+      { _id: { $in: sorteosGrupo.map((sorteo) => sorteo._id) } },
+      {
+        $set: {
+          cancelado: true,
+          canceladoPor: req.user?.nombre || req.user?.username || '',
+          fechaCancelacion: new Date()
+        }
+      }
+    );
 
     res.json({
       success: true,
-      message: `${result.deletedCount} sorteos eliminados correctamente`
+      message: `${result.modifiedCount} tickets cancelados correctamente`
     });
   } catch (error) {
-    console.error('Error al eliminar grupo de sorteos:', error);
+    console.error('Error al cancelar grupo de sorteos:', error);
     res.status(500).json({
       success: false,
-      message: 'Error al eliminar sorteos'
+      message: 'Error al cancelar sorteos'
     });
   }
 });

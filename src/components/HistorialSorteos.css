@@ -285,6 +285,10 @@
   color: var(--danger);
 }
 
+.resumen-cancelados {
+  color: #94a3b8;
+}
+
 .sin-sorteos {
   padding: 3.5rem 1rem;
   text-align: center;
@@ -425,6 +429,12 @@
 .estado-badge.estado-pendiente {
   background: rgba(245, 158, 11, 0.14);
   color: #f59e0b;
+}
+
+.estado-badge.estado-cancelado {
+  background: rgba(148, 163, 184, 0.16);
+  color: #94a3b8;
+  text-decoration: line-through;
 }
 
 .btn-reimprimir {
@@ -822,6 +832,19 @@
   font-size: 0.9rem;
   color: var(--text-soft);
   margin: 0 0 0.5rem;
+}
+
+.recibo-cancelado-badge {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(244, 63, 94, 0.14);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: var(--danger);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
 }
 
 .recibo-punto {

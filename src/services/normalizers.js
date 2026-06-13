@@ -244,7 +244,10 @@ export const normalizeSorteo = (sorteo) => {
     puntoVentaPagoNombre: String(
       sorteo.puntoVentaPagoNombre || sorteo.puntoVentaPago?.nombre || ''
     ).trim(),
-    pagoPremioId: toId(sorteo.pagoPremioId || sorteo.pagoPremio)
+    pagoPremioId: toId(sorteo.pagoPremioId || sorteo.pagoPremio),
+    cancelado: Boolean(sorteo.cancelado),
+    canceladoPor: String(sorteo.canceladoPor || '').trim(),
+    fechaCancelacion: sorteo.fechaCancelacion || null
   };
 };
 

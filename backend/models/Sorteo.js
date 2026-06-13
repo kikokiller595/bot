@@ -134,6 +134,19 @@ const sorteoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'PagoPremio',
     default: null
+  },
+  cancelado: {
+    type: Boolean,
+    default: false
+  },
+  canceladoPor: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  fechaCancelacion: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true
