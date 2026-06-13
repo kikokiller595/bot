@@ -683,6 +683,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
     return {
       serial: grupoSeleccionado.ticketId,
       fecha: grupoSeleccionado.fecha,
+      puntoVentaNombre: grupoSeleccionado.tickets[0]?.puntoVentaNombre || 'Sin punto',
       totalApostado,
       totalPremios,
       loterias: Array.from(porLoteria.values()).sort((a, b) => a.loteriaNombre.localeCompare(b.loteriaNombre))
@@ -1148,6 +1149,11 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                   <div className="recibo-encabezado">
                     <h3 className="recibo-titulo">TICKET: {detalleSeleccionado.serial}</h3>
                     <p className="recibo-fecha">{detalleSeleccionado.fecha}</p>
+                    {esElevado && (
+                      <p className="recibo-punto">
+                        Punto de venta: <strong>{detalleSeleccionado.puntoVentaNombre}</strong>
+                      </p>
+                    )}
                     <p className="recibo-subtitulo">
                       Apostado: <strong>${detalleSeleccionado.totalApostado.toFixed(2)}</strong>
                       {' | '}
