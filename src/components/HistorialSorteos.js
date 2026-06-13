@@ -1185,6 +1185,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                     <div className="sorteo-detalle-expandido">
                       <div className={`detalle-table-header ${esElevado ? 'admin-view' : ''}`}>
                         <span>Número</span>
+                        <span>Lotería</span>
                         <span>Tipo</span>
                         <span>Monto</span>
                         {esElevado && <span>Punto</span>}
@@ -1201,6 +1202,7 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
                           return (
                             <div key={ticket.id || index} className={`detalle-row ${esElevado ? 'admin-view' : ''}`}>
                               <span>{formatearNumeroTicket(numeroTicket, ticket.tipoApuesta)}</span>
+                              <span className="detalle-loteria">{ticket.loteriaNombre || 'Sin lotería'}</span>
                               <span>{ticket.tipoApuesta ? getTipoApuestaLabel(ticket.tipoApuesta) : getTipoLabel(ticket.tipo)}</span>
                               <span>${(ticket.monto || 1).toFixed(2)}</span>
                               {esElevado && <span>{ticket.puntoVentaNombre || 'Sin punto'}</span>}

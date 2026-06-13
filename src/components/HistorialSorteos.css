@@ -569,10 +569,15 @@
 .detalle-table-header,
 .detalle-row {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.6rem;
   padding: 0.9rem 1rem;
   align-items: center;
+}
+
+.detalle-loteria {
+  color: #f59e0b;
+  font-weight: 600;
 }
 
 .detalle-table-header {
@@ -591,7 +596,7 @@
 
 .detalle-table-header.admin-view,
 .detalle-row.admin-view {
-  grid-template-columns: 1fr 1fr 0.8fr 1.1fr 1.1fr 0.8fr 0.9fr;
+  grid-template-columns: 1fr 1.1fr 1fr 0.8fr 1.1fr 1.1fr 0.8fr 0.9fr;
 }
 
 @media (max-width: 900px) {
