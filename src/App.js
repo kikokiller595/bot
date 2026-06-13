@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './App.css';
 import Header from './components/Header';
 import DashboardOperativo from './components/DashboardOperativo';
@@ -150,25 +150,31 @@ function App() {
   }).format(new Date());
 
   const hoyClave = obtenerClaveFecha(new Date());
-  const sorteosHoy = sorteos.filter(
-    (sorteo) => obtenerClaveFecha(sorteo.fechaISO || sorteo.fecha) === hoyClave
-  );
-  const ventaHoy = sorteosHoy.reduce(
-    (total, sorteo) => total + (Number(sorteo.monto) || 0),
-    0
-  );
-  const ventaAcumulada = sorteos.reduce(
-    (total, sorteo) => total + (Number(sorteo.monto) || 0),
-    0
-  );
-  const ticketsTotales = new Set(
-    sorteos
-      .map((sorteo) => String(sorteo.ticketId || sorteo.grupoId || sorteo.id || ''))
-      .filter(Boolean)
-  ).size;
+
+  // Agregados generales: una sola pasada sobre los sorteos, memoizada para
+  // no recalcular en cada render (p. ej. al navegar entre menus).
+  const { sorteosHoy, ventaHoy, ventaAcumulada, ticketsTotales } = useMemo(() => {
+    let vHoy = 0;
+    let vAcum = 0;
+    const sHoy = [];
+    const ticketsSet = new Set();
+
+    for (const sorteo of sorteos) {
+      const monto = Number(sorteo.monto) || 0;
+      vAcum += monto;
+      const idTicket = String(sorteo.ticketId || sorteo.grupoId || sorteo.id || '');
+      if (idTicket) ticketsSet.add(idTicket);
+      if (obtenerClaveFecha(sorteo.fechaISO || sorteo.fecha) === hoyClave) {
+        sHoy.push(sorteo);
+        vHoy += monto;
+      }
+    }
+
+    return { sorteosHoy: sHoy, ventaHoy: vHoy, ventaAcumulada: vAcum, ticketsTotales: ticketsSet.size };
+  }, [sorteos, hoyClave]);
 
   // ── Rango del board (Hoy / Semana lunes-domingo / Personalizado) ──
-  const obtenerRangoBoard = () => {
+  const rangoBoard = useMemo(() => {
     if (periodoBoard === 'semana') {
       const hoy = new Date();
       const dia = hoy.getDay(); // 0=domingo, 1=lunes...
@@ -183,28 +189,27 @@ function App() {
       return { desde: boardDesde || null, hasta: boardHasta || null };
     }
     return { desde: hoyClave, hasta: hoyClave };
-  };
-  const rangoBoard = obtenerRangoBoard();
+  }, [periodoBoard, boardDesde, boardHasta, hoyClave]);
 
-  const sorteosPeriodo = sorteos.filter((sorteo) => {
-    const clave = obtenerClaveFecha(sorteo.fechaISO || sorteo.fecha);
-    if (!clave) return false;
-    if (rangoBoard.desde && clave < rangoBoard.desde) return false;
-    if (rangoBoard.hasta && clave > rangoBoard.hasta) return false;
-    return true;
-  });
-  const ventaPeriodo = sorteosPeriodo.reduce(
-    (total, sorteo) => total + (Number(sorteo.monto) || 0),
-    0
-  );
-  const premiosPeriodo = sorteosPeriodo
-    .filter((s) => s.ganador === true)
-    .reduce((total, s) => total + (Number(s.premio) || 0), 0);
-  const ticketsPeriodo = new Set(
-    sorteosPeriodo
-      .map((sorteo) => String(sorteo.ticketId || sorteo.grupoId || sorteo.id || ''))
-      .filter(Boolean)
-  ).size;
+  // Agregados del periodo seleccionado: una sola pasada, memoizada por rango.
+  const { ventaPeriodo, premiosPeriodo, ticketsPeriodo } = useMemo(() => {
+    let vPer = 0;
+    let pPer = 0;
+    const ticketsSet = new Set();
+
+    for (const sorteo of sorteos) {
+      const clave = obtenerClaveFecha(sorteo.fechaISO || sorteo.fecha);
+      if (!clave) continue;
+      if (rangoBoard.desde && clave < rangoBoard.desde) continue;
+      if (rangoBoard.hasta && clave > rangoBoard.hasta) continue;
+      vPer += Number(sorteo.monto) || 0;
+      if (sorteo.ganador === true) pPer += Number(sorteo.premio) || 0;
+      const idTicket = String(sorteo.ticketId || sorteo.grupoId || sorteo.id || '');
+      if (idTicket) ticketsSet.add(idTicket);
+    }
+
+    return { ventaPeriodo: vPer, premiosPeriodo: pPer, ticketsPeriodo: ticketsSet.size };
+  }, [sorteos, rangoBoard]);
 
   const formatearFechaCorta = (clave) => {
     if (!clave) return '';
@@ -226,9 +231,13 @@ function App() {
 
   const labelVentaPeriodo =
     periodoBoard === 'hoy' ? 'Venta del dia' : periodoBoard === 'semana' ? 'Venta de la semana' : 'Venta del periodo';
-  const puntosActivos = new Set(
-    sorteos.map((sorteo) => String(sorteo.puntoVentaNombre || '').trim()).filter(Boolean)
-  ).size;
+  const puntosActivos = useMemo(
+    () =>
+      new Set(
+        sorteos.map((sorteo) => String(sorteo.puntoVentaNombre || '').trim()).filter(Boolean)
+      ).size,
+    [sorteos]
+  );
 
   const normalizarHoraCierre = (valor) => {
     if (!valor) return '';
