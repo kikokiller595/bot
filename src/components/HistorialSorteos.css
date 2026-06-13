@@ -642,7 +642,7 @@
 }
 
 .historial-detalle-panel {
-  flex: 0 0 430px;
+  flex: 0 0 510px;
   position: sticky;
   top: 1rem;
 }
@@ -812,22 +812,22 @@
 }
 
 .recibo-titulo {
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: var(--text-main);
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.35rem;
 }
 
 .recibo-fecha {
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   color: var(--text-soft);
-  margin: 0 0 0.45rem;
+  margin: 0 0 0.5rem;
 }
 
 .recibo-subtitulo {
-  font-size: 0.92rem;
+  font-size: 1.02rem;
   color: var(--text-soft);
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.8rem;
 }
 
 .recibo-subtitulo strong {
@@ -879,25 +879,25 @@
 .recibo-loteria-nombre {
   background: rgba(59, 130, 246, 0.10);
   color: var(--accent);
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
-  padding: 0.55rem;
+  padding: 0.65rem;
   border-radius: 4px;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
 }
 
 .recibo-tabla {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.92rem;
+  font-size: 1.02rem;
 }
 
 .recibo-tabla thead th {
-  padding: 0.5rem 0.7rem;
-  font-size: 0.66rem;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -914,7 +914,7 @@
 }
 
 .recibo-fila td {
-  padding: 0.55rem 0.7rem;
+  padding: 0.7rem 0.85rem;
   color: var(--text-main);
   border-bottom: 1px solid var(--line);
 }
@@ -928,8 +928,8 @@
 }
 
 .recibo-tipo {
-  margin-left: 0.35rem;
-  font-size: 0.66rem;
+  margin-left: 0.4rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: var(--accent-warm);
 }
@@ -945,7 +945,7 @@
   line-height: 1.5;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1280px) {
   .historial-layout {
     flex-direction: column;
   }
