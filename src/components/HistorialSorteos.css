@@ -796,41 +796,42 @@
 
 /* ===== Recibo (panel de detalle) ===== */
 .recibo {
-  background: #eaf4fb;
-  border: 1px solid #cfe3f2;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 1.1rem;
-  color: #1f2937;
+  color: var(--text-main);
+  box-shadow: var(--shadow-soft);
 }
 
 .recibo-encabezado {
   text-align: center;
   padding-bottom: 0.9rem;
-  border-bottom: 1px solid #cfe3f2;
+  border-bottom: 1px solid var(--line);
   margin-bottom: 0.9rem;
 }
 
 .recibo-titulo {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #111827;
+  color: var(--text-main);
   margin: 0 0 0.25rem;
 }
 
 .recibo-fecha {
   font-size: 0.76rem;
-  color: #6b7280;
+  color: var(--text-soft);
   margin: 0 0 0.4rem;
 }
 
 .recibo-subtitulo {
   font-size: 0.85rem;
-  color: #374151;
+  color: var(--text-soft);
   margin: 0 0 0.7rem;
 }
 
 .recibo-subtitulo strong {
-  color: #111827;
+  color: var(--text-main);
 }
 
 .recibo-leyenda {
@@ -846,12 +847,26 @@
   letter-spacing: 0.04em;
   padding: 0.22rem 0.55rem;
   border-radius: 4px;
-  color: #1f2937;
+  border: 1px solid transparent;
 }
 
-.leyenda-gano { background: #a7e8b6; }
-.leyenda-perdio { background: #f3a9a9; }
-.leyenda-pendiente { background: #a9cdf3; }
+.leyenda-gano {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--success);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.leyenda-perdio {
+  background: rgba(244, 63, 94, 0.14);
+  color: var(--danger);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.leyenda-pendiente {
+  background: rgba(59, 130, 246, 0.14);
+  color: var(--accent);
+  border-color: rgba(59, 130, 246, 0.3);
+}
 
 .recibo-mover {
   margin-bottom: 0.9rem;
@@ -862,14 +877,14 @@
 }
 
 .recibo-loteria-nombre {
-  background: #d4dde6;
-  color: #1f2937;
+  background: rgba(59, 130, 246, 0.10);
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
-  padding: 0.4rem;
+  padding: 0.45rem;
   border-radius: 4px;
   margin-bottom: 0.3rem;
 }
@@ -886,8 +901,8 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #6b7280;
-  border-bottom: 1px solid #cfe3f2;
+  color: var(--text-soft);
+  border-bottom: 1px solid var(--line);
   text-align: left;
 }
 
@@ -900,12 +915,12 @@
 
 .recibo-fila td {
   padding: 0.4rem 0.6rem;
-  color: #1f2937;
-  border-bottom: 1px solid rgba(207, 227, 242, 0.6);
+  color: var(--text-main);
+  border-bottom: 1px solid var(--line);
 }
 
-.recibo-fila.estado-gano { background: #d2f5da; }
-.recibo-fila.estado-perdio { background: #f7dcdc; }
+.recibo-fila.estado-gano { background: rgba(34, 197, 94, 0.12); }
+.recibo-fila.estado-perdio { background: rgba(244, 63, 94, 0.10); }
 .recibo-fila.estado-pendiente { background: transparent; }
 
 .recibo-jugada {
@@ -916,7 +931,7 @@
   margin-left: 0.3rem;
   font-size: 0.6rem;
   font-weight: 800;
-  color: #d97706;
+  color: var(--accent-warm);
 }
 
 .recibo-vacio {
