@@ -628,3 +628,316 @@
   }
 
 }
+
+/* ===== Nuevo layout: tabla + panel de detalle ===== */
+.historial-layout {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.historial-tabla-wrapper {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.historial-detalle-panel {
+  flex: 0 0 360px;
+  position: sticky;
+  top: 1rem;
+}
+
+.tabla-tickets-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.08);
+}
+
+.tabla-tickets {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabla-tickets thead th {
+  text-align: left;
+  padding: 0.85rem 1rem;
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tabla-tickets thead th.col-acciones {
+  text-align: right;
+}
+
+.tabla-fila {
+  border-top: 1px solid rgba(59, 130, 246, 0.08);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.tabla-fila:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.tabla-fila.seleccionada {
+  background: rgba(59, 130, 246, 0.14);
+}
+
+.tabla-fila td {
+  padding: 0.8rem 1rem;
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.celda-serial {
+  font-weight: 700;
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+
+.celda-fecha {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.celda-premio {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.col-acciones {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tabla-acciones {
+  display: inline-flex;
+  gap: 0.35rem;
+  justify-content: flex-end;
+}
+
+.accion-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: transform 0.1s, filter 0.1s;
+}
+
+.accion-btn:hover:not(:disabled) {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+.accion-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.accion-copiar { background: rgba(59, 130, 246, 0.18); color: var(--accent-strong); }
+.accion-imprimir { background: rgba(245, 158, 11, 0.20); }
+.accion-ver { background: rgba(16, 185, 129, 0.20); }
+.accion-eliminar { background: rgba(244, 63, 94, 0.18); color: var(--danger); }
+
+.tabla-paginacion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.paginacion-info {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.paginacion-controles {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.paginacion-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.paginacion-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.paginacion-pagina {
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* ===== Recibo (panel de detalle) ===== */
+.recibo {
+  background: #eaf4fb;
+  border: 1px solid #cfe3f2;
+  border-radius: 10px;
+  padding: 1.1rem;
+  color: #1f2937;
+}
+
+.recibo-encabezado {
+  text-align: center;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid #cfe3f2;
+  margin-bottom: 0.9rem;
+}
+
+.recibo-titulo {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 0.25rem;
+}
+
+.recibo-fecha {
+  font-size: 0.76rem;
+  color: #6b7280;
+  margin: 0 0 0.4rem;
+}
+
+.recibo-subtitulo {
+  font-size: 0.85rem;
+  color: #374151;
+  margin: 0 0 0.7rem;
+}
+
+.recibo-subtitulo strong {
+  color: #111827;
+}
+
+.recibo-leyenda {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.leyenda-item {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.55rem;
+  border-radius: 4px;
+  color: #1f2937;
+}
+
+.leyenda-gano { background: #a7e8b6; }
+.leyenda-perdio { background: #f3a9a9; }
+.leyenda-pendiente { background: #a9cdf3; }
+
+.recibo-mover {
+  margin-bottom: 0.9rem;
+}
+
+.recibo-loteria {
+  margin-bottom: 0.9rem;
+}
+
+.recibo-loteria-nombre {
+  background: #d4dde6;
+  color: #1f2937;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.4rem;
+  border-radius: 4px;
+  margin-bottom: 0.3rem;
+}
+
+.recibo-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.recibo-tabla thead th {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7280;
+  border-bottom: 1px solid #cfe3f2;
+  text-align: left;
+}
+
+.recibo-tabla thead th:nth-child(2),
+.recibo-tabla thead th:nth-child(3),
+.recibo-tabla tbody td:nth-child(2),
+.recibo-tabla tbody td:nth-child(3) {
+  text-align: right;
+}
+
+.recibo-fila td {
+  padding: 0.4rem 0.6rem;
+  color: #1f2937;
+  border-bottom: 1px solid rgba(207, 227, 242, 0.6);
+}
+
+.recibo-fila.estado-gano { background: #d2f5da; }
+.recibo-fila.estado-perdio { background: #f7dcdc; }
+.recibo-fila.estado-pendiente { background: transparent; }
+
+.recibo-jugada {
+  font-weight: 700;
+}
+
+.recibo-tipo {
+  margin-left: 0.3rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #d97706;
+}
+
+.recibo-vacio {
+  background: var(--surface);
+  border: 1px dashed rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  padding: 2.5rem 1.2rem;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .historial-layout {
+    flex-direction: column;
+  }
+
+  .historial-detalle-panel {
+    flex-basis: auto;
+    width: 100%;
+    position: static;
+  }
+}

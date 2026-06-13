@@ -150,6 +150,8 @@ const extenderNumerosGanadores = (numeros = []) => {
   return lista;
 };
 
+const POR_PAGINA = 10;
+
 const normalizarId = (ticket) => ticket.ticketId || ticket.id;
 const obtenerClavePuntoVenta = (ticket) =>
   String(ticket?.puntoVentaId || ticket?.puntoVentaNombre || '').trim();
@@ -177,13 +179,6 @@ const obtenerFechaReferenciaEliminacion = (ticket) => {
   return null;
 };
 
-const formatearHoraIngreso = (createdAt) => {
-  if (!createdAt) return null;
-  const fecha = new Date(createdAt);
-  if (isNaN(fecha.getTime())) return null;
-  return fecha.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-};
-
 const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosVenta = [], transferirGrupo }) => {
   const { isAdmin, isSupervisor } = useAuth();
   const [fechaDesde, setFechaDesde] = useState(() => obtenerFechaLocalHoy());
@@ -193,7 +188,6 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
   const [puntoVentaFiltro, setPuntoVentaFiltro] = useState('');
   const [tipoFiltro, setTipoFiltro] = useState('');
   const [resultadoFiltro, setResultadoFiltro] = useState('');
-  const [gruposExpandido, setGruposExpandido] = useState({});
   const [ahora, setAhora] = useState(() => Date.now());
   const [moverGrupoId, setMoverGrupoId] = useState(null);
   const [moverPuntoVentaId, setMoverPuntoVentaId] = useState('');
@@ -201,6 +195,31 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
   const [puntosExcluidos, setPuntosExcluidos] = useState(new Set());
   const [menuExcluirAbierto, setMenuExcluirAbierto] = useState(false);
   const menuExcluirRef = React.useRef(null);
+  const [grupoSeleccionadoKey, setGrupoSeleccionadoKey] = useState(null);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [serialCopiado, setSerialCopiado] = useState(null);
+
+  const copiarSerial = async (serial) => {
+    const texto = String(serial || '');
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(texto);
+      } else {
+        const area = document.createElement('textarea');
+        area.value = texto;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        document.body.removeChild(area);
+      }
+      setSerialCopiado(texto);
+      window.setTimeout(() => setSerialCopiado(null), 1500);
+    } catch (err) {
+      // Silenciar errores de portapapeles
+    }
+  };
 
   const toggleExcluirPunto = (claveId) => {
     setPuntosExcluidos(prev => {
@@ -604,23 +623,71 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
     fechaDesde || fechaHasta || textoBusqueda || loteriaFiltro || puntoVentaFiltro || puntosExcluidos.size > 0 || tipoFiltro || resultadoFiltro
   );
 
-  const toggleGrupo = (grupoId) => {
-    setGruposExpandido(prev => ({
-      ...prev,
-      [grupoId]: !prev[grupoId]
-    }));
-  };
+  const totalPaginas = Math.max(1, Math.ceil(gruposTickets.length / POR_PAGINA));
+  const paginaSegura = Math.min(paginaActual, totalPaginas);
+  const gruposPaginados = useMemo(
+    () => gruposTickets.slice((paginaSegura - 1) * POR_PAGINA, paginaSegura * POR_PAGINA),
+    [gruposTickets, paginaSegura]
+  );
 
-  const getTipoLabel = (tipo) => {
-    if (tipo === 'ticket') return 'Ticket';
-    const tipos = {
-      simple: 'Número Simple',
-      loto: 'Loto',
-      mega: 'Mega',
-      personalizado: 'Personalizado'
+  // Resetear a la primera pagina cuando cambian los filtros
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [fechaDesde, fechaHasta, textoBusqueda, loteriaFiltro, puntoVentaFiltro, puntosExcluidos, tipoFiltro, resultadoFiltro]);
+
+  // Auto-seleccionar el primer grupo visible si la seleccion actual ya no existe
+  useEffect(() => {
+    if (gruposTickets.length === 0) {
+      if (grupoSeleccionadoKey !== null) setGrupoSeleccionadoKey(null);
+      return;
+    }
+    const existe = gruposTickets.some((g) => g.grupoKey === grupoSeleccionadoKey);
+    if (!existe) {
+      setGrupoSeleccionadoKey(gruposTickets[0].grupoKey);
+    }
+  }, [gruposTickets, grupoSeleccionadoKey]);
+
+  const grupoSeleccionado = useMemo(
+    () => gruposTickets.find((g) => g.grupoKey === grupoSeleccionadoKey) || null,
+    [gruposTickets, grupoSeleccionadoKey]
+  );
+
+  const detalleSeleccionado = useMemo(() => {
+    if (!grupoSeleccionado) return null;
+    const porLoteria = new Map();
+    let totalApostado = 0;
+    let totalPremios = 0;
+
+    grupoSeleccionado.tickets.forEach((ticket) => {
+      const numero = String(ticket.numero || (ticket.numeros && ticket.numeros[0]) || '').trim();
+      const tipo = (ticket.tipoApuesta || ticket.tipo || 'straight').toLowerCase();
+      const loteriaNombre = ticket.loteriaNombre || 'Sin lotería';
+      const loteriaClave = String(ticket.loteriaId || loteriaNombre);
+      const monto = parseFloat(ticket.monto) || 0;
+      const res = resultadoTicketsMapa[normalizarId(ticket)] || { estado: 'pendiente', premio: 0 };
+      totalApostado += monto;
+      totalPremios += res.premio || 0;
+
+      if (!porLoteria.has(loteriaClave)) {
+        porLoteria.set(loteriaClave, { loteriaNombre, jugadas: [] });
+      }
+      porLoteria.get(loteriaClave).jugadas.push({
+        numero,
+        tipo,
+        monto,
+        premio: res.premio || 0,
+        estado: res.estado || 'pendiente'
+      });
+    });
+
+    return {
+      serial: grupoSeleccionado.ticketId,
+      fecha: grupoSeleccionado.fecha,
+      totalApostado,
+      totalPremios,
+      loterias: Array.from(porLoteria.values()).sort((a, b) => a.loteriaNombre.localeCompare(b.loteriaNombre))
     };
-    return tipos[tipo] || tipo;
-  };
+  }, [grupoSeleccionado, resultadoTicketsMapa]);
 
   const getTipoApuestaLabel = (tipoApuesta = '') => {
     const valor = (tipoApuesta || '').toLowerCase();
@@ -758,6 +825,25 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
     `);
     ventana.document.close();
   };
+
+  const obtenerResumenGrupo = (grupo) => {
+    const totalMonto = grupo.tickets.reduce((sum, t) => sum + (parseFloat(t.monto) || 0), 0);
+    const premioGrupo = grupo.tickets.reduce(
+      (sum, t) => sum + (resultadoTicketsMapa[normalizarId(t)]?.premio || 0),
+      0
+    );
+    const estados = grupo.tickets.map((t) => resultadoTicketsMapa[normalizarId(t)]?.estado || 'pendiente');
+    let estadoGrupo = 'pendiente';
+    if (estados.some((e) => e === 'gano')) estadoGrupo = 'gano';
+    else if (estados.length > 0 && estados.every((e) => e === 'perdio')) estadoGrupo = 'perdio';
+    const estadoGrupoLabel = estadoGrupo === 'gano' ? 'Ganó' : estadoGrupo === 'perdio' ? 'Perdió' : 'Pendiente';
+    return { totalMonto, premioGrupo, estadoGrupo, estadoGrupoLabel };
+  };
+
+  const esElevado = isAdmin() || isSupervisor();
+
+  const inicioRango = gruposTickets.length === 0 ? 0 : (paginaSegura - 1) * POR_PAGINA + 1;
+  const finRango = Math.min(paginaSegura * POR_PAGINA, gruposTickets.length);
 
   return (
     <div className="historial-container">
@@ -928,305 +1014,239 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
             <p>No hay tickets guardados aún.</p>
             <p className="texto-secundario">Los tickets aparecerán aquí después de generarlos.</p>
           </div>
-        ) : gruposTickets.length === 0 ? (
-          <div className="sin-sorteos">
-            {hayFiltroActivo ? (
-              <>
-                <p>No hay tickets que coincidan con los filtros.</p>
-                <p className="texto-secundario">
-                  Total de tickets guardados: {sorteos.length}.
-                </p>
-              </>
-            ) : (
-              <>
-                <p>No se encontraron tickets para mostrar.</p>
-                <p className="texto-secundario">
-                  Total de tickets guardados: {sorteos.length}.
-                </p>
-              </>
-            )}
-          </div>
         ) : (
-          <div className="sorteos-list">
-            {gruposTickets.map((grupo, grupoIndex) => {
-              const totalMonto = grupo.tickets.reduce((sum, t) => sum + (parseFloat(t.monto) || 0), 0);
-              const totalTickets = grupo.tickets.length;
-              const loteriasGrupo = Array.from(
-                new Set(grupo.tickets.map(t => t.loteriaNombre).filter(Boolean))
-              );
+          <div className="historial-layout">
+            <div className="historial-tabla-wrapper">
+              {gruposTickets.length === 0 ? (
+                <div className="sin-sorteos">
+                  {hayFiltroActivo ? (
+                    <>
+                      <p>No hay tickets que coincidan con los filtros.</p>
+                      <p className="texto-secundario">Total de tickets guardados: {sorteos.length}.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>No se encontraron tickets para mostrar.</p>
+                      <p className="texto-secundario">Total de tickets guardados: {sorteos.length}.</p>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="tabla-tickets-scroll">
+                    <table className="tabla-tickets">
+                      <thead>
+                        <tr>
+                          <th>Serial</th>
+                          <th>Fecha</th>
+                          <th>Monto</th>
+                          <th>Premio</th>
+                          <th>Estado</th>
+                          <th className="col-acciones">Acción</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {gruposPaginados.map((grupo) => {
+                          const { totalMonto, premioGrupo, estadoGrupo, estadoGrupoLabel } = obtenerResumenGrupo(grupo);
+                          const grupoPuedeEliminarse = puedeEliminarGrupo(grupo);
+                          const seleccionada = grupo.grupoKey === grupoSeleccionadoKey;
+                          const serialStr = String(grupo.ticketId || '');
+                          return (
+                            <tr
+                              key={grupo.grupoKey}
+                              className={`tabla-fila${seleccionada ? ' seleccionada' : ''}`}
+                              onClick={() => setGrupoSeleccionadoKey(grupo.grupoKey)}
+                            >
+                              <td className="celda-serial">{grupo.ticketId}</td>
+                              <td className="celda-fecha">{grupo.fecha}</td>
+                              <td>${totalMonto.toFixed(2)}</td>
+                              <td className={premioGrupo > 0 ? 'celda-premio' : ''}>${premioGrupo.toFixed(2)}</td>
+                              <td>
+                                <span className={`estado-badge estado-${estadoGrupo}`}>{estadoGrupoLabel}</span>
+                              </td>
+                              <td className="col-acciones">
+                                <div className="tabla-acciones">
+                                  <button
+                                    className="accion-btn accion-copiar"
+                                    onClick={(e) => { e.stopPropagation(); copiarSerial(serialStr); }}
+                                    title="Copiar serial"
+                                  >
+                                    {serialCopiado === serialStr ? '✓' : '⧉'}
+                                  </button>
+                                  <button
+                                    className="accion-btn accion-imprimir"
+                                    onClick={(e) => { e.stopPropagation(); reimprimirGrupo(grupo); }}
+                                    title="Reimprimir"
+                                  >
+                                    🖨
+                                  </button>
+                                  <button
+                                    className="accion-btn accion-ver"
+                                    onClick={(e) => { e.stopPropagation(); setGrupoSeleccionadoKey(grupo.grupoKey); }}
+                                    title="Ver detalle"
+                                  >
+                                    👁
+                                  </button>
+                                  <button
+                                    className="accion-btn accion-eliminar"
+                                    disabled={!grupoPuedeEliminarse}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (!grupoPuedeEliminarse) {
+                                        alert('Este ticket ya paso de 5 minutos. Solo administracion puede eliminarlo.');
+                                        return;
+                                      }
+                                      const idsGrupo = grupo.tickets.map((ticket) => ticket.id);
+                                      eliminarSorteo(idsGrupo, grupo.tickets[0]?.grupoId || '');
+                                    }}
+                                    title={
+                                      grupoPuedeEliminarse
+                                        ? 'Eliminar todos los tickets del grupo'
+                                        : 'Solo administracion puede eliminar tickets despues de 5 minutos'
+                                    }
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
 
-              const jugadasPorLoteriaMapa = new Map();
-              grupo.tickets.forEach((t) => {
-                const numero = String(t.numero || (t.numeros && t.numeros[0]) || '').trim();
-                if (!numero) return;
-                const tipo = (t.tipoApuesta || t.tipo || 'straight').toLowerCase();
-                const loteriaNombre = t.loteriaNombre || 'Sin lotería';
-                const loteriaClave = String(t.loteriaId || loteriaNombre);
-                if (!jugadasPorLoteriaMapa.has(loteriaClave)) {
-                  jugadasPorLoteriaMapa.set(loteriaClave, { loteriaNombre, jugadas: new Map() });
-                }
-                const jugadasLot = jugadasPorLoteriaMapa.get(loteriaClave).jugadas;
-                const clave = `${numero}|${tipo}`;
-                if (!jugadasLot.has(clave)) {
-                  jugadasLot.set(clave, { numero, tipo, monto: 0 });
-                }
-                jugadasLot.get(clave).monto += parseFloat(t.monto) || 0;
-              });
-              const jugadasAgrupadas = Array.from(jugadasPorLoteriaMapa.values())
-                .map((g) => ({
-                  loteriaNombre: g.loteriaNombre,
-                  jugadas: Array.from(g.jugadas.values()).sort((a, b) => {
-                    const numA = parseInt(a.numero, 10);
-                    const numB = parseInt(b.numero, 10);
-                    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-                    return a.numero.localeCompare(b.numero);
-                  })
-                }))
-                .sort((a, b) => a.loteriaNombre.localeCompare(b.loteriaNombre));
-              const totalJugadas = jugadasAgrupadas.reduce((sum, g) => sum + g.jugadas.length, 0);
-
-              const estadosGrupo = grupo.tickets.map(t => {
-                const info = resultadoTicketsMapa[normalizarId(t)] || { estado: 'pendiente', premio: 0 };
-                return info.estado;
-              });
-              const premioGrupo = grupo.tickets.reduce(
-                (sum, t) => sum + (resultadoTicketsMapa[normalizarId(t)]?.premio || 0),
-                0
-              );
-              let estadoGrupo = 'pendiente';
-              if (estadosGrupo.some(e => e === 'gano')) {
-                estadoGrupo = 'gano';
-              } else if (estadosGrupo.every(e => e === 'perdio')) {
-                estadoGrupo = 'perdio';
-              }
-              const estadoGrupoLabel = estadoGrupo === 'gano' ? 'Ganó' : estadoGrupo === 'perdio' ? 'Perdió' : 'Pendiente';
-
-              const grupoKey = grupo.id || `grupo-${grupoIndex}`;
-              const grupoPuedeEliminarse = puedeEliminarGrupo(grupo);
-
-              const primerTicket = grupo.tickets[0];
-              const horaIngreso = formatearHoraIngreso(primerTicket?.createdAt);
-              const quienIngreso = primerTicket?.usuarioNombre || primerTicket?.vendedorNombre || null;
-              const esElevado = isAdmin() || isSupervisor();
-
-              return (
-                <div key={grupoKey} className="sorteo-item">
-                  <div className="sorteo-header">
-                    <div className="sorteo-info">
-                      <div className="sorteo-id-fecha">
-                        {grupo.ticketId && (
-                          <span className="sorteo-ticket-id">#{grupo.ticketId}</span>
-                        )}
-                        <span className="sorteo-fecha">{grupo.fecha}</span>
-                        {horaIngreso && (
-                          <span className="sorteo-ingresado-por">
-                            {esElevado && quienIngreso && <span className="ingresado-nombre">{quienIngreso}</span>}
-                            <span className="ingresado-hora">{horaIngreso}</span>
-                          </span>
-                        )}
-                      </div>
-                      <div className="sorteo-loterias">
-                        {loteriasGrupo.map(nombre => (
-                          <span key={nombre} className="sorteo-loteria-badge">{nombre}</span>
-                        ))}
-                      </div>
+                  <div className="tabla-paginacion">
+                    <span className="paginacion-info">
+                      Mostrando {inicioRango} a {finRango} de {gruposTickets.length} tickets
+                    </span>
+                    <div className="paginacion-controles">
+                      <button
+                        className="paginacion-btn"
+                        disabled={paginaSegura <= 1}
+                        onClick={() => setPaginaActual(Math.max(1, paginaSegura - 1))}
+                      >
+                        Anterior
+                      </button>
+                      <span className="paginacion-pagina">{paginaSegura} / {totalPaginas}</span>
+                      <button
+                        className="paginacion-btn"
+                        disabled={paginaSegura >= totalPaginas}
+                        onClick={() => setPaginaActual(Math.min(totalPaginas, paginaSegura + 1))}
+                      >
+                        Siguiente
+                      </button>
                     </div>
-                    <div className="sorteo-acciones">
-                      <span className={`estado-badge estado-${estadoGrupo}`}>{estadoGrupoLabel}</span>
-                      {esElevado && transferirGrupo && grupo.tickets[0]?.grupoId && (
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="historial-detalle-panel">
+              {detalleSeleccionado ? (
+                <div className="recibo">
+                  <div className="recibo-encabezado">
+                    <h3 className="recibo-titulo">TICKET: {detalleSeleccionado.serial}</h3>
+                    <p className="recibo-fecha">{detalleSeleccionado.fecha}</p>
+                    <p className="recibo-subtitulo">
+                      Apostado: <strong>${detalleSeleccionado.totalApostado.toFixed(2)}</strong>
+                      {' | '}
+                      Premios: <strong>${detalleSeleccionado.totalPremios.toFixed(2)}</strong>
+                    </p>
+                    <div className="recibo-leyenda">
+                      <span className="leyenda-item leyenda-gano">GANADORA</span>
+                      <span className="leyenda-item leyenda-perdio">PERDEDORA</span>
+                      <span className="leyenda-item leyenda-pendiente">PENDIENTE</span>
+                    </div>
+                  </div>
+
+                  {esElevado && transferirGrupo && grupoSeleccionado?.tickets?.[0]?.grupoId && (
+                    <div className="recibo-mover">
+                      {moverGrupoId === grupoSeleccionado.tickets[0].grupoId ? (
+                        <div className="mover-grupo-panel">
+                          <span className="mover-grupo-label">Transferir a:</span>
+                          <select
+                            className="mover-grupo-select"
+                            value={moverPuntoVentaId}
+                            onChange={(e) => setMoverPuntoVentaId(e.target.value)}
+                          >
+                            <option value="">Administracion Central</option>
+                            {puntosVenta.filter((pv) => pv.activo !== false).map((pv) => (
+                              <option key={pv.id} value={pv.id}>{pv.nombre} ({pv.codigo})</option>
+                            ))}
+                          </select>
+                          <button
+                            className="mover-grupo-confirmar"
+                            disabled={moviendoGrupo}
+                            onClick={async () => {
+                              setMoviendoGrupo(true);
+                              const pvSeleccionado = puntosVenta.find((pv) => String(pv.id) === String(moverPuntoVentaId));
+                              await transferirGrupo(
+                                grupoSeleccionado.tickets[0].grupoId,
+                                moverPuntoVentaId || null,
+                                pvSeleccionado?.nombre || 'Administracion Central'
+                              );
+                              setMoverGrupoId(null);
+                              setMoverPuntoVentaId('');
+                              setMoviendoGrupo(false);
+                            }}
+                          >
+                            {moviendoGrupo ? 'Moviendo...' : 'Confirmar'}
+                          </button>
+                          <button
+                            className="mover-grupo-cancelar"
+                            onClick={() => { setMoverGrupoId(null); setMoverPuntoVentaId(''); }}
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      ) : (
                         <button
                           className="btn-mover"
                           onClick={() => {
-                            const gId = grupo.tickets[0].grupoId;
-                            if (moverGrupoId === gId) {
-                              setMoverGrupoId(null);
-                              setMoverPuntoVentaId('');
-                            } else {
-                              setMoverGrupoId(gId);
-                              setMoverPuntoVentaId(grupo.tickets[0]?.puntoVentaId || '');
-                            }
+                            setMoverGrupoId(grupoSeleccionado.tickets[0].grupoId);
+                            setMoverPuntoVentaId(grupoSeleccionado.tickets[0]?.puntoVentaId || '');
                           }}
                         >
-                          Mover
+                          Mover a otro punto
                         </button>
                       )}
-                      <button
-                        className="btn-reimprimir"
-                        onClick={() => reimprimirGrupo(grupo)}
-                        title="Reimprimir ticket"
-                      >
-                        Reimprimir
-                      </button>
-                      <button
-                        className="btn-toggle"
-                        onClick={() => toggleGrupo(grupoKey)}
-                      >
-                        {gruposExpandido[grupoKey] ? 'Ocultar' : 'Ver detalle'}
-                      </button>
-                      <button
-                        className="btn-eliminar"
-                        disabled={!grupoPuedeEliminarse}
-                        onClick={() => {
-                          if (!grupoPuedeEliminarse) {
-                            alert('Este ticket ya paso de 5 minutos. Solo administracion puede eliminarlo.');
-                            return;
-                          }
-
-                          const idsGrupo = grupo.tickets.map(ticket => ticket.id);
-                          eliminarSorteo(idsGrupo, grupo.tickets[0]?.grupoId || '');
-                        }}
-                        title={
-                          grupoPuedeEliminarse
-                            ? 'Eliminar todos los tickets del grupo'
-                            : 'Solo administracion puede eliminar tickets despues de 5 minutos'
-                        }
-                      >
-                        ×
-                      </button>
-                    </div>
-                  </div>
-
-                  {moverGrupoId === grupo.tickets[0]?.grupoId && (
-                    <div className="mover-grupo-panel">
-                      <span className="mover-grupo-label">Transferir a:</span>
-                      <select
-                        className="mover-grupo-select"
-                        value={moverPuntoVentaId}
-                        onChange={(e) => setMoverPuntoVentaId(e.target.value)}
-                      >
-                        <option value="">Administracion Central</option>
-                        {puntosVenta.filter(pv => pv.activo !== false).map(pv => (
-                          <option key={pv.id} value={pv.id}>{pv.nombre} ({pv.codigo})</option>
-                        ))}
-                      </select>
-                      <button
-                        className="mover-grupo-confirmar"
-                        disabled={moviendoGrupo}
-                        onClick={async () => {
-                          setMoviendoGrupo(true);
-                          const pvSeleccionado = puntosVenta.find(pv => String(pv.id) === String(moverPuntoVentaId));
-                          await transferirGrupo(
-                            grupo.tickets[0].grupoId,
-                            moverPuntoVentaId || null,
-                            pvSeleccionado?.nombre || 'Administracion Central'
-                          );
-                          setMoverGrupoId(null);
-                          setMoverPuntoVentaId('');
-                          setMoviendoGrupo(false);
-                        }}
-                      >
-                        {moviendoGrupo ? 'Moviendo...' : 'Confirmar'}
-                      </button>
-                      <button
-                        className="mover-grupo-cancelar"
-                        onClick={() => { setMoverGrupoId(null); setMoverPuntoVentaId(''); }}
-                      >
-                        Cancelar
-                      </button>
                     </div>
                   )}
 
-                  <div className="sorteo-resumen">
-                    <div className="resumen-block">
-                      <span className="resumen-titulo">Monto total</span>
-                      <span className="resumen-valor">${totalMonto.toFixed(2)}</span>
+                  {detalleSeleccionado.loterias.map((lot, lotIndex) => (
+                    <div key={`recibo-lot-${lotIndex}`} className="recibo-loteria">
+                      <div className="recibo-loteria-nombre">{lot.loteriaNombre}</div>
+                      <table className="recibo-tabla">
+                        <thead>
+                          <tr>
+                            <th>Jugada</th>
+                            <th>Monto</th>
+                            <th>Premio</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {lot.jugadas.map((j, jIndex) => (
+                            <tr key={`recibo-jug-${lotIndex}-${jIndex}`} className={`recibo-fila estado-${j.estado}`}>
+                              <td className="recibo-jugada">
+                                {formatearNumeroTicket(j.numero, j.tipo)}
+                                <span className="recibo-tipo">{getTipoCorto(j.tipo)}</span>
+                              </td>
+                              <td>${j.monto.toFixed(2)}</td>
+                              <td>${j.premio.toFixed(2)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                    <div className="resumen-block">
-                      <span className="resumen-titulo">Premios</span>
-                      <span className="resumen-valor premio">${premioGrupo.toFixed(2)}</span>
-                    </div>
-                    <div className="resumen-block">
-                      <span className="resumen-titulo">Jugadas</span>
-                      <span className="resumen-valor">{totalTickets}</span>
-                    </div>
-                    {esElevado && (
-                      <div className="resumen-block">
-                        <span className="resumen-titulo">Punto de venta</span>
-                        <span className="resumen-valor resumen-texto">
-                          {primerTicket?.puntoVentaNombre || 'Sin punto'}
-                        </span>
-                      </div>
-                    )}
-                    {(esElevado || horaIngreso) && (
-                      <div className="resumen-block">
-                        <span className="resumen-titulo">{esElevado ? 'Ingresado por' : 'Hora de ingreso'}</span>
-                        <span className="resumen-valor resumen-texto">
-                          {esElevado && (quienIngreso || 'Sin usuario')}
-                          {horaIngreso && (
-                            <span className="resumen-hora-ingreso">{esElevado ? ' · ' : ''}{horaIngreso}</span>
-                          )}
-                        </span>
-                      </div>
-                    )}
-                    <div className="resumen-block numeros">
-                      <span className="resumen-titulo">Jugadas ({totalJugadas})</span>
-                      <div className="jugadas-por-loteria">
-                        {jugadasAgrupadas.map((grupoLot, lotIndex) => (
-                          <div key={`${grupoKey}-lot-${lotIndex}`} className="jugadas-loteria-grupo">
-                            <span className="jugadas-loteria-nombre">{grupoLot.loteriaNombre}</span>
-                            <div className="resumen-numeros">
-                              {grupoLot.jugadas.map((jugada, index) => (
-                                <span key={`${grupoKey}-${lotIndex}-jug-${index}`} className="chip-numero">
-                                  {jugada.numero}
-                                  {jugada.tipo !== 'straight' && (
-                                    <span className="chip-tipo-badge">{getTipoCorto(jugada.tipo)}</span>
-                                  )}
-                                  <span className="chip-monto-badge">${jugada.monto.toFixed(2)}</span>
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {gruposExpandido[grupoKey] && (
-                    <div className="sorteo-detalle-expandido">
-                      <div className={`detalle-table-header ${esElevado ? 'admin-view' : ''}`}>
-                        <span>Número</span>
-                        <span>Lotería</span>
-                        <span>Tipo</span>
-                        <span>Monto</span>
-                        {esElevado && <span>Punto</span>}
-                        {esElevado ? <span>Ingresado por</span> : <span>Hora</span>}
-                        <span>Premio</span>
-                        <span>Resultado</span>
-                      </div>
-                      <div className="detalle-table-body">
-                        {grupo.tickets.map((ticket, index) => {
-                          const resultadoTicket = resultadoTicketsMapa[normalizarId(ticket)] || { estado: 'pendiente', premio: 0 };
-                          const numeroTicket = ticket.numero || (ticket.numeros && ticket.numeros[0]) || 'N/A';
-                          const horaTicket = formatearHoraIngreso(ticket.createdAt);
-                          const nombreTicket = ticket.usuarioNombre || ticket.vendedorNombre || 'Sin usuario';
-                          return (
-                            <div key={ticket.id || index} className={`detalle-row ${esElevado ? 'admin-view' : ''}`}>
-                              <span>{formatearNumeroTicket(numeroTicket, ticket.tipoApuesta)}</span>
-                              <span className="detalle-loteria">{ticket.loteriaNombre || 'Sin lotería'}</span>
-                              <span>{ticket.tipoApuesta ? getTipoApuestaLabel(ticket.tipoApuesta) : getTipoLabel(ticket.tipo)}</span>
-                              <span>${(ticket.monto || 1).toFixed(2)}</span>
-                              {esElevado && <span>{ticket.puntoVentaNombre || 'Sin punto'}</span>}
-                              <span>
-                                {esElevado && nombreTicket}
-                                {horaTicket && <span className="detalle-hora-ingreso">{esElevado ? ' · ' : ''}{horaTicket}</span>}
-                              </span>
-                              <span>${resultadoTicket.premio.toFixed(2)}</span>
-                              <span className={`estado-badge estado-${resultadoTicket.estado}`}>
-                                {resultadoTicket.estado === 'gano'
-                                  ? 'Ganó'
-                                  : resultadoTicket.estado === 'perdio'
-                                  ? 'Perdió'
-                                  : 'Pendiente'}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                  ))}
                 </div>
-              );
-            })}
+              ) : (
+                <div className="recibo-vacio">
+                  <p>Selecciona un ticket de la tabla para ver su detalle.</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
