@@ -154,9 +154,6 @@ function App() {
     (total, sorteo) => total + (Number(sorteo.monto) || 0),
     0
   );
-  const premiosAcumulados = sorteos
-    .filter((s) => s.ganador === true)
-    .reduce((total, s) => total + (Number(s.premio) || 0), 0);
   const ticketsTotales = new Set(
     sorteos
       .map((sorteo) => String(sorteo.ticketId || sorteo.grupoId || sorteo.id || ''))
@@ -901,28 +898,20 @@ function App() {
                       <strong>{rangoBoardLabel}</strong>
                     </div>
                     <div className="board-row">
-                      <span>{labelVentaPeriodo}</span>
-                      <strong>{formatearMoneda(ventaPeriodo)}</strong>
-                    </div>
-                    <div className="board-row">
                       <span>Tickets del periodo</span>
                       <strong>{ticketsPeriodo}</strong>
-                    </div>
-                    <div className="board-row">
-                      <span>Premios del periodo</span>
-                      <strong>{formatearMoneda(premiosPeriodo)}</strong>
                     </div>
                     <div className="board-row">
                       <span>Loterias visibles</span>
                       <strong>{loterias.length}</strong>
                     </div>
                     <div className="board-row board-row--highlight-verde">
-                      <span>Venta general</span>
-                      <strong>{formatearMoneda(ventaAcumulada)}</strong>
+                      <span>{labelVentaPeriodo}</span>
+                      <strong>{formatearMoneda(ventaPeriodo)}</strong>
                     </div>
                     <div className="board-row board-row--highlight-amarillo">
-                      <span>Premios generales</span>
-                      <strong>{formatearMoneda(premiosAcumulados)}</strong>
+                      <span>Premios del periodo</span>
+                      <strong>{formatearMoneda(premiosPeriodo)}</strong>
                     </div>
                   </div>
                 </section>
