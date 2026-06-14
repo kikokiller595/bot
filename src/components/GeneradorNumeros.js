@@ -664,13 +664,20 @@ const GeneradorNumeros = ({
       return vDigitos === terminoDigitos || vDigitos.endsWith(terminoDigitos);
     };
 
-    // Buscar por grupoId o por ticketId (exacto, por sufijo o solo digitos)
-    const encontrados = sorteos.filter((s) => coincide(s.grupoId) || coincide(s.ticketId));
+    // Buscar la(s) jugada(s) que coincidan por grupoId o ticketId
+    const coincidencias = sorteos.filter((s) => coincide(s.grupoId) || coincide(s.ticketId));
 
-    if (encontrados.length === 0) {
+    if (coincidencias.length === 0) {
       setBuscarSerieError(`No se encontró ningún ticket con el serial "${termino}".`);
       return;
     }
+
+    // El ticketId es unico por jugada, pero el grupoId es comun a todo el ticket.
+    // Expandir por grupoId para cargar TODAS las jugadas del ticket, no solo una.
+    const gruposIds = new Set(coincidencias.map((s) => String(s.grupoId || '')).filter(Boolean));
+    const encontrados = gruposIds.size > 0
+      ? sorteos.filter((s) => gruposIds.has(String(s.grupoId || '')))
+      : coincidencias;
 
     // Agrupar por número + monto + tipo para reconstruir historialTemporal
     const grupos = new Map();
