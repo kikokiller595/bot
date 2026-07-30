@@ -111,6 +111,7 @@ const createApp = () => {
   app.use('/api/sorteos', require('./routes/sorteos'));
   app.use('/api/recogidas', require('./routes/recogidas'));
   app.use('/api/resultados-bot', require('./routes/resultadosBot'));
+  app.use('/api/mantenimiento', require('./routes/mantenimiento'));
 
   app.get('/api', (req, res) => {
     res.json({

@@ -16,6 +16,22 @@ import sorteosService from './services/sorteosService';
 import loteriasService from './services/loteriasService';
 import puntosVentaService from './services/puntosVentaService';
 
+// Une el historial completo (autoritativo) con los tickets que ya estaban en
+// memoria (p.ej. una venta hecha mientras cargaba el historial en segundo
+// plano), evitando perder o duplicar tickets. Se identifica por id.
+const fusionarSorteos = (completos = [], previos = []) => {
+  const porId = new Map();
+  completos.forEach((sorteo) => {
+    const clave = String(sorteo?.id ?? sorteo?._id ?? '');
+    if (clave) porId.set(clave, sorteo);
+  });
+  previos.forEach((sorteo) => {
+    const clave = String(sorteo?.id ?? sorteo?._id ?? '');
+    if (clave && !porId.has(clave)) porId.set(clave, sorteo);
+  });
+  return Array.from(porId.values());
+};
+
 function App() {
   const { user } = useAuth();
   const [sorteos, setSorteos] = useState([]);
@@ -284,36 +300,71 @@ function App() {
     }
   };
 
-  // Cargar datos desde el servidor al iniciar
+  // Cargar datos desde el servidor al iniciar.
+  // Estrategia en dos fases para que el sistema abra rápido:
+  //   Fase 1: solo lo imprescindible para operar hoy (arranque instantáneo).
+  //   Fase 2: el historial completo en segundo plano, sin bloquear la interfaz.
   useEffect(() => {
+    if (!user) {
+      return undefined;
+    }
+
+    let cancelado = false;
+    const esAdminOSupervisor =
+      user?.rol === 'admin' || user?.rol === 'supervisor';
+
+    const cargarPuntosVenta = () =>
+      esAdminOSupervisor
+        ? puntosVentaService.getPuntosVenta()
+        : puntosVentaService
+            .getMiPuntoVenta()
+            .then((data) => (data ? [data] : []));
+
     const cargarDatos = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        // Cargar loterías desde el servidor
-        const [loteriasData, sorteosData, puntosVentaData] = await Promise.all([
-          loteriasService.obtenerLoterias(),
-          sorteosService.obtenerSorteos(),
-          (user?.rol === 'admin' || user?.rol === 'supervisor')
-            ? puntosVentaService.getPuntosVenta()
-            : puntosVentaService.getMiPuntoVenta().then((data) => (data ? [data] : []))
-        ]);
+
+        // Fase 1: loterías, puntos de venta y solo los tickets de HOY.
+        const [loteriasData, sorteosHoyData, puntosVentaData] =
+          await Promise.all([
+            loteriasService.obtenerLoterias(),
+            sorteosService.obtenerSorteos({ fecha: hoyClave }),
+            cargarPuntosVenta()
+          ]);
+
+        if (cancelado) return;
+
         setLoterias(normalizarListaLoterias(loteriasData));
-        setSorteos(sorteosData);
+        setSorteos(sorteosHoyData);
         setPuntosVenta(Array.isArray(puntosVentaData) ? puntosVentaData : []);
-        
+        setLoading(false);
+
+        // Fase 2: historial completo (para Historial y Reportes de fechas
+        // anteriores). No bloquea; se fusiona cuando llega.
+        try {
+          const historialCompleto = await sorteosService.obtenerSorteos();
+          if (cancelado) return;
+          setSorteos((prev) => fusionarSorteos(historialCompleto, prev));
+        } catch (errorHistorial) {
+          console.error(
+            'Error al cargar el historial completo:',
+            errorHistorial
+          );
+        }
       } catch (error) {
+        if (cancelado) return;
         console.error('Error al cargar datos:', error);
         setError('Error al cargar los datos. Por favor, recarga la página.');
-      } finally {
         setLoading(false);
       }
     };
 
-    if (user) {
-      cargarDatos();
-    }
+    cargarDatos();
+
+    return () => {
+      cancelado = true;
+    };
   }, [user]);
 
   useEffect(() => {
@@ -682,6 +733,7 @@ function App() {
           setLoterias={actualizarLoterias}
           puntosVenta={puntosVenta}
           setPuntosVenta={setPuntosVenta}
+          onVentasReiniciadas={() => setSorteos([])}
         />
       </div>
     );

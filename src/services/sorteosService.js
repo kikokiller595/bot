@@ -88,6 +88,13 @@ const sorteosService = {
       pagado
     });
     return extractData(response.data);
+  },
+
+  reiniciarVentas: async (password) => {
+    const response = await api.post('/mantenimiento/reiniciar-ventas', {
+      password
+    });
+    return extractData(response.data);
   }
 };
 
