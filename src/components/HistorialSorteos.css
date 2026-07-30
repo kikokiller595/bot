@@ -994,3 +994,119 @@
     position: static;
   }
 }
+
+/* ===== Botón para borrar ventas y premios (solo admin) ===== */
+.historial-reset-button {
+  border: 1px solid #dc2626;
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.historial-reset-button:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.reset-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.reset-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.6rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3);
+}
+
+.reset-modal-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+  color: #b91c1c;
+}
+
+.reset-modal-text {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.reset-modal-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.reset-modal-input:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.reset-modal-error {
+  margin-top: 0.7rem;
+  color: #b91c1c;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.reset-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 1.4rem;
+}
+
+.reset-modal-cancel,
+.reset-modal-confirm {
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.reset-modal-cancel {
+  background: #f3f4f6;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.reset-modal-cancel:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+.reset-modal-confirm {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.reset-modal-confirm:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.reset-modal-cancel:disabled,
+.reset-modal-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
