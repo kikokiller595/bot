@@ -3,6 +3,7 @@ import './GestionLoterias.css';
 import { premiosParaFormulario, normalizarPremios } from '../utils/premiosDefault';
 import loteriasService from '../services/loteriasService';
 import resultadosBotService from '../services/resultadosBotService';
+import { formatearFechaHoraOperativa } from '../utils/zonaHoraria';
 
 const buildSlotKey = (slot = {}) =>
   [slot.state, slot.game, String(slot.drawName || '').trim().toLowerCase()]
@@ -203,7 +204,7 @@ const GestionLoterias = ({ loterias, setLoterias }) => {
     if (!valor) return 'Sin registro';
     const fecha = new Date(valor);
     if (Number.isNaN(fecha.getTime())) return String(valor);
-    return fecha.toLocaleString('es-ES');
+    return formatearFechaHoraOperativa(fecha);
   };
 
   const manejarToggleFormulario = () => {

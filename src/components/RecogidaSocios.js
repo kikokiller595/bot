@@ -407,6 +407,7 @@ function RecogidaSocios({ sorteos = [], puntosVenta = [] }) {
                             {fila.recogida.fechaRecogida && (
                               <span className="badge-fecha">
                                 {new Date(fila.recogida.fechaRecogida).toLocaleDateString('es-ES', {
+                                  timeZone: 'America/New_York',
                                   day: '2-digit',
                                   month: 'short'
                                 })}

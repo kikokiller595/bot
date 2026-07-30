@@ -1,34 +1,7 @@
 import React, { useMemo } from 'react';
 import './DashboardOperativo.css';
 import { useAuth } from '../context/AuthContext';
-
-const obtenerClaveFecha = (valor) => {
-  if (!valor) {
-    return null;
-  }
-
-  if (valor instanceof Date && !Number.isNaN(valor.getTime())) {
-    const anio = valor.getFullYear();
-    const mes = String(valor.getMonth() + 1).padStart(2, '0');
-    const dia = String(valor.getDate()).padStart(2, '0');
-    return `${anio}-${mes}-${dia}`;
-  }
-
-  const isoMatch = String(valor).match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (isoMatch) {
-    return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
-  }
-
-  const fecha = new Date(valor);
-  if (Number.isNaN(fecha.getTime())) {
-    return null;
-  }
-
-  const anio = fecha.getFullYear();
-  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-  const dia = String(fecha.getDate()).padStart(2, '0');
-  return `${anio}-${mes}-${dia}`;
-};
+import { obtenerClaveFecha } from '../utils/dateParser';
 
 const agruparPorTicket = (sorteos = []) => {
   const mapa = new Map();

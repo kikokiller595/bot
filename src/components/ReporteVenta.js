@@ -3,6 +3,8 @@ import './ReporteVenta.css';
 import { calcularPremio, numeroCoincide } from '../utils/calcularPremios';
 import { normalizarPremios } from '../utils/premiosDefault';
 import { useAuth } from '../context/AuthContext';
+import { obtenerClaveFecha as obtenerClaveFechaOperativa } from '../utils/dateParser';
+import { claveHoyOperativa } from '../utils/zonaHoraria';
 
 function extenderNumerosGanadores(numeros = []) {
   const lista = [];
@@ -117,49 +119,11 @@ function obtenerPosicionLabel(posicion = '', tipoApuesta = '') {
   return posicion || '';
 }
 
-// Función para obtener la clave de fecha en formato YYYY-MM-DD
-const obtenerClaveFecha = (fechaStr) => {
-  if (!fechaStr) return null;
+// Clave de fecha YYYY-MM-DD en la zona operativa (America/New_York).
+const obtenerClaveFecha = (fechaStr) => obtenerClaveFechaOperativa(fechaStr);
 
-  if (fechaStr instanceof Date && !isNaN(fechaStr.getTime())) {
-    const año = fechaStr.getFullYear();
-    const mes = String(fechaStr.getMonth() + 1).padStart(2, '0');
-    const dia = String(fechaStr.getDate()).padStart(2, '0');
-    return `${año}-${mes}-${dia}`;
-  }
-
-  const isoMatch = fechaStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (isoMatch) {
-    return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
-  }
-
-  const partes = fechaStr.split(',');
-  const fechaParte = partes[0]?.trim() || '';
-  const matchES = fechaParte.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (matchES) {
-    const [, dia, mes, año] = matchES;
-    return `${año.padStart(4, '0')}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
-  }
-
-  const fecha = parsearFecha(fechaStr);
-  if (fecha && !isNaN(fecha.getTime())) {
-    const año = fecha.getFullYear();
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    return `${año}-${mes}-${dia}`;
-  }
-
-  return null;
-};
-
-// Función para obtener la fecha local en formato YYYY-MM-DD (sin problemas de zona horaria)
-const obtenerFechaLocal = () => {
-  const ahora = new Date();
-  const año = ahora.getFullYear();
-  const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-  const dia = String(ahora.getDate()).padStart(2, '0');
-  return `${año}-${mes}-${dia}`;
-};
+// Fecha de hoy YYYY-MM-DD en la zona operativa.
+const obtenerFechaLocal = () => claveHoyOperativa() || '';
 
 const obtenerClavePuntoVenta = (ticket = {}) => {
   const id = String(ticket.puntoVentaId || '').trim();

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { formatearFechaHoraOperativa } = require('../utils/operacion');
 
 const botSlotSchema = new mongoose.Schema(
   {
@@ -59,7 +60,7 @@ const numeroGanadorSchema = new mongoose.Schema(
     },
     fechaRegistro: {
       type: String,
-      default: () => new Date().toLocaleString('es-ES')
+      default: () => formatearFechaHoraOperativa(new Date())
     },
     premio: {
       type: Number,

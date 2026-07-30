@@ -29,6 +29,12 @@ FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
+# Zona horaria del proceso: America/New_York (requiere tzdata en Alpine).
+# El codigo ya usa Intl con la zona operativa, esto es una capa extra para
+# logs y cualquier Date local que se cree.
+ENV TZ=America/New_York
+RUN apk add --no-cache tzdata
+
 COPY --from=backend-builder /app/backend ./backend
 COPY --from=frontend-builder /app/build ./build
 

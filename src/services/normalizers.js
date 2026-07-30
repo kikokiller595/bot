@@ -1,4 +1,5 @@
 import { normalizarPremios } from '../utils/premiosDefault';
+import { formatearFechaHoraOperativa } from '../utils/zonaHoraria';
 
 const toId = (value, fallback = '') => {
   if (value == null) {
@@ -21,7 +22,7 @@ const formatFechaCreacion = (value) => {
     return String(value);
   }
 
-  return fecha.toLocaleString('es-ES');
+  return formatearFechaHoraOperativa(fecha);
 };
 
 export const normalizeNumeroGanador = (numero, index = 0) => {
@@ -46,7 +47,7 @@ export const normalizeNumeroGanador = (numero, index = 0) => {
     fecha: String(numero.fecha || '').trim(),
     fechaRegistro: numero.fechaRegistro
       ? String(numero.fechaRegistro)
-      : new Date().toLocaleString('es-ES'),
+      : formatearFechaHoraOperativa(new Date()),
     premio: Number(numero.premio) || 0,
     fuente:
       String(numero.fuente || '').trim().toLowerCase() === 'bot'
@@ -226,7 +227,14 @@ export const normalizeSorteo = (sorteo) => {
       sorteo.puntoVentaNombre || sorteo.puntoVenta?.nombre || ''
     ).trim(),
     grupoId: sorteo.grupoId ? String(sorteo.grupoId) : null,
-    fecha: sorteo.fechaTexto || sorteo.fecha || '',
+    // El texto de la fecha se recalcula desde el instante real en la zona
+    // operativa (America/New_York), asi tickets viejos (guardados en UTC) y
+    // nuevos se muestran igual. Si no hay instante valido, se usa el texto guardado.
+    fecha:
+      formatearFechaHoraOperativa(sorteo.fecha) ||
+      sorteo.fechaTexto ||
+      sorteo.fecha ||
+      '',
     fechaISO: sorteo.fecha || null,
     createdAt: sorteo.createdAt || null,
     ganador: Boolean(sorteo.ganador),

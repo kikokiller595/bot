@@ -3,6 +3,8 @@ import './HistorialSorteos.css';
 import { calcularPremio, numeroCoincide } from '../utils/calcularPremios';
 import { normalizarPremios } from '../utils/premiosDefault';
 import { useAuth } from '../context/AuthContext';
+import { obtenerClaveFecha as obtenerClaveFechaOperativa } from '../utils/dateParser';
+import { claveHoyOperativa } from '../utils/zonaHoraria';
 
 const parsearFecha = (fechaStr) => {
   if (!fechaStr) return null;
@@ -50,16 +52,10 @@ const parsearFecha = (fechaStr) => {
   return null;
 };
 
-const obtenerClaveFecha = (valor) => {
-  const fecha = parsearFecha(valor);
-  if (!fecha) return null;
-  const año = fecha.getFullYear();
-  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-  const dia = String(fecha.getDate()).padStart(2, '0');
-  return `${año}-${mes}-${dia}`;
-};
+// Clave YYYY-MM-DD en la zona operativa (America/New_York), no la del navegador.
+const obtenerClaveFecha = (valor) => obtenerClaveFechaOperativa(valor);
 
-const obtenerFechaLocalHoy = () => obtenerClaveFecha(new Date()) || '';
+const obtenerFechaLocalHoy = () => claveHoyOperativa() || '';
 
 const extenderNumerosGanadores = (numeros = []) => {
   const lista = [];

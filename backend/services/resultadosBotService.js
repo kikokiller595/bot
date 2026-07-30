@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const Loteria = require('../models/Loteria');
+const {
+  obtenerClaveFechaOperativa,
+  formatearFechaHoraOperativa
+} = require('../utils/operacion');
 
 const DEFAULT_BOT_BASE_URL = 'https://lottery-bot-production.up.railway.app';
 const DEFAULT_SYNC_INTERVAL_MS = 5 * 60 * 1000;
@@ -36,7 +40,7 @@ const normalizeDate = (value) => {
   if (!value) return '';
 
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    return value.toISOString().slice(0, 10);
+    return obtenerClaveFechaOperativa(value) || '';
   }
 
   const isoMatch = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -49,7 +53,7 @@ const normalizeDate = (value) => {
     return '';
   }
 
-  return parsed.toISOString().slice(0, 10);
+  return obtenerClaveFechaOperativa(parsed) || '';
 };
 
 const normalizeDrawName = (value = '') =>
@@ -62,7 +66,7 @@ const normalizeState = (value = '') =>
   String(value || '').trim().toLowerCase();
 
 const formatTimestamp = (value = new Date()) =>
-  new Date(value).toLocaleString('es-ES');
+  formatearFechaHoraOperativa(new Date(value));
 
 const buildSlotKey = (slot = {}) =>
   [normalizeState(slot.state), normalizeGame(slot.game), normalizeDrawName(slot.drawName)]

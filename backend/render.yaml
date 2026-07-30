@@ -19,6 +19,8 @@ services:
         value: 30d
       - key: APP_TIMEZONE
         value: America/New_York
+      - key: TZ
+        value: America/New_York
       - key: INITIAL_ADMIN_PASSWORD
         sync: false
       - key: INITIAL_ADMIN_SETUP_TOKEN

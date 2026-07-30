@@ -3,6 +3,8 @@ import './CalculadoraPremios.css';
 import { calcularPremio, numeroCoincide } from '../utils/calcularPremios';
 import { normalizarPremios } from '../utils/premiosDefault';
 import { formatearFechaLocalInput } from '../utils/fechas';
+import { obtenerClaveFecha } from '../utils/dateParser';
+import { ZONA_OPERATIVA } from '../utils/zonaHoraria';
 import { useAuth } from '../context/AuthContext';
 
 function extenderNumerosGanadores(numeros = []) {
@@ -352,40 +354,6 @@ const agruparResultadosPorTicket = (resultados = []) => {
     .sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
 };
 
-const obtenerClaveFecha = (fechaStr) => {
-  if (!fechaStr) return null;
-
-  if (fechaStr instanceof Date && !isNaN(fechaStr.getTime())) {
-    const año = fechaStr.getFullYear();
-    const mes = String(fechaStr.getMonth() + 1).padStart(2, '0');
-    const dia = String(fechaStr.getDate()).padStart(2, '0');
-    return `${año}-${mes}-${dia}`;
-  }
-
-  const isoMatch = fechaStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (isoMatch) {
-    return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
-  }
-
-  const partes = fechaStr.split(',');
-  const fechaParte = partes[0]?.trim() || '';
-  const matchES = fechaParte.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (matchES) {
-    const [, dia, mes, año] = matchES;
-    return `${año.padStart(4, '0')}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
-  }
-
-  const fecha = new Date(fechaStr);
-  if (!isNaN(fecha.getTime())) {
-    const año = fecha.getFullYear();
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    return `${año}-${mes}-${dia}`;
-  }
-
-  return null;
-};
-
 const filtrarPorFecha = (lista = [], fechaFiltro = '') => {
   if (!fechaFiltro) return lista;
   return lista.filter(item => {
@@ -442,6 +410,7 @@ const CalculadoraPremios = ({ sorteos, loterias, puntosVenta = [], marcarPagoTic
     const fecha = new Date(valor);
     if (Number.isNaN(fecha.getTime())) return '';
     return fecha.toLocaleString('es-ES', {
+      timeZone: ZONA_OPERATIVA,
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',

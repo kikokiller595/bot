@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './NumerosGanadores.css';
 import loteriasService from '../services/loteriasService';
 import { formatearFechaLocalInput } from '../utils/fechas';
+import { obtenerClaveFecha } from '../utils/dateParser';
+import { formatearFechaHoraOperativa } from '../utils/zonaHoraria';
 
 const DRAW_SUFFIXES = new Set(['am', 'pm', 'eve', 'midday', 'mid-day', 'night']);
 
@@ -43,38 +45,7 @@ const NumerosGanadores = ({
   );
   const [guardando, setGuardando] = useState(false);
 
-  const normalizarFecha = (valor) => {
-    if (!valor) return null;
-
-    if (valor instanceof Date) {
-      const anio = valor.getFullYear();
-      const mes = String(valor.getMonth() + 1).padStart(2, '0');
-      const dia = String(valor.getDate()).padStart(2, '0');
-      return `${anio}-${mes}-${dia}`;
-    }
-
-    const texto = String(valor);
-    const iso = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (iso) {
-      return `${iso[1]}-${iso[2]}-${iso[3]}`;
-    }
-
-    const fecha = new Date(texto);
-    if (!Number.isNaN(fecha.getTime())) {
-      const anio = fecha.getFullYear();
-      const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-      const dia = String(fecha.getDate()).padStart(2, '0');
-      return `${anio}-${mes}-${dia}`;
-    }
-
-    const formatoLocal = texto.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-    if (formatoLocal) {
-      const [, dia, mes, anio] = formatoLocal;
-      return `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
-    }
-
-    return null;
-  };
+  const normalizarFecha = (valor) => obtenerClaveFecha(valor);
 
   useEffect(() => {
     if (loterias.length === 0) {
@@ -128,7 +99,7 @@ const NumerosGanadores = ({
       id: Date.now().toString(),
       numero: numeroLimpio,
       fecha: fechaSorteo,
-      fechaRegistro: new Date().toLocaleString('es-ES'),
+      fechaRegistro: formatearFechaHoraOperativa(new Date()),
       premio: premioNum
     };
 

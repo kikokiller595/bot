@@ -4,6 +4,20 @@ import { obtenerClaveFecha, obtenerFechaActualLocal } from '../utils/dateParser'
 
 import './GeneradorNumeros.css';
 
+// Minutos transcurridos del dia (0-1439) en la zona operativa (America/New_York),
+// para comparar contra la hora de cierre sin depender de la zona del navegador.
+const minutosDelDiaOperativo = (fecha = new Date()) => {
+  const partes = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'America/New_York',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23'
+  }).formatToParts(fecha);
+  const hora = Number(partes.find((p) => p.type === 'hour')?.value || 0);
+  const minuto = Number(partes.find((p) => p.type === 'minute')?.value || 0);
+  return hora * 60 + minuto;
+};
+
 const AYUDA_INGRESO_SECCIONES = [
   {
     titulo: 'Jugadas basicas',
@@ -138,14 +152,8 @@ const GeneradorNumeros = ({
   const [horaActual, setHoraActual] = useState(new Date());
   const [puntoVentaDestinoId, setPuntoVentaDestinoId] = useState('');
   
-  // Función para obtener la fecha local en formato YYYY-MM-DD
-  const obtenerFechaLocal = () => {
-    const ahora = new Date();
-    const año = ahora.getFullYear();
-    const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-    const dia = String(ahora.getDate()).padStart(2, '0');
-    return `${año}-${mes}-${dia}`;
-  };
+  // Fecha de hoy YYYY-MM-DD en la zona operativa (America/New_York).
+  const obtenerFechaLocal = () => obtenerFechaActualLocal();
   
   const [fechaSeleccionada, setFechaSeleccionada] = useState(obtenerFechaLocal());
   const [mostrarAyudaIngreso, setMostrarAyudaIngreso] = useState(false);
@@ -183,12 +191,13 @@ const GeneradorNumeros = ({
   );
 
   const obtenerFechaManana = () => {
-    const manana = new Date();
-    manana.setDate(manana.getDate() + 1);
-    const y = manana.getFullYear();
-    const m = String(manana.getMonth() + 1).padStart(2, '0');
-    const d = String(manana.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
+    const [y, m, d] = obtenerFechaActualLocal().split('-').map(Number);
+    const manana = new Date(Date.UTC(y, m - 1, d));
+    manana.setUTCDate(manana.getUTCDate() + 1);
+    const yy = manana.getUTCFullYear();
+    const mm = String(manana.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(manana.getUTCDate()).padStart(2, '0');
+    return `${yy}-${mm}-${dd}`;
   };
 
   useEffect(() => {
@@ -294,7 +303,7 @@ const GeneradorNumeros = ({
     if (!loteria || !loteria.horaCierre) return false;
     const totalMinutosCierre = obtenerMinutosCierre(loteria);
     if (!Number.isFinite(totalMinutosCierre)) return false;
-    const totalMinutosActual = horaActual.getHours() * 60 + horaActual.getMinutes();
+    const totalMinutosActual = minutosDelDiaOperativo(horaActual);
 
     return totalMinutosActual >= totalMinutosCierre;
   }, [horaActual, obtenerMinutosCierre]);
@@ -303,7 +312,7 @@ const GeneradorNumeros = ({
     if (!loteria || !loteria.horaCierre) return null;
     const minutosCierre = obtenerMinutosCierre(loteria);
     if (!Number.isFinite(minutosCierre)) return null;
-    const minutosActual = horaActual.getHours() * 60 + horaActual.getMinutes();
+    const minutosActual = minutosDelDiaOperativo(horaActual);
     const restantes = minutosCierre - minutosActual;
     if (restantes <= 0) return null; // ya cerrada, el chip lo indica
     if (restantes >= 60) {
@@ -1266,7 +1275,14 @@ const GeneradorNumeros = ({
     const timestampBase = Date.now();
     let fechaTicketDate = null;
     try {
-      const horaActualCadena = new Date().toTimeString().split(' ')[0];
+      // Hora actual en la zona operativa (America/New_York), no la del navegador.
+      const horaActualCadena = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'America/New_York',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hourCycle: 'h23'
+      }).format(new Date());
       fechaTicketDate = new Date(`${fechaSeleccionada}T${horaActualCadena}`);
       if (isNaN(fechaTicketDate.getTime())) {
         fechaTicketDate = new Date();

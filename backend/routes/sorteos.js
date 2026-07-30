@@ -9,6 +9,9 @@ const {
   estaLoteriaCerrada,
   obtenerClaveFechaOperativa,
   obtenerZonaHorariaOperativa,
+  obtenerLimitesDiaOperativo,
+  formatearFechaHoraOperativa,
+  zonaAInstante,
   parseHoraCierreMinutos
 } = require('../utils/operacion');
 const {
@@ -186,12 +189,22 @@ const parseFechaEntrada = (valor) => {
     return new Date();
   }
 
+  // Instante ISO completo con zona explicita (termina en Z u offset +hh:mm):
+  // es un momento exacto, se respeta tal cual.
+  if (/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(limpio) && /(Z|[+-]\d{2}:?\d{2})$/.test(limpio)) {
+    const instante = new Date(limpio);
+    if (!Number.isNaN(instante.getTime())) {
+      return instante;
+    }
+  }
+
   const iso = limpio.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2}))?)?/);
   if (iso) {
     const [, anio, mes, dia, hora = '00', minuto = '00', segundo = '00'] = iso;
-    const fechaIso = new Date(
+    // Sin zona explicita: se interpreta como hora de pared de la zona operativa.
+    const fechaIso = zonaAInstante(
       parseInt(anio, 10),
-      parseInt(mes, 10) - 1,
+      parseInt(mes, 10),
       parseInt(dia, 10),
       parseInt(hora, 10),
       parseInt(minuto, 10),
@@ -226,9 +239,10 @@ const parseFechaEntrada = (valor) => {
       }
     }
 
-    const fechaEs = new Date(
+    // Hora de pared de la zona operativa.
+    const fechaEs = zonaAInstante(
       parseInt(anio, 10),
-      parseInt(mes, 10) - 1,
+      parseInt(mes, 10),
       parseInt(dia, 10),
       horas,
       minutos,
@@ -278,7 +292,7 @@ const crearDocumentoSorteo = ({
     vendedorNombre: usuario.nombre,
     grupoId: sorteo.grupoId ? String(sorteo.grupoId) : null,
     fecha,
-    fechaTexto: fecha.toLocaleString('es-ES')
+    fechaTexto: formatearFechaHoraOperativa(fecha)
   };
 };
 
@@ -292,11 +306,10 @@ router.get('/', protect, async (req, res) => {
     }
 
     if (fecha) {
-      const fechaInicio = new Date(fecha);
-      fechaInicio.setHours(0, 0, 0, 0);
-      const fechaFin = new Date(fecha);
-      fechaFin.setHours(23, 59, 59, 999);
-      query.fecha = { $gte: fechaInicio, $lte: fechaFin };
+      const limites = obtenerLimitesDiaOperativo(fecha, ZONA_HORARIA_OPERATIVA);
+      if (limites) {
+        query.fecha = { $gte: limites.inicio, $lte: limites.fin };
+      }
     }
 
     if (loteria) {
@@ -346,11 +359,10 @@ router.get('/reporte', protect, async (req, res) => {
     }
 
     if (fecha) {
-      const fechaInicio = new Date(fecha);
-      fechaInicio.setHours(0, 0, 0, 0);
-      const fechaFin = new Date(fecha);
-      fechaFin.setHours(23, 59, 59, 999);
-      query.fecha = { $gte: fechaInicio, $lte: fechaFin };
+      const limites = obtenerLimitesDiaOperativo(fecha, ZONA_HORARIA_OPERATIVA);
+      if (limites) {
+        query.fecha = { $gte: limites.inicio, $lte: limites.fin };
+      }
     }
 
     if (loteria) {

@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const Loteria = require('../models/Loteria');
 const { protect, authorize } = require('../middleware/auth');
+const { formatearFechaHoraOperativa } = require('../utils/operacion');
 
 const premiosPorDefecto = {
   pick2: {
@@ -135,7 +136,7 @@ const normalizarNumerosGanadores = (lista = []) => {
         numero,
         fecha: String(item.fecha || '').trim(),
         fechaRegistro: String(
-          item.fechaRegistro || new Date().toLocaleString('es-ES')
+          item.fechaRegistro || formatearFechaHoraOperativa(new Date())
         ).trim(),
         premio: numeroSeguro(item.premio, 0),
         fuente:

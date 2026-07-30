@@ -1,4 +1,11 @@
-export const formatearFechaLocalInput = (fecha = new Date()) => {
+import { claveHoyOperativa } from './zonaHoraria';
+
+export const formatearFechaLocalInput = (fecha) => {
+  // Sin argumento: "hoy" en la zona operativa (America/New_York), no la del navegador.
+  if (fecha === undefined) {
+    return claveHoyOperativa();
+  }
+
   const valor = fecha instanceof Date ? fecha : new Date(fecha);
   if (Number.isNaN(valor.getTime())) {
     return '';
