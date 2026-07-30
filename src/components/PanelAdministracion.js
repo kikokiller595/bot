@@ -4,6 +4,7 @@ import GestionLoterias from './GestionLoterias';
 import NumerosGanadores from './NumerosGanadores';
 import GestionPuntosVenta from './GestionPuntosVenta';
 import GestionUsuarios from './GestionUsuarios';
+import sorteosService from '../services/sorteosService';
 
 const normalizeBaseUrl = (value, fallback = '') =>
   (value || fallback || '').trim().replace(/\/+$/, '');
@@ -22,11 +23,55 @@ const PanelAdministracion = ({
   loterias,
   setLoterias,
   puntosVenta,
-  setPuntosVenta
+  setPuntosVenta,
+  onVentasReiniciadas
 }) => {
   const [pestanaActiva, setPestanaActiva] = useState('loterias');
   const [backendStatus, setBackendStatus] = useState('checking');
   const [databaseStatus, setDatabaseStatus] = useState('checking');
+
+  // Estado del modal de reinicio de ventas.
+  const [resetModalAbierto, setResetModalAbierto] = useState(false);
+  const [resetPassword, setResetPassword] = useState('');
+  const [resetCargando, setResetCargando] = useState(false);
+  const [resetError, setResetError] = useState('');
+  const [resetExito, setResetExito] = useState('');
+
+  const cerrarResetModal = () => {
+    if (resetCargando) return;
+    setResetModalAbierto(false);
+    setResetPassword('');
+    setResetError('');
+  };
+
+  const confirmarReinicio = async () => {
+    if (!resetPassword) {
+      setResetError('Ingresa tu contraseña de administrador.');
+      return;
+    }
+
+    setResetCargando(true);
+    setResetError('');
+    setResetExito('');
+
+    try {
+      const data = await sorteosService.reiniciarVentas(resetPassword);
+      const tickets = data?.ticketsEliminados ?? 0;
+      const pagos = data?.pagosEliminados ?? 0;
+      setResetExito(
+        `Listo: se eliminaron ${tickets} tickets y ${pagos} pagos de premios.`
+      );
+      setResetModalAbierto(false);
+      setResetPassword('');
+      if (typeof onVentasReiniciadas === 'function') {
+        onVentasReiniciadas();
+      }
+    } catch (error) {
+      setResetError(error?.message || 'No se pudo reiniciar el sistema.');
+    } finally {
+      setResetCargando(false);
+    }
+  };
 
   useEffect(() => {
     let active = true;
@@ -134,7 +179,82 @@ const PanelAdministracion = ({
             </div>
           )}
         </div>
+
+        <div className="danger-zone">
+          <div className="danger-zone-info">
+            <h3 className="danger-zone-title">Reiniciar el sistema</h3>
+            <p className="danger-zone-text">
+              Elimina <strong>todos los tickets, ventas y pagos de premios</strong>.
+              Las loterías, puntos de venta y usuarios se conservan. Esta acción
+              no se puede deshacer.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="danger-zone-button"
+            onClick={() => {
+              setResetExito('');
+              setResetError('');
+              setResetModalAbierto(true);
+            }}
+          >
+            Borrar ventas y premios
+          </button>
+        </div>
+
+        {resetExito && (
+          <div className="danger-zone-success">{resetExito}</div>
+        )}
       </div>
+
+      {resetModalAbierto && (
+        <div className="reset-modal-overlay" onClick={cerrarResetModal}>
+          <div
+            className="reset-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 className="reset-modal-title">Confirmar reinicio</h3>
+            <p className="reset-modal-text">
+              Se eliminarán <strong>todos los tickets, ventas y pagos de
+              premios</strong> de forma permanente. Escribe tu contraseña de
+              administrador para confirmar.
+            </p>
+            <input
+              type="password"
+              className="reset-modal-input"
+              placeholder="Contraseña de administrador"
+              value={resetPassword}
+              autoFocus
+              disabled={resetCargando}
+              onChange={(event) => setResetPassword(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') confirmarReinicio();
+              }}
+            />
+            {resetError && (
+              <div className="reset-modal-error">{resetError}</div>
+            )}
+            <div className="reset-modal-actions">
+              <button
+                type="button"
+                className="reset-modal-cancel"
+                onClick={cerrarResetModal}
+                disabled={resetCargando}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="reset-modal-confirm"
+                onClick={confirmarReinicio}
+                disabled={resetCargando}
+              >
+                {resetCargando ? 'Borrando…' : 'Borrar todo'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

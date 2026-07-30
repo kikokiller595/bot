@@ -733,6 +733,7 @@ function App() {
           setLoterias={actualizarLoterias}
           puntosVenta={puntosVenta}
           setPuntosVenta={setPuntosVenta}
+          onVentasReiniciadas={() => setSorteos([])}
         />
       </div>
     );

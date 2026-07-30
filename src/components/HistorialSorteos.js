@@ -3,7 +3,6 @@ import './HistorialSorteos.css';
 import { calcularPremio, numeroCoincide } from '../utils/calcularPremios';
 import { normalizarPremios } from '../utils/premiosDefault';
 import { useAuth } from '../context/AuthContext';
-import sorteosService from '../services/sorteosService';
 
 const parsearFecha = (fechaStr) => {
   if (!fechaStr) return null;
@@ -182,37 +181,6 @@ const obtenerFechaReferenciaEliminacion = (ticket) => {
 
 const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosVenta = [], transferirGrupo }) => {
   const { isAdmin, isSupervisor } = useAuth();
-
-  // Estado del modal para borrar todas las ventas y premios (solo admin).
-  const [resetModalAbierto, setResetModalAbierto] = useState(false);
-  const [resetPassword, setResetPassword] = useState('');
-  const [resetCargando, setResetCargando] = useState(false);
-  const [resetError, setResetError] = useState('');
-
-  const cerrarResetModal = () => {
-    if (resetCargando) return;
-    setResetModalAbierto(false);
-    setResetPassword('');
-    setResetError('');
-  };
-
-  const confirmarReinicio = async () => {
-    if (!resetPassword) {
-      setResetError('Ingresa tu contraseña de administrador.');
-      return;
-    }
-
-    setResetCargando(true);
-    setResetError('');
-
-    try {
-      await sorteosService.reiniciarVentas(resetPassword);
-      window.location.reload();
-    } catch (error) {
-      setResetError(error?.message || 'No se pudo reiniciar el sistema.');
-      setResetCargando(false);
-    }
-  };
   const [fechaDesde, setFechaDesde] = useState(() => obtenerFechaLocalHoy());
   const [fechaHasta, setFechaHasta] = useState(() => obtenerFechaLocalHoy());
   const [textoBusqueda, setTextoBusqueda] = useState('');
@@ -929,18 +897,6 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
       <div className="historial-card">
         <div className="historial-header">
           <h2 className="card-title">Historial de Tickets</h2>
-          {isAdmin() && (
-            <button
-              type="button"
-              className="historial-reset-button"
-              onClick={() => {
-                setResetError('');
-                setResetModalAbierto(true);
-              }}
-            >
-              Borrar ventas y premios
-            </button>
-          )}
         </div>
 
         <div className="historial-filtros">
@@ -1359,56 +1315,6 @@ const HistorialSorteos = ({ sorteos = [], loterias = [], eliminarSorteo, puntosV
           </div>
         )}
       </div>
-
-      {resetModalAbierto && (
-        <div className="reset-modal-overlay" onClick={cerrarResetModal}>
-          <div
-            className="reset-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <h3 className="reset-modal-title">Confirmar reinicio</h3>
-            <p className="reset-modal-text">
-              Se eliminarán <strong>todos los tickets, ventas y pagos de
-              premios</strong> de forma permanente. Las loterías, puntos de
-              venta y usuarios se conservan. Escribe tu contraseña de
-              administrador para confirmar.
-            </p>
-            <input
-              type="password"
-              className="reset-modal-input"
-              placeholder="Contraseña de administrador"
-              value={resetPassword}
-              autoFocus
-              disabled={resetCargando}
-              onChange={(event) => setResetPassword(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') confirmarReinicio();
-              }}
-            />
-            {resetError && (
-              <div className="reset-modal-error">{resetError}</div>
-            )}
-            <div className="reset-modal-actions">
-              <button
-                type="button"
-                className="reset-modal-cancel"
-                onClick={cerrarResetModal}
-                disabled={resetCargando}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className="reset-modal-confirm"
-                onClick={confirmarReinicio}
-                disabled={resetCargando}
-              >
-                {resetCargando ? 'Borrando…' : 'Borrar todo'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
